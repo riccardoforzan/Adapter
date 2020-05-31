@@ -1,8 +1,10 @@
 package test;
 
+import interfaces.HCollection;
 import interfaces.HIterator;
 import adapters.SetAdapter;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
@@ -10,184 +12,118 @@ import static org.junit.Assert.*;
 
 public class SetAdapterTester {
 
+    private SetAdapter se;
+
+    @Before
+    public void setup(){
+        se = new SetAdapter();
+    }
+
     @Test
     public void testAdd() {
+        Object toAdd = new Object();
+        assertEquals("Inserimento di un primo elemento",true, se.add(toAdd));
+        assertNotEquals("Provo a inderire lo stesso oggetto due volte",true, se.add(toAdd));
 
-        assertThrows(ClassCastException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                SetAdapter ses = new SetAdapter();
-                Object value = new Integer(1);
-                //TODO: Controllare quando lancia l'eccezione
-                ses.add((String) value);
-            }
-        });
+        /**
+         * ClassCastException è controllata a compile time
+         */
 
         assertThrows(NullPointerException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                SetAdapter sen = new SetAdapter();
-                sen.add(null);
+                se.add(null);
             }
         });
 
         /**
          * TODO: Implementazione IllegalArgumentException
-         assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
-        @Override
-        public void run() throws Throwable {
-        //TODO
-        }
-        });
          */
 
-        SetAdapter se = new SetAdapter();
-
-        //Test di funzionamento
-        Object toAdd = new Object();
-
-        assertEquals(true, se.add(toAdd));
-        assertEquals(1, se.size());
-
-        //Lo stesso oggetto non può essere inserito due volte
-        assertNotEquals(true, se.add(toAdd));
     }
 
+    /**
+     * Test del metodo Contains
+     * Dipende dalla correttezza del metodo add
+     */
     @Test
     public void testContains() {
+        Object toFind = new Object();
 
-        //Controllo delle eccezioni
-        assertThrows(ClassCastException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                SetAdapter sec = new SetAdapter();
-                //TODO: Rivedere, lancia l'eccezione nel cast non in contains
-                sec.contains((String) new Object());
-            }
-        });
+        assertEquals("Cerco un oggetto non presente nella collezione",false,se.contains(toFind));
+
+        se.add(toFind);
+        assertEquals("Cerco un oggetto presente nella collezione",true,se.contains(toFind));
 
         assertThrows(NullPointerException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                SetAdapter sen = new SetAdapter();
-                sen.contains(null);
+                se.contains(null);
             }
         });
-
-        //Controllo funzionamento
-        SetAdapter se = new SetAdapter();
-        Object toFind = new Object();
-
-        //Controllo che non trovi l'oggetto prima che io lo immetta
-        assertEquals(false,se.contains(toFind));
-
-        //Controllo che trovi un oggetto che ho immesso
-        se.add(toFind);
-        assertEquals(true,se.contains(toFind));
     }
 
     @Test
     public void testRemove() {
-
-        SetAdapter se = new SetAdapter();
         Object obj1 = new Object();
         Object obj2 = new Object();
-        Object obj3 = new Object();
         se.add(obj1);
         se.add(obj2);
-        se.add(obj3);
 
-        assertEquals(true,se.remove(obj1));
+        assertEquals("Rimozione di un oggetto contenuto",true,se.remove(obj1));
+        assertNotEquals("Controllo non permetta la rimozione dello stesso oggetto due volte",true,se.remove(obj1));
 
-        assertEquals(2,se.size());
-        assertEquals(true,se.contains(obj2));
-        assertEquals(true,se.contains(obj3));
-
-        assertNotEquals(true,se.remove(obj1));
-        assertNotEquals(true,se.contains(obj1));
-
-        assertThrows(NullPointerException.class, new ThrowingRunnable() {
+        assertThrows("Tento la rimozione di un riferimento a null",NullPointerException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                SetAdapter sen = new SetAdapter();
-                sen.remove(null);
+                se.remove(null);
             }
         });
 
         /**
-         //TODO: Implementazione ClassCastException e IllegalArgumentException
-         assertThrows(ClassCastException.class, new ThrowingRunnable() {
-        @Override
-        public void run() throws Throwable {
-        //TODO
-        }
-        });
-         assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
-        @Override
-        public void run() throws Throwable {
-        //TODO
-        }
-        });
+         * TODO: Implementazione IllegalArgumentException
          */
     }
 
+    /**
+     * Dipende dalla correttezza del metodo add() e del metodo size()
+     */
     @Test
     public void testAddAll() {
+        HCollection collection = new SetAdapter();
+        collection.add(new Object());
+        collection.add(new Object());
 
-        /* TODO: Implementazione ClassCastException e IllegalArgumentException
-        assertThrows(ClassCastException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                //Non è permesso nelle interfacce
-                SetAdapter<String> sec = new SetAdapter<>();
-                Collection<Object> collection = new ArrayList<>();
-                collection.add(new Object());
-                collection.add(new Object());
-                //sec.addAll(collection);
-            }
-        });
-        assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-            }
-        });
-        */
+        assertEquals("Il set viene modificato aggiungendo due elementi",true, se.addAll(collection));
+        assertEquals("Mi aspetto che siano stati aggiunti 2 elementi al set vuoto",2, se.size());
 
-        /* TODO: Come comportarsi con Collection?
+        assertNotEquals("Controllo non vengano effettuati doppi inserimenti",true, se.addAll(collection));
+        assertNotEquals(4, se.size());
+
+        collection.add(new Object());
+        assertEquals("Il set viene modificato aggiungendo un elemento",true, se.addAll(collection));
+        assertEquals("Controllo che la dimensione sia aumentata sino a 3",3, se.size());
+
         assertThrows(NullPointerException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                SetAdapter sen = new SetAdapter();
-                Collection<Object> collection = new ArrayList<>();
+                HCollection collection = new SetAdapter();
                 collection.add(null);
-                sen.addAll(collection);
+                se.addAll(collection);
             }
         });
 
-        SetAdapter<Object> se = new SetAdapter<>();
-
-        //Creo una collezione e la importo nel set
-        Collection<Object> collection = new ArrayList<>();
-        collection.add(new Object());
-        collection.add(new Object());
-        assertEquals(true, se.addAll(collection));
-        assertEquals(2, se.size());
-
-        collection.add(new Object());
-        assertEquals(true, se.addAll(collection));
-        assertEquals(3, se.size());
-
-        //Controllo che NON faccia doppi inserimenti
-        assertNotEquals(true, se.addAll(collection));
-        assertNotEquals(4, se.size());
+        /**
+         * TODO: Implementazione IllegalArgumentException
          */
 
     }
 
+    /**
+     * Dipende dalla correttezza dei metodi add() e contains()
+     */
     @Test
     public void testRetainAll() {
-        SetAdapter se = new SetAdapter();
-
         Object obj1 = new Object();
         Object obj2 = new Object();
         Object obj3 = new Object();
@@ -197,58 +133,33 @@ public class SetAdapterTester {
         se.add(obj3);
         se.add(obj4);
 
-        /** TODO: Come comportarsi con Collecion?
-        Collection<Object> toRetain = new ArrayList<>();
+        HCollection toRetain = new SetAdapter();
         toRetain.add(obj1);
         toRetain.add(obj2);
 
-        //Rimozione di tutti gli oggetti tranne quelli nella collection toRetain
-        assertEquals(true,se.retainAll(toRetain));
-        assertEquals(true,se.contains(obj1));
-        assertEquals(true,se.contains(obj2));
-        assertNotEquals(true,se.contains(obj3));
-        assertNotEquals(true,se.contains(obj4));
+        assertEquals("Rimuovo tutti gli oggetti tranne quelli nella collezione, il metodo modifica la collezione",true,se.retainAll(toRetain));
+        assertEquals("Controllo che contenga i due oggetti nella collezione",true,(se.contains(obj1) && se.contains(obj2)) );
+        assertNotEquals("Controllo che non contenga i due oggetti non presenti nella collezione",true, (se.contains(obj3) || se.contains(obj4)) );
 
-        //La seconda invocazione non deve modificare la collezione
-        assertNotEquals(true,se.retainAll(toRetain));
-         */
+        assertNotEquals("La seconda invocazione non deve modificare la collezione",true,se.retainAll(toRetain));
+
+        assertThrows(NullPointerException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                se.retainAll(toRetain);
+            }
+        });
 
         /**
-         * TODO:
-         * Iternaodo internamente sugli oggetti dell'hashtable e poi controllando se questi sono nella
-         * lista di quelli da salvare non accade mai che si controlli un valore nullo, perchè non
-         * vengono mai inseriti valori nulli all'interno della hashmap.
-         /
-         assertThrows(NullPointerException.class, new ThrowingRunnable() {
-        @Override
-        public void run() throws Throwable {
-        SetAdapter<Object> sen = new SetAdapter<>();
-        Collection<Object> toRetain = new ArrayList<>();
-        toRetain.add(null);
-        sen.retainAll(toRetain);
-        }
-        });
-         */
-
-        /*TODO: Controllo delle eccezioni
-        assertThrows(ClassCastException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                //TODO
-            }
-        });
-        assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                //TODO
-            }
-        });
+         * TODO: Implementazione IllegalArgumentException
          */
     }
 
+    /**
+     * Dipende dalla correttezza dei metodi add() e contains()
+     */
     @Test
     public void testRemoveAll() {
-        SetAdapter se = new SetAdapter();
         Object obj1 = new Object();
         Object obj2 = new Object();
         Object obj3 = new Object();
@@ -258,207 +169,159 @@ public class SetAdapterTester {
         se.add(obj3);
         se.add(obj4);
 
-
-        /** TODO: Come comportarsi con Collection?
-        Collection<Object> toDelete = new ArrayList<>();
+        HCollection toDelete = new SetAdapter();
         toDelete.add(obj3);
         toDelete.add(obj4);
 
-        //Rimozione di tutti gli oggetti dal set
-        assertEquals(true,se.removeAll(toDelete));
+        assertEquals("Rimozione degli oggetti della collezione dal set",true,se.removeAll(toDelete));
+        assertEquals(2,se.size());
+        assertEquals("Controllo che gli oggetti non presenti nella collezione appartengano ancora al set", true, (se.contains(obj1) && se.contains(obj2)) );
+        assertNotEquals("Controllo che gli oggetti presenti nella collezione non appartengano al set", true, (se.contains(obj3) || se.contains(obj4)) );
 
-        assertEquals(se.contains(obj1), true);
-        assertEquals(se.contains(obj2), true);
-        assertNotEquals(se.contains(obj3), true);
-        assertNotEquals(se.contains(obj4), true);
-
+        //Modifica della collezione da eliminare
         toDelete.add(obj2);
-        assertEquals(true,se.removeAll(toDelete));
+        assertEquals("Aggiunto un elemento alla collezione da eliminare, controllo sia stato eliminato",true,se.removeAll(toDelete));
+        assertEquals(1,se.size());
         assertEquals(se.contains(obj1), true);
         assertNotEquals(se.contains(obj2), true);
         assertNotEquals(se.contains(obj3), true);
         assertNotEquals(se.contains(obj4), true);
 
-        assertNotEquals(true,se.removeAll(toDelete));
+        assertNotEquals("Controllo una ulteriore invocazione non faccia alcuna modifica",true,se.removeAll(toDelete));
+        assertEquals(1,se.size());
+
+        assertThrows(NullPointerException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                se.remove(null);
+            }
+        });
 
         /**
-         * TODO:
-         * Iternaodo internamente sugli oggetti dell'hashtable e poi controllando se questi sono nella
-         * lista di quelli da salvare non accade mai che si controlli un valore nullo, perchè non
-         * vengono mai inseriti valori nulli all'interno della hashmap.
-         /
-         assertThrows(NullPointerException.class, new ThrowingRunnable() {
-        @Override
-        public void run() throws Throwable {
-        SetAdapter<Object> sen = new SetAdapter<>();
-        Collection<Object> toDelete = new ArrayList<>();
-        toDelete.add(null);
-        sen.remove(toDelete);
-        }
-        });
-         */
-
-        /**
-         //TODO: Controllo delle eccezioni
-         assertThrows(ClassCastException.class, new ThrowingRunnable() {
-        @Override
-        public void run() throws Throwable {
-        //TODO
-        }
-        });
-         assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
-        @Override
-        public void run() throws Throwable {
-        //TODO
-        }
-        });
+         * TODO: Implementaizone IllegalArgumentException
          */
     }
 
+    /**
+     * Dipende dalla correttezza del metodo addAll() e add()
+     */
     @Test
     public void testContainsAll() {
-
-        /**TODO: Implementazione ClassCastException
-         assertThrows(ClassCastException.class, new ThrowingRunnable() {
-        @Override
-        public void run() throws Throwable {
-        SetAdapter<String> sec = new SetAdapter<>();
-        //TODO
-        }
-        });
-         */
-
-        /**
-         * TODO: Perchè non funziona?
-         assertThrows(NullPointerException.class, new ThrowingRunnable() {
-        @Override
-        public void run() throws Throwable {
-        SetAdapter<String> sen = new SetAdapter<>();
-        Collection<Object> collection = new ArrayList<>();
-        collection.add(null);
-        sen.contains(collection);
-        }
-        });
-         */
-
-        SetAdapter se = new SetAdapter();
-
-        /**TODO: Come comportarsi con collection?
-        //Creo una collezione e la importo nel set
-        Collection<Object> collection = new ArrayList<>();
+        HCollection collection = new SetAdapter();
         collection.add(new Object());
         collection.add(new Object());
         se.addAll(collection);
 
-        assertEquals(true,se.containsAll(collection));
+        assertEquals("Controllo se il set contiene tutti gli elementi della collezione",true,se.containsAll(collection));
 
-        //Aggiungo un oggetto alla collezione e controllo che non sia più presente tutta la collezione nel set
         Object NotFound = new Object();
         collection.add(NotFound);
-        assertNotEquals(false,se.containsAll(collection));
-         */
+        assertNotEquals("Aggiungo un oggetto alla collezione e controllo che ora il set non li contenga più tutti ",false,se.containsAll(collection));
+
+        assertThrows("Tento la ricerca di un riferimento a null",NullPointerException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                se.containsAll(null);
+            }
+        });
+
     }
 
     @Test
     @Ignore
     public void testIterator() {
-        SetAdapter se = null;
-        HIterator it = null;
-
-        se = new SetAdapter();
         se.add(new Object());
-        it = se.iterator();
+        HIterator it = se.iterator();
         assertEquals(true,it.hasNext());
 
         se = new SetAdapter();
         it = se.iterator();
         assertNotEquals(true,it.hasNext());
-
     }
 
+    /**
+     * Test del metodo isEmpty
+     * È dipendente dal metodo add
+     */
     @Test
     public void testIsEmpty() {
-        SetAdapter se = new SetAdapter();
-        assertEquals(true,se.isEmpty());
+        assertEquals("Un set appena creato deve essere vuoto",true,se.isEmpty());
 
         se.add(new Object());
-        assertNotEquals(true,se.isEmpty());
+        assertNotEquals("Un set a cui viene aggiunto un elemento non deve essere vuoto",true,se.isEmpty());
     }
 
     @Test
     public void testSize() {
-        SetAdapter se = new SetAdapter();
-        assertEquals(se.size(), 0);
-
-        /**
-         se.add(new Object());
-         int size = se.size();
-         assertEquals(1, size);
-         assertNotEquals(2, size);
-         */
+        assertEquals("Un set appena creato deve avere dimensione 0",se.size(), 0);
     }
 
+    /**
+     * Dipende dai metodi add() e isEmpty()
+     */
     @Test
     public void testClear() {
-        SetAdapter se = new SetAdapter();
-        //Test di funzionamento
+        se.clear();
+        assertEquals("Invocazione su un set vuoto",true,se.isEmpty());
+        //Riempimento del set
         se.add(new Object());
         se.add(new Object());
         assertEquals(2, se.size());
         se.clear();
-        assertEquals(0, se.size());
-        //Test di non funzionamento
-        se.add(new Object());
-        assertEquals(1, se.size());
-        se.clear();
-        assertNotEquals(1, se.size());
+        assertEquals("Invocazione su un set contenente elementi",0, se.isEmpty());
     }
 
+    /**
+     * TODO: Implementare il controllo di coerenza tra equals e hashCode
+     */
+
+    /**
+     * Dipende dal metodo add()
+     */
     @Test
     public void testEquals() {
-        SetAdapter setA = new SetAdapter();
-        SetAdapter setB = new SetAdapter();
+        SetAdapter se2 = new SetAdapter();
 
-        assertEquals(true, setA.equals(setB));
+        assertEquals(true, se.equals(se2));
 
-        //Costruisco due set identici con gli stessi elementi
-
+        //Costruisco due set con gli stessi elementi
         Object obj1 = new Object();
         Object obj2 = new Object();
-        setA.add(obj1);
-        setA.add(obj2);
-        setB.add(obj1);
-        setB.add(obj2);
+        se.add(obj1);
+        se.add(obj2);
+        se2.add(obj1);
+        se2.add(obj2);
+        assertEquals("Controllo che set con gli stessi elementi siano uguali",true,se.equals(se2));
 
-        assertEquals(true,setA.equals(setB));
-
-        setB.add(new Object());
-        assertNotEquals(true,setA.equals(setB));
+        se2.add(new Object());
+        assertNotEquals("Controllo che dopo l'aggiunta i due non siano più uguali",true,se.equals(se2));
     }
 
+    /**
+     * Dipende dal metodo add()
+     */
     @Test
     public void testHashCode() {
-        SetAdapter setA = new SetAdapter();
-        SetAdapter setB = new SetAdapter();
+        SetAdapter se2 = new SetAdapter();
 
+        //Costruisco due set con gli stessi elementi
         Object obj1 = new Object();
         Object obj2 = new Object();
-        setA.add(obj1);
-        setA.add(obj2);
-        setB.add(obj1);
-        setB.add(obj2);
+        se.add(obj1);
+        se.add(obj2);
+        se2.add(obj1);
+        se2.add(obj2);
 
         //L'hashcode viene creato come somma degli hascode degli oggetti
-        assertEquals(setA.hashCode(), setB.hashCode());
+        assertEquals("Controllo abbiano il medesimo hashcode, dato dalla somma degli hashcode degli elementi al suo interno",true, (se.hashCode() == se2.hashCode()) );
 
         //Aggiungo un oggetto, mi aspetto che gli hashcode siano diversi, perchè quello del nuovo Object inserito è legato all'indirizzo di memoria dell'oggetto
-        setB.add(new Object());
-        assertNotEquals(setA.hashCode(), setB.hashCode());
+        se2.add(new Object());
+        assertNotEquals("Controllo non abbiano il medesimo hashcode",true, (se.hashCode() == se2.hashCode()) );
     }
 
     @Test
     public void testToObjectArray() {
-        SetAdapter se = new SetAdapter();
         Object[] objArray = se.toArray();
         assertEquals(se.size(),objArray.length);
     }
