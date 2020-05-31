@@ -2,10 +2,18 @@ package test;
 
 import adapters.ListAdapter;
 
+import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ListAdapterTester {
+
+    private ListAdapter la;
+
+    @Before
+    public void setup(){
+        la = new ListAdapter();
+    }
 
     @Test
     public void testAddElement(){}
@@ -20,7 +28,8 @@ public class ListAdapterTester {
     public void testAddAllCollectionIndex(){}
 
     @Test
-    public void testClear(){}
+    public void testClear(){
+    }
 
     @Test
     public void testContains(){}
@@ -38,7 +47,9 @@ public class ListAdapterTester {
     public void testIndexOf(){}
 
     @Test
-    public void testIsEmpty(){}
+    public void testIsEmpty(){
+
+    }
 
     @Test
     public void testIterator(){}
@@ -70,8 +81,15 @@ public class ListAdapterTester {
     @Test
     public void testSet(){}
 
+    /**
+     * Dipende da add()
+     */
     @Test
-    public void testSize(){}
+    public void testSize(){
+        assertEquals("La lista inizialmente è creata vuota",0,la.size());
+        la.add(new Object());
+        assertEquals("La lista contiene un elemento",1,la.size());
+    }
 
     @Test
     public void testSort(){}

@@ -11,72 +11,47 @@ public class CollectionAdapterTester {
 
     @Test
     public void testAdd(){
-
-        assertThrows(ClassCastException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                //TODO
-            }
+        assertThrows(ClassCastException.class, () -> {
+            //TODO
         });
-
     }
 
     @Test
     public void testRemove(){
-
-        assertThrows(ClassCastException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                //TODO
-            }
+        assertThrows(ClassCastException.class, () -> {
+            //TODO
         });
 
     }
 
     @Test
     public void testContains(){
-
-        assertThrows(ClassCastException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                //TODO
-            }
+        assertThrows(ClassCastException.class, () -> {
+            //TODO
         });
 
     }
 
     @Test
     public void testAddAll(){
-
-        assertThrows(ClassCastException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                //TODO
-            }
+        assertThrows(ClassCastException.class, () -> {
+            //TODO
         });
 
     }
 
     @Test
     public void testRetainAll(){
-
-        assertThrows(ClassCastException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                //TODO
-            }
+        assertThrows(ClassCastException.class, () -> {
+            //TODO
         });
 
     }
 
     @Test
     public void testRemoveAll(){
-
-        assertThrows(ClassCastException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                //TODO
-            }
+        assertThrows(ClassCastException.class, () -> {
+            //TODO
         });
 
     }
@@ -84,11 +59,8 @@ public class CollectionAdapterTester {
     @Test
     public void testContainsAll(){
 
-        assertThrows(ClassCastException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                //TODO
-            }
+        assertThrows(ClassCastException.class, () -> {
+            //TODO
         });
 
     }

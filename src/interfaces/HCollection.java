@@ -96,9 +96,9 @@ public interface HCollection {
 
     /**
      * Restituisce un array contenente tutti gli elementi presenti nella collezione su cui è invocato.
-     * Non ci sono garanzie sull'ordine di scorrimento degli elementi
-     * (a meno che non venga invocato su una sottoclasse che preveda ordinamento).
+     * TODO: L'ordinamento è il medesimo della collezione originale (se iterno l'originale e se scorro l'array vedo la stessa sequenza)
      * Restituisce un nuovo array che non viene referenziato dalla collection, quindi modifiche all'array non si ripercutono sulla collection.
+     * Modifiche strutturali all'array non si propagano sull'originale e viceversa.
      * Modifiche agli oggetti interni all'array però si ripercuotono sulla collection (shallow copy).
      * @return array contenente tutti gli elementi della collezione
      */

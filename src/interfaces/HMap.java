@@ -8,6 +8,10 @@ package interfaces;
  * Nel caso si accettino valori null rivedere la documentazione dei metodi che lanciano NullPointerException e anche l'eccezione lanciata da addAll()
  */
 
+/**
+ * La classe non supporta l'inserimento di valori null nè come chiave, nè come valore
+ *
+ */
 public interface HMap {
 
     /**
@@ -36,8 +40,9 @@ public interface HMap {
      * Ogni elemento del set è un Map.Entry.
      * Modifiche al set si ripercuotono sulla mappa e viceversa.
      * Se la mappa viene modificata quando vi è un iteratore attivo il comportamento di quest'ultimo non è specificato.
-     * È supportata l'eliminazione tramite l'iteratore ma non l'aggiunta.
-     * Le modifiche apportate tramite iteratore si ripercuotono sulla mappa.
+     * TODO: Specificare il comportamento
+     * TODO: È supportata l'eliminazione tramite l'iteratore ma non l'aggiunta. (ne add() ne addAll())
+     * TODO: Le modifiche apportate tramite iteratore si ripercuotono sulla mappa.
      * @return una vista sotto forma d'insieme delle coppie chiave-valore contenute nella mappa
      */
     HSet entrySet();
@@ -71,9 +76,10 @@ public interface HMap {
 
     /**
      * Restituisce una vista delle chiavi contenute nella mappa.
-     * Modifiche effettuate al sottoinsieme restituito si riflettono anche sulla mappa su cui è stato chiamato il metodo.
+     * TODO: Modifiche effettuate al set (restituito da questo metodo) si riflettono anche sulla mappa su cui è stato chiamato il metodo.
      * Se la mappa viene modificata mentre c'è un iteratore attivo su questa il comportamento dell'iteratore non è specificato.
-     * È supportata la rimozione di elementi ma non la loro aggiunta.
+     * TODO: Specificare il comportamento
+     * TODO: È supportata la rimozione di elementi ma non la loro aggiunta. (ne add() ne addAll())
      * @return una vista delle chiavi contenute nella mappa
      */
     HSet keySet();
@@ -112,9 +118,10 @@ public interface HMap {
 
     /**
      * Restituisce una collezione delle chiavi contenute nella mappa.
-     * Modifiche alla collezione delle chiavi si riflettono sulla mappa e viceversa.
-     * Se la mappa viene modificata mentre c'è un iteratore attivo su questa il comportamento non è definito,
-     * La collezione restituita supporta la rimozione di elementi ma non l'aggiunta.
+     * TODO: Modifiche alla collezione delle chiavi si riflettono sulla mappa e viceversa.
+     * TODO: Se la mappa viene modificata mentre c'è un iteratore attivo su questa il comportamento non è definito,
+     * TODO: Definire il comportamento
+     * TODO: La collezione restituita supporta la rimozione di elementi ma non l'aggiunta. (ne add() ne addAll())
      * @return una collezione dei valori contenuti nella mappa
      */
     HCollection values();

@@ -76,6 +76,10 @@ public interface HList extends HCollection {
     /**
      * Restituisce una vista della porzione della lista compresa tra fromIndex e toIndex (se questi due sono uguali restituisce una lista vuota).
      * Cambiamenti alla lista restituita si riflettono sulla lista originaria, quindi quella su cui è stato chiamato il metodo subList().
+     * Effettua la shallow copy degli elementi.
+     * TODO: Le modifiche strutturali devono essere propagate dalla sublist alla lista di provenienza
+     * Modifiche strutturali slla lista portano ad un comportamento indefinito della sublist
+     * TODO: Documentare il comportamento indefinito
      * @param fromIndex punto di inizio (incluso)
      * @param toIndex punto terminale (escluso)
      * @return una nuova lista che è una parte di quella su cui il metodo è stato chiamato.
