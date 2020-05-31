@@ -392,6 +392,7 @@ public class SetAdapterTester {
 
     /**
      * Test della consistenza tra il metodo equals() e hashCode()
+     * Dipende da add(), equals() e hashCode()
      */
     @Test
     public void TestConsistencyEqualsHashCode(){
