@@ -8,7 +8,25 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
+
+import java.util.NoSuchElementException;
+
 import static org.junit.Assert.*;
+
+/**
+ * L'eccezione UnsupportedOperationException non è testata in quanto per definizione i metodi non implementati
+ * lanciano tale eccezione.
+ *
+ * La classe lavora con Object quindi sta al programmatore controllare cosa immette all'interno di questa.
+ *
+ * L'eccezione ClassCastException non è testata in quanto viene controllata durante la compilazione.
+ *
+ * L'eccezione IllegalArgumentException non è testata, tutte le classi estendono Object e SetAdapter lavora con Object.
+ */
+
+/**
+ * TODO: Forse provare a fare qualche metodo con le operazioni add() e remove() in fila per verificarne il funzionamento in serie
+ */
 
 public class SetAdapterTester {
 
@@ -25,21 +43,12 @@ public class SetAdapterTester {
         assertEquals("Inserimento di un primo elemento",true, se.add(toAdd));
         assertNotEquals("Provo a inderire lo stesso oggetto due volte",true, se.add(toAdd));
 
-        /**
-         * ClassCastException è controllata a compile time
-         */
-
         assertThrows(NullPointerException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
                 se.add(null);
             }
         });
-
-        /**
-         * TODO: Implementazione IllegalArgumentException
-         */
-
     }
 
     /**
@@ -79,10 +88,6 @@ public class SetAdapterTester {
                 se.remove(null);
             }
         });
-
-        /**
-         * TODO: Implementazione IllegalArgumentException
-         */
     }
 
     /**
@@ -112,11 +117,6 @@ public class SetAdapterTester {
                 se.addAll(collection);
             }
         });
-
-        /**
-         * TODO: Implementazione IllegalArgumentException
-         */
-
     }
 
     /**
@@ -149,10 +149,6 @@ public class SetAdapterTester {
                 se.retainAll(toRetain);
             }
         });
-
-        /**
-         * TODO: Implementazione IllegalArgumentException
-         */
     }
 
     /**
@@ -196,10 +192,6 @@ public class SetAdapterTester {
                 se.remove(null);
             }
         });
-
-        /**
-         * TODO: Implementaizone IllegalArgumentException
-         */
     }
 
     /**
@@ -227,16 +219,98 @@ public class SetAdapterTester {
 
     }
 
+    /**
+     * Dipende da add(), size()
+     */
     @Test
     @Ignore
     public void testIterator() {
-        se.add(new Object());
         HIterator it = se.iterator();
-        assertEquals(true,it.hasNext());
+        assertEquals("L'insieme è vuoto quindi l'iteratore non ha un successivo",false,it.hasNext());
 
-        se = new SetAdapter();
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        Object obj3 = new Object();
+        se.add(obj1);
+        se.add(obj2);
+        se.add(obj3);
+
         it = se.iterator();
-        assertNotEquals(true,it.hasNext());
+        assertEquals("La collezione ha più elemento quindi deve essere possibile invocare next",true,it.hasNext());
+
+        /**
+         * Mi assicuro che l'iteratore iteri sul numero corretto di elementi, e che veda tutti gli elementi una sola
+         * volta visto che sono presenti una sola volta per costruzione
+         */
+        int items=0;
+        int found_obj1 = 0;
+        int found_obj2 = 0;
+        int found_obj3 = 0;
+        while(it.hasNext()){
+            Object tmp = it.next();
+            items++;
+            if(obj1.equals(tmp)){
+                found_obj1++;
+                break;
+            }
+            if(obj2.equals(tmp)) {
+                found_obj2++;
+                break;
+            }
+            if(obj3.equals(tmp)){
+                found_obj1++;
+                break;
+            }
+        }
+        boolean test = items==3 && found_obj1==1 && found_obj2==1 && found_obj3==1;
+        assertEquals("L'iteratore itera sul numero corretto di elemeti e nella maniera corretta",true,test);
+
+        assertNotEquals("L'iteratore non può più avanzare dopo aver restituito tutti gli elementi della lista",true,it.hasNext());
+
+        //Rimozione del primo elemento trovato dall'iteratore
+        Object removed;
+        int initSize = se.size();
+        it = se.iterator();
+        removed = it.next();
+        it.remove();
+
+        HIterator it2 = se.iterator();
+        int actualSize = 0;
+        while(it2.hasNext()) actualSize++;
+        assertEquals("Dopo l'invocazione di remove la dimensione è diminuita di 1 unità",true,(actualSize+1)==initSize);
+        assertEquals("L'elemento rimosso non deve più far parte del set",true,se.contains(removed));
+
+        assertThrows("L'iteratore non ha un elemento successivo", NoSuchElementException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                se.clear();
+                se.iterator().next();
+            }
+        });
+
+        assertThrows("Il metodo Remove() non può essere invocato sull'iteratore prima di aver invocato next", NoSuchElementException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                se.clear();
+                se.add(new Object());
+                HIterator it = se.iterator();
+                it.remove();
+            }
+        });
+
+        assertThrows("Il metodo Remove() non può essere invocato due volte consecutivamente", NoSuchElementException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                se.clear();
+                se.add(new Object());
+                se.add(new Object());
+                HIterator it = se.iterator();
+                it.next();
+                it.remove();
+                it.remove();
+            }
+        });
+
     }
 
     /**
@@ -270,10 +344,6 @@ public class SetAdapterTester {
         se.clear();
         assertEquals("Invocazione su un set contenente elementi",0, se.isEmpty());
     }
-
-    /**
-     * TODO: Implementare il controllo di coerenza tra equals e hashCode
-     */
 
     /**
      * Dipende dal metodo add()
@@ -320,10 +390,45 @@ public class SetAdapterTester {
         assertNotEquals("Controllo non abbiano il medesimo hashcode",true, (se.hashCode() == se2.hashCode()) );
     }
 
+    /**
+     * Test della consistenza tra il metodo equals() e hashCode()
+     */
+    @Test
+    public void TestConsistencyEqualsHashCode(){
+        SetAdapter se2 = new SetAdapter();
+        assertEquals("Se entrambi sono vuoti allora sono uguali",true, (se.equals(se2)&&se.hashCode()==se2.hashCode()));
+
+        //Costruisco due set con gli stessi elementi
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        se.add(obj1);
+        se.add(obj2);
+        se2.add(obj1);
+        se2.add(obj2);
+
+        //L'hashcode viene creato come somma degli hascode degli oggetti
+        assertEquals("Se entrambi hanno gli stessi elementi allora sono uguali",true, (se.equals(se2)&&se.hashCode()==se2.hashCode()));
+
+        //Aggiungo un oggetto, mi aspetto che gli hashcode siano diversi e che i due oggetti non siano più uguali
+        se2.add(new Object());
+        assertNotEquals("Controllo non siano uguali",true,se.equals(se2));
+        assertNotEquals("Controllo non abbiano il medesimo hashcode",true, (se.hashCode() == se2.hashCode()) );
+    }
+
+    /**
+     * Dipende dal metodo add()
+     */
     @Test
     public void testToObjectArray() {
         Object[] objArray = se.toArray();
-        assertEquals(se.size(),objArray.length);
+        assertEquals("Il set inizialmente non contiene nessun elemento",0,objArray.length);
+
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        se.add(obj1);
+        se.add(obj2);
+        Object[] expected = new Object[]{obj1,obj2};
+        assertArrayEquals("Array con due oggetti inseriti",expected,se.toArray());
     }
 
 }
