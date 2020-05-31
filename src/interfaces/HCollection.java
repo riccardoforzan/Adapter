@@ -26,8 +26,8 @@ public interface HCollection {
     void clear();
 
     /**
-     * Restituisce true se la collezione contiene almeno una occorrenza
-     * dell'elemento specificato come parametro. Si basa sul metodo equals() dell'oggetto fornito.
+     * Restituisce true se la collezione contiene almeno una occorrenza dell'elemento specificato come parametro.
+     * Si basa sul metodo equals() dell'oggetto fornito.
      * @param o elemento di cui controllare la presenza
      * @return true se la collezione contiene l'elemento specificato
      */

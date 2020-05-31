@@ -3,6 +3,7 @@ package test;
 import adapters.CollectionAdapter;
 
 import interfaces.HIterator;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -19,9 +20,21 @@ import static org.junit.Assert.*;
 
 public class CollectionAdapterTester {
 
+    private CollectionAdapter co;
+
+    @Before
+    public void setup(){
+        co = new CollectionAdapter();
+    }
+
     @Test
     public void testAdd(){
 
+        Object toAdd = new Object();
+
+        co.add(toAdd);
+
+        co = new CollectionAdapter();
     }
 
     @Test
