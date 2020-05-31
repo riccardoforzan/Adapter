@@ -1,21 +1,24 @@
 package interfaces;
+import java.util.NoSuchElementException;
 
 public interface HIterator {
 
     /**
-     * Returns true if the iteration has more elements
-     * @return true if the iteration has more elements
+     * Restituisce true se l'iterazione ha ancora elementi da visitare
+     * @return true se l'iterazione ha ancora elementi da visitare
      */
     boolean hasNext();
 
     /**
-     * Returns the next element in the iteration.
-     * @return the next element in the iteration.
+     * Restituisce il prossimo elemento nell'iterazione
+     * @return il prossimo elemento nell'iterazione
+     * @throws NoSuchElementException se non ci sono ulteriori elementi su cui iterare
      */
     Object next();
 
     /**
-     * Removes from the underlying collection the last element returned by the iterator (optional operation).
+     * Rimuove dalla collezione su cui sta iterando l'ultimo elemento restituito da next()
+     * @throws IllegalStateException se non è stato chiamato successivamente ad una chiamata a next() oppure se viene chiamato due volte consecutivamente.
      */
     void remove();
 
