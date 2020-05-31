@@ -7,11 +7,9 @@ import adapters.SetAdapter;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
+import static org.junit.Assert.*;
 
 import java.util.NoSuchElementException;
-
-import static org.junit.Assert.*;
 
 /**
  * L'eccezione UnsupportedOperationException non è testata in quanto per definizione i metodi non implementati
@@ -43,12 +41,7 @@ public class SetAdapterTester {
         assertEquals("Inserimento di un primo elemento",true, se.add(toAdd));
         assertNotEquals("Provo a inderire lo stesso oggetto due volte",true, se.add(toAdd));
 
-        assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                se.add(null);
-            }
-        });
+        assertThrows(NullPointerException.class, () -> se.add(null));
     }
 
     /**
@@ -64,12 +57,7 @@ public class SetAdapterTester {
         se.add(toFind);
         assertEquals("Cerco un oggetto presente nella collezione",true,se.contains(toFind));
 
-        assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                se.contains(null);
-            }
-        });
+        assertThrows(NullPointerException.class, () -> se.contains(null));
     }
 
     @Test
@@ -82,12 +70,7 @@ public class SetAdapterTester {
         assertEquals("Rimozione di un oggetto contenuto",true,se.remove(obj1));
         assertNotEquals("Controllo non permetta la rimozione dello stesso oggetto due volte",true,se.remove(obj1));
 
-        assertThrows("Tento la rimozione di un riferimento a null",NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                se.remove(null);
-            }
-        });
+        assertThrows("Tento la rimozione di un riferimento a null",NullPointerException.class, () -> se.remove(null));
     }
 
     /**
@@ -109,13 +92,10 @@ public class SetAdapterTester {
         assertEquals("Il set viene modificato aggiungendo un elemento",true, se.addAll(collection));
         assertEquals("Controllo che la dimensione sia aumentata sino a 3",3, se.size());
 
-        assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                HCollection collection = new SetAdapter();
-                collection.add(null);
-                se.addAll(collection);
-            }
+        assertThrows(NullPointerException.class, () -> {
+            HCollection collection1 = new SetAdapter();
+            collection1.add(null);
+            se.addAll(collection1);
         });
     }
 
@@ -143,12 +123,7 @@ public class SetAdapterTester {
 
         assertNotEquals("La seconda invocazione non deve modificare la collezione",true,se.retainAll(toRetain));
 
-        assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                se.retainAll(toRetain);
-            }
-        });
+        assertThrows(NullPointerException.class, () -> se.retainAll(null));
     }
 
     /**
@@ -186,12 +161,7 @@ public class SetAdapterTester {
         assertNotEquals("Controllo una ulteriore invocazione non faccia alcuna modifica",true,se.removeAll(toDelete));
         assertEquals(1,se.size());
 
-        assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                se.remove(null);
-            }
-        });
+        assertThrows(NullPointerException.class, () -> se.remove(null));
     }
 
     /**
@@ -210,12 +180,7 @@ public class SetAdapterTester {
         collection.add(NotFound);
         assertNotEquals("Aggiungo un oggetto alla collezione e controllo che ora il set non li contenga più tutti ",false,se.containsAll(collection));
 
-        assertThrows("Tento la ricerca di un riferimento a null",NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                se.containsAll(null);
-            }
-        });
+        assertThrows("Tento la ricerca di un riferimento a null",NullPointerException.class, () -> se.containsAll(null));
 
     }
 
@@ -280,35 +245,26 @@ public class SetAdapterTester {
         assertEquals("Dopo l'invocazione di remove la dimensione è diminuita di 1 unità",true,(actualSize+1)==initSize);
         assertEquals("L'elemento rimosso non deve più far parte del set",true,se.contains(removed));
 
-        assertThrows("L'iteratore non ha un elemento successivo", NoSuchElementException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                se.clear();
-                se.iterator().next();
-            }
+        assertThrows("L'iteratore non ha un elemento successivo", NoSuchElementException.class, () -> {
+            se.clear();
+            se.iterator().next();
         });
 
-        assertThrows("Il metodo Remove() non può essere invocato sull'iteratore prima di aver invocato next", NoSuchElementException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                se.clear();
-                se.add(new Object());
-                HIterator it = se.iterator();
-                it.remove();
-            }
+        assertThrows("Il metodo Remove() non può essere invocato sull'iteratore prima di aver invocato next", NoSuchElementException.class, () -> {
+            se.clear();
+            se.add(new Object());
+            HIterator it1 = se.iterator();
+            it1.remove();
         });
 
-        assertThrows("Il metodo Remove() non può essere invocato due volte consecutivamente", NoSuchElementException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                se.clear();
-                se.add(new Object());
-                se.add(new Object());
-                HIterator it = se.iterator();
-                it.next();
-                it.remove();
-                it.remove();
-            }
+        assertThrows("Il metodo Remove() non può essere invocato due volte consecutivamente", NoSuchElementException.class, () -> {
+            se.clear();
+            se.add(new Object());
+            se.add(new Object());
+            HIterator it12 = se.iterator();
+            it12.next();
+            it12.remove();
+            it12.remove();
         });
 
     }

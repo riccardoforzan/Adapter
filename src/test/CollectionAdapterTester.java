@@ -4,16 +4,24 @@ import adapters.CollectionAdapter;
 
 import interfaces.HIterator;
 import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
 import static org.junit.Assert.*;
+
+/**
+ * L'eccezione UnsupportedOperationException non è testata in quanto per definizione i metodi non implementati
+ * lanciano tale eccezione.
+ *
+ * La classe lavora con Object quindi sta al programmatore controllare cosa immette all'interno di questa.
+ *
+ * L'eccezione ClassCastException non è testata in quanto viene controllata durante la compilazione.
+ *
+ * L'eccezione IllegalArgumentException non è testata, tutte le classi estendono Object e Collection lavora con Object.
+ */
 
 public class CollectionAdapterTester {
 
     @Test
     public void testAdd(){
-        assertThrows(ClassCastException.class, () -> {
-            //TODO
-        });
+
     }
 
     @Test
