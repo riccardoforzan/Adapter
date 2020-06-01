@@ -2,16 +2,15 @@ package test;
 
 import adapters.CollectionAdapter;
 import adapters.ListAdapter;
-
 import adapters.SetAdapter;
 import interfaces.HCollection;
 import interfaces.HIterator;
+
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.util.NoSuchElementException;
-
-import static org.junit.Assert.*;
 
 public class ListAdapterTester {
 
@@ -38,32 +37,101 @@ public class ListAdapterTester {
         assertEquals("Controllo sia aumentata la dimensione",1,la.size());
     }
 
+    /**
+     * Dipende da size() e get()
+     */
     @Test
-    public void testAddIndex(){}
+    public void testAddIndex(){
+
+        //Inserimento in una lista vuota
+        Object toAdd = new Object();
+        la.add(0,toAdd);
+        assertEquals("Inserimento di un elemento nella prima posizione",true,la.get(0).equals(toAdd) && la.size()==1);
+
+        //Inserimento in testa
+        Object toAdd2 = new Object();
+        la.add(0,toAdd2);
+        assertEquals("Inserimento di un secondo elemento nella prima posizione",true,la.get(0).equals(toAdd2) && la.size()==2);
+        assertEquals("Controllo che l'elemento che precedentemente era il primo ora sia shiftato",true,la.get(1).equals(toAdd));
+
+        //Inserimento in coda
+        Object toAdd3 = new Object();
+        la.add(2,toAdd3);
+        assertEquals("Inserimento di un terzo elemento in coda",true,la.get(2).equals(toAdd3) && la.size()==3);
+        assertEquals("Controllo siano presenti i due elementi precedenti",true,la.get(0).equals(toAdd2) && la.get(1).equals(toAdd));
+
+        assertThrows("Cerco di posizionare un elemento in una posizione non permessa (>= size())",IndexOutOfBoundsException.class, () -> {
+            la.add(5,new Object());
+        });
+        assertThrows("Cerco di posizionare un elemento in una posizione non permessa (<0)",IndexOutOfBoundsException.class, () -> {
+            la.add(-1,new Object());
+        });
+
+    }
 
     /**
-     * Dipende da size()
+     * Dipende da size() get() e add()
      */
     @Test
     public void testAddAll(){
-        CollectionAdapter cta = new CollectionAdapter();
-        cta.add(new Object());
-        cta.add(new Object());
-        cta.add(new Object());
+        ListAdapter cta = new ListAdapter();
+        assertEquals("L'aggiunta di una collezione vuota non modifica la lista",false,la.addAll(cta));
 
-        /**
-         * TODO: Potrei controllare che effettivamente abbia aggiunto quegli elementi con il metodo contains()
-         */
+        //Costruzione della collezione
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        Object obj3 = new Object();
+        cta.add(obj1);
+        cta.add(obj2);
+        cta.add(obj3);
 
         assertEquals("Aggiungo a questa lista una collezione",true,la.addAll(cta));
         assertEquals("Controllo sia stata aggiunta",3,la.size());
+        assertEquals("Controllo che effettivamente contenga gli elementi inseriti",true,la.get(0).equals(obj1)&&la.get(1).equals(obj2)&&la.get(2).equals(obj3));
 
         assertEquals("Aggiungo a questa lista la stessa collezione una seconda volta, mi aspetto che la lista si modifichi visto che permette duplicati",true,la.addAll(cta));
         assertEquals("Controllo sia stata aggiunta",6,la.size());
+        assertEquals("Controllo che effettivamente contenga gli elementi inseriti",true,
+                la.get(0).equals(obj1) && la.get(1).equals(obj2) && la.get(2).equals(obj3) && la.get(3).equals(obj1) && la.get(4).equals(obj2) && la.get(5).equals(obj3));
     }
 
+    /**
+     * Dipende da size(), contains() e add()
+     */
     @Test
-    public void testAddAllIndex(){}
+    public void testAddAllIndex(){
+        ListAdapter cta = new ListAdapter();
+        assertEquals("L'aggiunta di una collezione vuota non modifica la lista",false,la.addAll(0,cta));
+
+        //Costruzione della collezione
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        Object obj3 = new Object();
+        cta.add(obj1);
+        cta.add(obj2);
+        cta.add(obj3);
+
+        Object alreadyInside = new Object();
+        la.add(alreadyInside);
+
+        assertEquals("Aggiungo a questa lista una collezione in testa shiftando gli oggetti",true,la.addAll(0,cta));
+        assertEquals("Controllo sia stata aggiunta",4,la.size());
+        assertEquals("Controllo che effettivamente contenga gli elementi inseriti",true,la.get(0).equals(obj1)&&la.get(1).equals(obj2)&&la.get(2).equals(obj3)&&la.get(3).equals(alreadyInside));
+
+        assertEquals("Aggiungo a questa lista la stessa collezione una seconda volta però in coda",true,la.addAll(cta));
+        assertEquals("Controllo sia stata aggiunta",7,la.size());
+        assertEquals("Controllo che effettivamente contenga gli elementi inseriti",true,
+                la.get(0).equals(obj1) && la.get(1).equals(obj2) && la.get(2).equals(obj3)
+                        && la.get(3).equals(alreadyInside)
+                        &&  la.get(4).equals(obj1) && la.get(5).equals(obj2) && la.get(6).equals(obj3));
+
+        assertThrows("Cerco di posizionare una collezione in una posizione non permessa (>= size())",IndexOutOfBoundsException.class, () -> {
+            la.add(15, cta);
+        });
+        assertThrows("Cerco di posizionare una collezione in una posizione non permessa (<0)",IndexOutOfBoundsException.class, () -> {
+            la.add(-1, cta);
+        });
+    }
 
     /**
      * Dipende da add(), size() e isEmpty()
@@ -178,8 +246,28 @@ public class ListAdapterTester {
         assertNotEquals("Controllo non abbiano il medesimo hashcode",true, (la.hashCode() == la2.hashCode()) );
     }
 
+    /**
+     * Dipende da add()
+     * Controllo della coerenza con il metodo contains()
+     * TODO: Forse meglio splittare il controllo della coerenza
+     */
     @Test
-    public void testIndexOf(){}
+    public void testIndexOf(){
+        Object toFind = new Object();
+        assertEquals("Controllo che nella collezione vuota non venga trovato l'oggetto",-1,la.indexOf(toFind));
+
+        la.add(toFind);
+        assertEquals("Controllo che l'oggetto sia presente nella collezione",true,la.contains(toFind));
+        int indexResult = la.indexOf(toFind);
+        assertEquals("Controllo che effettivamente restituisca l'indice corretto",true,la.get(indexResult).equals(toFind));
+
+        la.add(toFind);
+        assertEquals("Controllo che effettivamente restituisca la prima occorrenza trovata",0,la.indexOf(toFind));
+
+        Object notPresent = new Object();
+        assertEquals("Controllo che non venga trovato un oggetto non presente nella lista",-1,la.indexOf(notPresent));
+        assertNotEquals("Controllo che non venga trovato un oggetto non presente nella lista",true,la.contains(notPresent));
+    }
 
     /**
      * Dipende da add() e remove()
@@ -280,7 +368,26 @@ public class ListAdapterTester {
     }
 
     @Test
-    public void testLastIndexOf(){}
+    public void testLastIndexOf(){
+        Object toFind = new Object();
+        assertEquals("Controllo che nella collezione vuota non venga trovato l'oggetto",-1,la.indexOf(toFind));
+
+        la.add(toFind);
+        assertEquals("Controllo che l'oggetto sia presente nella collezione",true,la.contains(toFind));
+        int indexResult = la.indexOf(toFind);
+        assertEquals("Controllo che effettivamente restituisca l'indice corretto",true,la.get(indexResult).equals(toFind));
+
+        la.add(toFind);
+        assertEquals("Controllo che effettivamente restituisca l'ultima occorrenza trovata",1,la.indexOf(toFind));
+
+        Object notPresent = new Object();
+        assertEquals("Controllo che non venga trovato un oggetto non presente nella lista",-1,la.indexOf(notPresent));
+        assertNotEquals("Controllo che non venga trovato un oggetto non presente nella lista",true,la.contains(notPresent));
+    }
+
+    /**
+     * TODO: Possibile l'integrazione tra i metodi IndexOf e LastIndexOf
+     */
 
     @Test
     public void testListIterator(){}
@@ -370,8 +477,29 @@ public class ListAdapterTester {
         assertNotEquals("La seconda invocazione non deve modificare la collezione",true,la.retainAll(toRetain));
     }
 
+    /**
+     * Dipende dal metodo add(), size() e get()
+     */
     @Test
-    public void testSet(){}
+    public void testSet(){
+        Object obj1 = new Object();
+        la.add(0,obj1);
+
+        Object substitute = new Object();
+        Object previous = la.set(0,substitute);
+
+        assertEquals("Controllo che la dimensione non sia cambiata",1,la.size());
+        assertEquals("Controllo che sia stato restituto l'elemento contenuto precedentemente",true,obj1.equals(previous));
+        assertEquals("Controllo che sia stato inserito il nuovo elemento",true,la.get(0).equals(substitute));
+
+        assertThrows("Cerco di posizionare un elemento in una posizione non permessa (>= size())",IndexOutOfBoundsException.class, () -> {
+            //Non è permesso usare set al posto di add()
+            la.set(la.size(),new Object());
+        });
+        assertThrows("Cerco di posizionare un elemento in una posizione non permessa (<0)",IndexOutOfBoundsException.class, () -> {
+            la.set(-1,new Object());
+        });
+    }
 
     /**
      * Dipende da add()
@@ -382,9 +510,6 @@ public class ListAdapterTester {
         la.add(new Object());
         assertEquals("La lista contiene un elemento",1,la.size());
     }
-
-    @Test
-    public void testSort(){}
 
     @Test
     public void testSubList(){}

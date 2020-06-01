@@ -18,10 +18,10 @@ public class Tester {
     public static void main(String[] args) {
 
         ArrayList<Class> toTest = new ArrayList<>();
-        //toTest.add(SetAdapterTester.class);
+        toTest.add(SetAdapterTester.class);
         toTest.add(MapAdapterTester.class);
-        //toTest.add(ListAdapterTester.class);
-        //toTest.add(CollectionAdapterTester.class);
+        toTest.add(ListAdapterTester.class);
+        toTest.add(CollectionAdapterTester.class);
 
         for(Class cls : toTest){
             System.out.println("TEST DI: " + cls.getCanonicalName());

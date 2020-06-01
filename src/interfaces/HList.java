@@ -6,6 +6,7 @@ public interface HList extends HCollection {
      * Inserisce l'elemento passato come parametro nella posizione passata come parametro
      * @param index posizione in cui inserire l'elemento
      * @param element elemento da inserire
+     * @throws IndexOutOfBoundsException se l'indice è al di fuori dell'intervallo [0,size()]
      */
     void add(int index, Object element);
 
@@ -22,14 +23,14 @@ public interface HList extends HCollection {
      * Restituisce l'elemento della lista nella posizione specificata come parametro
      * @param index posizione all'interno della lista
      * @return elemento in posizione index
+     * @trows IndexOutOfBoundsException se l'indice è al di fuori dell'intervallo [0,size()]
      */
     Object get(int index);
 
     /**
      * Restituisce l'indice della prima occorrenza trovata nella lista dell'elemento passato come parametro
      * @param o elemento di cui ricercare l'indice nella lista
-     * @return posizione della prima occorrenza dell'elemento trovato
-     * @throws IndexOutOfBoundsException se l'indice è al di fuori dell'intervallo [0,size()]
+     * @return posizione della prima occorrenza dell'elemento trovato, -1 se non viene trovato
      */
     int indexOf(Object o);
 
