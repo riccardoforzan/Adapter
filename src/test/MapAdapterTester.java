@@ -1,8 +1,6 @@
 package test;
 
 import adapters.MapAdapter;
-import interfaces.HMap;
-import interfaces.HSet;
 
 import org.junit.Before;
 import org.junit.Test;

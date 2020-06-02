@@ -2,9 +2,6 @@ package test;
 
 import adapters.ListAdapter;
 import adapters.SetAdapter;
-import interfaces.HCollection;
-import interfaces.HIterator;
-import interfaces.HListIterator;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -1,7 +1,7 @@
 package adapters;
 
-import interfaces.HSet;
+import interfaces.HCollection;
 
-public class SetAdapter implements HSet {
+public class SetAdapter implements HCollection {
 
 }

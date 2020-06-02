@@ -1,7 +1,5 @@
 package test;
 
-import interfaces.HCollection;
-import interfaces.HIterator;
 import adapters.SetAdapter;
 
 import org.junit.Before;
