@@ -1,5 +1,9 @@
 package interfaces;
 
+
+import java.util.NoSuchElementException;
+import exception.IllegalStateException;
+
 public interface HIterator {
 
     /**
