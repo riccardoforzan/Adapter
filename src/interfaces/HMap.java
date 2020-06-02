@@ -1,21 +1,13 @@
 package interfaces;
 
 /**
- * TODO: Scegliere come gestire il caso in cui venga passato un valore null
- * Se si sceglie di accettare null, allora quando viene restituito un valore null
- * non significa che l'oggetto non è stato trovato nella mappa
- *
- * Nel caso si accettino valori null rivedere la documentazione dei metodi che lanciano NullPointerException e anche l'eccezione lanciata da addAll()
- */
-
-/**
  * La classe non supporta l'inserimento di valori null nè come chiave, nè come valore
- *
  */
 public interface HMap {
 
     /**
-     * Rimuove tutte le associazioni chiave-valore dalla mappa su cui è invocato.
+     * Rimuove tutte le associazioni chiave-valore dalla mappa su cui è invocato
+     * @throws UnsupportedOperationException se l'implementazione della mappa non supporta questa funzionalità
      */
     void clear();
 
@@ -23,7 +15,7 @@ public interface HMap {
      * Restituisce true se la mappa su cui è invocato contiene un valore associato alla chiave specificata come parametro
      * @param o chiave di cui controllare la presenza nella mappa
      * @return true se viene trovata una corrispondenza chiave-valore nella mappa
-     * @throws NullPointerException la mappa non permette l'inserimento di chiavi null
+     * @throws NullPointerException se l'implementazione della mappa non permette l'inserimento di chiavi null
      */
     boolean containsKey(Object o);
 
@@ -31,7 +23,7 @@ public interface HMap {
      * Restituisce true se la mappa su cui è invocato contiene una chiave associata al valore specificato come parametro
      * @param o valore di cui controllare la presenza nella mappa
      * @return true se viene trovata una corrispondenza chiave-valore nella mappa
-     * @throws NullPointerException la mappa non permette l'inserimento di valori null
+     * @throws NullPointerException se l'implementazione della mappa non permette l'inserimento di valori null
      */
     boolean containsValue(Object o);
 
@@ -58,7 +50,7 @@ public interface HMap {
      * Restituisce il valore associato alla chiave specificata come parametro, null altrimenti
      * @param o chiave di cui restituire il valore associato
      * @return valore associato alla chiave nel caso in cui questa sia presente nella mappa, null altrimenti
-     * @throws NullPointerException la mappa non permette l'inserimento di chiavi null
+     * @throws NullPointerException se l'implementazione della mappa non permette l'inserimento di chiavi null
      */
     Object get(Object o);
 
@@ -89,16 +81,24 @@ public interface HMap {
      * Restituisce il valore precedentemente associato se presente
      * @param key chiave a cui associare il valore
      * @param value valore da associare alla chiave specificata
-     * @return valore precedentemente associato alla chiave specificata se precedentemente presente, null altrimenti.
-     * @throws NullPointerException la mappa non permette l'inserimento di chiavi o valori null
+     * @return valore precedentemente associato alla chiave specificata se precedentemente presente, null altrimenti
+     * @throws NullPointerException se l'implementazione della mappa non permette l'inserimento di chiavi null
+     * @throws NullPointerException se l'implementazione della mappa non permette l'inserimento di valori null
+     * @throws UnsupportedOperationException se l'implementazione della mappa non supporta questa funzionalità
      */
     Object put(Object key, Object value);
 
     /**
      * Copia tutte le associazioni chiave-valore presenti sulla mappa passata come parametro sulla mappa attuale.
-     * Il comportamento della mappa non è specificato se la mappa da cui effettuare la copia viene modificata durante l'invocazione del metodo.
+     * Il comportamento della mappa non è specificato se la mappa da cui
+     * effettuare la copia viene modificata durante l'invocazione del metodo.
      * @param map associazioni chiave-valore da importare sulla mappa in cui il metodo è invocato
-     * @throws NullPointerException se la mappa passata come parametro è null
+     * @throws NullPointerException se la mappa fornita come parametro è null oppure
+     * @throws NullPointerException se l'implementazione della mappa non permette l'inserimento di chiavi null
+     * presenti nella mappa sorgente
+     * @throws NullPointerException se l'implementazione della mappa non permette l'inserimento di valori null
+     * presenti nella mappa sorgente
+     * @throws UnsupportedOperationException se l'implementazione della mappa non supporta questa funzionalità
      */
     void putAll(HMap map);
 
@@ -106,7 +106,8 @@ public interface HMap {
      * Rimuove l'associazione chiave-valore per la chiave specificata dalla mappa
      * @param key chiave di cui rimuovere l'associazione
      * @return valore associato alla chiave da rimuovere se presente, null altrimenti
-     * @throws NullPointerException la mappa non permette l'inserimento di chiavi null
+     * @throws NullPointerException se l'implementazione della mappa non permette l'inserimento di chiavi null
+     * @throws UnsupportedOperationException se l'implementazione della mappa non supporta questa funzionalità
      */
     Object remove(Object key);
 
@@ -163,7 +164,8 @@ public interface HMap {
          * Il comportamento non è definito se la entry è stata rimossa dalla mappa.
          * @param value nuovo valore della entry
          * @return valore precedente della entry
-         * @throws NullPointerException la mappa non permette l'inserimento di valori null
+         * @throws NullPointerException se la mappa non permette l'inserimento di valori null
+         * @throws UnsupportedOperationException se l'operazione non è supportata dall'implementazione della mappa
          */
         Object setValue(Object value);
     }

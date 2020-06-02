@@ -7,6 +7,7 @@ public interface HList extends HCollection {
      * @param index posizione in cui inserire l'elemento
      * @param element elemento da inserire
      * @throws IndexOutOfBoundsException se l'indice è al di fuori dell'intervallo [0,size()]
+     * @throws NullPointerException se l'elemento specificato come parametro è null e l'implementazione non supporta l'inserimento di valori null
      */
     void add(int index, Object element);
 
@@ -16,6 +17,7 @@ public interface HList extends HCollection {
      * @param c collezione di elementi da inserire
      * @return true se la lista è cambiata a seguito dell'invocazione del metodo
      * @throws IndexOutOfBoundsException se l'indice è al di fuori dell'intervallo [0,size()]
+     * @throws NullPointerException se l'elemento specificato come parametro è null oppure contiene almeno un valore null e l'implementazione non supporta l'inserimento di valori null
      */
     boolean addAll(int index, HCollection c);
 
@@ -31,6 +33,7 @@ public interface HList extends HCollection {
      * Restituisce l'indice della prima occorrenza trovata nella lista dell'elemento passato come parametro
      * @param o elemento di cui ricercare l'indice nella lista
      * @return posizione della prima occorrenza dell'elemento trovato, -1 se non viene trovato
+     * @throws NullPointerException se l'elemento specificato come parametro è null e l'implementazione non supporta l'inserimento di valori null
      */
     int indexOf(Object o);
 
@@ -53,6 +56,7 @@ public interface HList extends HCollection {
      * oppure -1 nel caso la lista non contenga l'elemento.
      * @param o occorrenza da cercare all'interno della lista
      * @return indice dell'ultima posizione in cui è stato trovato l'elemento specificato, se presente, -1 altrimenti
+     * @throws NullPointerException se l'elemento specificato come parametro è null e l'implementazione non supporta l'inserimento di valori null
      */
     int lastIndexOf(Object o);
 
@@ -71,6 +75,7 @@ public interface HList extends HCollection {
      * @param element elemento da inserire
      * @return elemento che occupava la posizione passata come parametro prima della sostituzione
      * @throws IndexOutOfBoundsException se l'indice è al di fuori dell'intervallo [0,size()]
+     * @throws NullPointerException se l'elemento specificato come parametro è null e l'implementazione non supporta l'inserimento di valori null
      */
     Object set(int index, Object element);
 

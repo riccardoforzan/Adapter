@@ -1,11 +1,9 @@
 package test;
 
-import adapters.ListAdapter;
 import adapters.MapAdapter;
-
-import interfaces.HCollection;
 import interfaces.HMap;
 import interfaces.HSet;
+
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;

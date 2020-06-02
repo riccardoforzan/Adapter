@@ -6,6 +6,7 @@ public interface HListIterator extends HIterator {
     /**
      * Inserisce l'elemento passato come parametro prima della posizione dell'iteratore
      * @param o elemento da aggiungere
+     * @throws IllegalArgumentException se alcuni aspetti dell'oggetto specificato non permettono l'inserimento di questo alla lista, ad esempio se la lista non supporta valori null e l'oggetto è null
      */
     void add(Object o);
 
@@ -38,6 +39,7 @@ public interface HListIterator extends HIterator {
      * Sostituisce l'ultimo elemento restituito da next() o prevous() con l'elemento passato come parametro.
      * @param o elemento con cui sostituire l'ultimo elemento ritornato da next() o previous()
      * @throws IllegalStateException se non è stato chiamato ne next() o previous() prima della chiamata a questo metodo, oppure se remove() o add() sono stati chiamati subito prima di questo
+     * @throws IllegalArgumentException se alcuni aspetti dell'oggetto specificato non permettono l'inserimento di questo alla lista, ad esempio se la lista non supporta valori null e l'oggetto è null
      */
     void set(Object o);
 
