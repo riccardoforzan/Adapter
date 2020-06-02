@@ -185,7 +185,7 @@ public interface HMap{
      *
      * @return a set view of the keys contained in this map
      */
-    Set keySet();
+    HSet keySet();
 
     /**
      * Returns a Collection view of the values contained in this map.
@@ -220,7 +220,7 @@ public interface HMap{
      *
      * @return a set view of the mappings contained in this map
      */
-    Set entrySet();
+    HSet entrySet();
 
     /**
      * A map entry (key-value pair).  The <tt>Map.entrySet</tt> method returns

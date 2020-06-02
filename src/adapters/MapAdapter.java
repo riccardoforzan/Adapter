@@ -1,8 +1,9 @@
 package adapters;
 
-/**
- * Questa implementazione dell'interfaccia HMap NON supporta l'inserimento di chiavi e/o valori null
- */
+import interfaces.HMap;
 
+/**
+ * This implementation of HMap interface DOES NOT ALLOW null values as input not as key, nor as value
+ */
 public class MapAdapter implements HMap {
 }

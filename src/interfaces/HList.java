@@ -402,7 +402,7 @@ public interface HList extends HCollection{
      * @return a list iterator over the elements in this list (in proper
      *         sequence)
      */
-    ListIterator listIterator();
+    HListIterator listIterator();
 
     /**
      * Returns a list iterator over the elements in this list (in proper
@@ -419,7 +419,7 @@ public interface HList extends HCollection{
      * @throws IndexOutOfBoundsException if the index is out of range
      *         ({@code index < 0 || index > size()})
      */
-    ListIterator listIterator(int index);
+    HListIterator listIterator(int index);
 
     /**
      * Returns a view of the portion of this list between the specified

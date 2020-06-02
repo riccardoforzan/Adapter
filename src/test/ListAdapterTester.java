@@ -1,5 +1,9 @@
 package test;
 
+import interfaces.HCollection;
+import interfaces.HIterator;
+import interfaces.HListIterator;
+
 import adapters.ListAdapter;
 import adapters.SetAdapter;
 

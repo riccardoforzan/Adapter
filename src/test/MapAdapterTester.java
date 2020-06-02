@@ -1,5 +1,8 @@
 package test;
 
+import interfaces.HMap;
+import interfaces.HSet;
+
 import adapters.MapAdapter;
 
 import org.junit.Before;
@@ -42,7 +45,6 @@ public class MapAdapterTester {
         /**
          * TODO: Modifiche con iteratore attivo
          */
-
         assertEquals("Una mappa vuota non ha chiavi",true,ma.keySet().isEmpty());
 
         Object value = new Object();

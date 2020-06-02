@@ -6,21 +6,14 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-/**
- *
- * @author riccardo
- */
 public class Tester {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
 
         ArrayList<Class> toTest = new ArrayList<>();
         toTest.add(SetAdapterTester.class);
-        toTest.add(MapAdapterTester.class);
-        toTest.add(ListAdapterTester.class);
+        //toTest.add(MapAdapterTester.class);
+        //toTest.add(ListAdapterTester.class);
 
         for(Class cls : toTest){
             System.out.println("TEST DI: " + cls.getCanonicalName());

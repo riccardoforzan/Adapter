@@ -1,5 +1,8 @@
 package test;
 
+import interfaces.HIterator;
+import interfaces.HCollection;
+
 import adapters.SetAdapter;
 
 import org.junit.Before;
@@ -17,10 +20,6 @@ import java.util.NoSuchElementException;
  * L'eccezione ClassCastException non è testata in quanto viene controllata durante la compilazione.
  *
  * L'eccezione IllegalArgumentException non è testata, tutte le classi estendono Object e SetAdapter lavora con Object.
- */
-
-/**
- * TODO: Forse provare a fare qualche metodo con le operazioni add() e remove() in fila per verificarne il funzionamento in serie
  */
 
 public class SetAdapterTester {
@@ -42,13 +41,11 @@ public class SetAdapterTester {
     }
 
     /**
-     * Test del metodo Contains
      * Dipende dal metodo add()
      */
     @Test
     public void testContains() {
         Object toFind = new Object();
-
         assertEquals("Cerco un oggetto non presente nel set",false,se.contains(toFind));
 
         se.add(toFind);
@@ -57,6 +54,9 @@ public class SetAdapterTester {
         assertThrows(NullPointerException.class, () -> se.contains(null));
     }
 
+    /**
+     * Dipende dal metodo add()
+     */
     @Test
     public void testRemove() {
         Object obj1 = new Object();
@@ -64,38 +64,92 @@ public class SetAdapterTester {
         se.add(obj1);
         se.add(obj2);
 
-        /**
-         * TODO: Forse potrei aggiungere una dipendenza dal metodo size()
-         */
-
         assertEquals("Rimozione di un oggetto contenuto",true,se.remove(obj1));
         assertNotEquals("Controllo non permetta la rimozione dello stesso oggetto due volte",true,se.remove(obj1));
 
         assertThrows("Tento la rimozione di un riferimento a null",NullPointerException.class, () -> se.remove(null));
     }
 
+    @Test
+    public void testSize() {
+        assertEquals("Un set appena creato deve avere dimensione 0",se.size(), 0);
+    }
+
     /**
-     * Dipende dalla correttezza del metodo add() e del metodo size()
+     * Test incrociato dei metodi add() remove() contains() e size()
+     */
+    @Test
+    public void testARCS(){
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        assertEquals("Inserimento di un nuovo elemento",true,se.add(obj1));
+        assertEquals("Inserimento di un nuovo elemento",true,se.add(obj2));
+
+        assertEquals("Controllo inserimento con il metodo size",2,se.size());
+        assertEquals("Controllo inserimento con il metodo contains",true,se.contains(obj1));
+        assertEquals("Controllo inserimentocon il metodo contains",true,se.contains(obj2));
+
+        assertEquals("Rimozione di un oggetto contenuto",true,se.remove(obj1));
+        assertEquals("Controllo rimozione con il metodo size",1,se.size());
+        assertNotEquals("Controllo rimozione con il metodo contains",true,se.contains(obj1));
+        assertEquals("Controllo rimozione con il metodo contains",true,se.contains(obj2));
+    }
+
+    /**
+     * Dipende dai metodi add() e remove()
+     */
+    @Test
+    public void testIsEmpty() {
+        assertEquals("Un set appena creato deve essere vuoto",true,se.isEmpty());
+
+        Object toAdd = new Object();
+        se.add(toAdd);
+        assertNotEquals("Un set a cui viene aggiunto un elemento non deve essere vuoto",true,se.isEmpty());
+
+        se.remove(toAdd);
+        assertEquals("Controllo che dopo la rimozione dell'unico elemento sia vuoto",true,se.isEmpty());
+    }
+
+    /**
+     * Dipende dal metodo add()
+     * Controllo incrociato della correttezza col metodo isEmpty
+     */
+    @Test
+    public void testClear() {
+        se.clear();
+        assertEquals("Invocazione su un set vuoto",true,se.isEmpty());
+        //Riempimento del set
+        se.add(new Object());
+        se.add(new Object());
+        assertEquals(2, se.size());
+        se.clear();
+        assertEquals("Invocazione su un set contenente elementi",0, se.isEmpty());
+    }
+
+    /**
+     * Dipende dal metodo add()
+     * Controllo incrociato della correttezza con i metodi contains() e size()
      */
     @Test
     public void testAddAll() {
         HCollection collection = new SetAdapter();
-        collection.add(new Object());
-        collection.add(new Object());
-
-        /**
-         * TODO: Potrei fare i controlli con il metodo contains() che effettivamente abbia aggiunto quei due oggetti
-         */
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        collection.add(obj1);
+        collection.add(obj2);
 
         assertEquals("Il set viene modificato aggiungendo due elementi",true, se.addAll(collection));
         assertEquals("Mi aspetto che siano stati aggiunti 2 elementi al set vuoto",2, se.size());
+        assertEquals("Controllo con il metodo contains",true,se.contains(obj1) && se.contains(obj2));
 
         assertNotEquals("Controllo non vengano effettuati doppi inserimenti",true, se.addAll(collection));
-        assertNotEquals(4, se.size());
+        assertEquals(2, se.size());
 
         collection.add(new Object());
         assertEquals("Il set viene modificato aggiungendo un elemento",true, se.addAll(collection));
         assertEquals("Controllo che la dimensione sia aumentata sino a 3",3, se.size());
+
+        assertThrows(NullPointerException.class, () -> { se.addAll(null); });
 
         assertThrows(NullPointerException.class, () -> {
             HCollection collection1 = new SetAdapter();
@@ -105,7 +159,8 @@ public class SetAdapterTester {
     }
 
     /**
-     * Dipende dalla correttezza dei metodi add() e contains()
+     * Dipende dal metodo add()
+     * Controllo incrociato della correttezza con i metodi size() e contains()
      */
     @Test
     public void testRetainAll() {
@@ -123,12 +178,43 @@ public class SetAdapterTester {
         toRetain.add(obj2);
 
         assertEquals("Rimuovo tutti gli oggetti tranne quelli nella collezione, il metodo modifica la collezione",true,se.retainAll(toRetain));
-        assertEquals("Controllo che contenga i due oggetti nella collezione",true,(se.contains(obj1) && se.contains(obj2)) );
-        assertNotEquals("Controllo che non contenga i due oggetti non presenti nella collezione",true, (se.contains(obj3) || se.contains(obj4)) );
+        assertEquals("Controllo la dimensione del set rimanente",2,se.size());
+        assertEquals("Controllo che contenga i due oggetti nella collezione",true,se.contains(obj1) && se.contains(obj2));
+        assertNotEquals("Controllo che non contenga i due oggetti non presenti nella collezione",true,se.contains(obj3) || se.contains(obj4));
 
         assertNotEquals("La seconda invocazione non deve modificare la collezione",true,se.retainAll(toRetain));
+        assertEquals("Controllo la dimensione del set, non deve essere modificata",2,se.size());
 
         assertThrows(NullPointerException.class, () -> se.retainAll(null));
+        assertThrows(NullPointerException.class, () -> {
+            HCollection collection1 = new SetAdapter();
+            collection1.add(null);
+            se.retainAll(collection1);
+        });
+    }
+
+    /**
+     * Dipende dalla correttezza del metodo addAll() e add()
+     */
+    @Test
+    public void testContainsAll() {
+        HCollection collection = new SetAdapter();
+        collection.add(new Object());
+        collection.add(new Object());
+        se.addAll(collection);
+
+        assertEquals("Controllo se il set contiene tutti gli elementi della collezione",true,se.containsAll(collection));
+
+        Object NotFound = new Object();
+        collection.add(NotFound);
+        assertNotEquals("Aggiungo un oggetto alla collezione e controllo che ora il set non li contenga più tutti ",true,se.containsAll(collection));
+
+        assertThrows("Tento la ricerca di un riferimento a null",NullPointerException.class, () -> se.containsAll(null));
+        assertThrows(NullPointerException.class, () -> {
+            HCollection collection1 = new SetAdapter();
+            collection1.add(null);
+            se.containsAll(collection1);
+        });
     }
 
     /**
@@ -151,7 +237,7 @@ public class SetAdapterTester {
 
         assertEquals("Rimozione degli oggetti della collezione dal set",true,se.removeAll(toDelete));
         assertEquals(2,se.size());
-        assertEquals("Controllo che gli oggetti non presenti nella collezione appartengano ancora al set", true, (se.contains(obj1) && se.contains(obj2)) );
+        assertEquals("Controllo che gli oggetti non presenti nella collezione appartengano ancora al set", true, se.contains(obj1) && se.contains(obj2));
         assertNotEquals("Controllo che gli oggetti presenti nella collezione non appartengano al set", true, (se.contains(obj3) || se.contains(obj4)) );
 
         //Modifica della collezione da eliminare
@@ -167,30 +253,16 @@ public class SetAdapterTester {
         assertEquals(1,se.size());
 
         assertThrows(NullPointerException.class, () -> se.remove(null));
+        assertThrows(NullPointerException.class, () -> {
+            HCollection collection1 = new SetAdapter();
+            collection1.add(null);
+            se.removeAll(collection1);
+        });
     }
 
     /**
-     * Dipende dalla correttezza del metodo addAll() e add()
-     */
-    @Test
-    public void testContainsAll() {
-        HCollection collection = new SetAdapter();
-        collection.add(new Object());
-        collection.add(new Object());
-        se.addAll(collection);
-
-        assertEquals("Controllo se il set contiene tutti gli elementi della collezione",true,se.containsAll(collection));
-
-        Object NotFound = new Object();
-        collection.add(NotFound);
-        assertNotEquals("Aggiungo un oggetto alla collezione e controllo che ora il set non li contenga più tutti ",true,se.containsAll(collection));
-
-        assertThrows("Tento la ricerca di un riferimento a null",NullPointerException.class, () -> se.containsAll(null));
-
-    }
-
-    /**
-     * Dipende da add(), size()
+     * Dipende dal metodo add()
+     * Controllo incrociato della correttezza col metodo size()
      */
     @Test
     public void testIterator() {
@@ -273,42 +345,6 @@ public class SetAdapterTester {
     }
 
     /**
-     * Test del metodo isEmpty
-     * È dipendente dal metodo add() e remove(obj)
-     */
-    @Test
-    public void testIsEmpty() {
-        assertEquals("Un set appena creato deve essere vuoto",true,se.isEmpty());
-
-        Object toAdd = new Object();
-        se.add(toAdd);
-        assertNotEquals("Un set a cui viene aggiunto un elemento non deve essere vuoto",true,se.isEmpty());
-
-        se.remove(toAdd);
-        assertEquals("Controllo che dopo la rimozione dell'unico elemento sia vuoto",true,se.isEmpty());
-    }
-
-    @Test
-    public void testSize() {
-        assertEquals("Un set appena creato deve avere dimensione 0",se.size(), 0);
-    }
-
-    /**
-     * Dipende dai metodi add() e isEmpty()
-     */
-    @Test
-    public void testClear() {
-        se.clear();
-        assertEquals("Invocazione su un set vuoto",true,se.isEmpty());
-        //Riempimento del set
-        se.add(new Object());
-        se.add(new Object());
-        assertEquals(2, se.size());
-        se.clear();
-        assertEquals("Invocazione su un set contenente elementi",0, se.isEmpty());
-    }
-
-    /**
      * Dipende dal metodo add()
      */
     @Test
@@ -355,7 +391,7 @@ public class SetAdapterTester {
 
     /**
      * Test della consistenza tra il metodo equals() e hashCode()
-     * Dipende da add(), equals() e hashCode()
+     * Dipende da add()
      */
     @Test
     public void TestConsistencyEqualsHashCode(){
@@ -379,8 +415,18 @@ public class SetAdapterTester {
         assertNotEquals("Controllo non abbiano il medesimo hashcode",true, (se.hashCode() == se2.hashCode()) );
     }
 
+    // ________________________________________________________ //
+
+    /**
+     * L'implementazione dei due metodi sul controllo degli array è da riverede, ma
+     * TODO: Il metodo assertArrayEquals() TIENE conto dell'ordinamento, non definito per set, quindi non può essere usato
+     * Object[] expected = new Object[]{obj1,obj2};
+     * assertArrayEquals("Array con due oggetti inseriti",expected,se.toArray());
+     */
+
     /**
      * Dipende dal metodo add()
+     * Controllo della correttezza con i metodi size() e contains()
      */
     @Test
     public void testToObjectArray() {
@@ -391,35 +437,66 @@ public class SetAdapterTester {
         Object obj2 = new Object();
         se.add(obj1);
         se.add(obj2);
-        Object[] expected = new Object[]{obj1,obj2};
 
         objArray = se.toArray();
 
-        /**
-         * TODO: assertArrayEquals non funziona se gli array non hanno il medesimo ordinamento
-         * assertArrayEquals("Array con due oggetti inseriti",expected,se.toArray());
-         */
+        assertEquals("Controllo la dimensione dell'array sia corretta",2,objArray.length);
 
-        boolean areEquals = true;
-        boolean found = false;
-        for(int i=0;i<expected.length && areEquals;i++){
-            //Cerco se trovo ogni oggetto dell'array expected nell'array restituitomi
-            Object target = expected[i];
-            for(int j=0;j<objArray.length;j++){
-                if(target==objArray[j]) found=true;
-            }
-            //Se non ne trovo anche solo 1 i due array non sono uguali
-            if(found = false) {
-                areEquals = false;
-            }
-            //Altrimenti continuo a iterare
-            else {
-                found = true;
-            }
+        boolean found_obj1 = false, found_obj2=false;
+        for(int i=0;i<objArray.length;i++){
+            Object tmp = objArray[i];
+            if(!found_obj1 && tmp.equals(obj1)) found_obj1=true;
+            else if(!found_obj2 && tmp.equals(obj2)) found_obj2 = true;
         }
 
-        assertEquals("L'array è corretto",true,areEquals);
+        assertEquals("Controllo contenga i due elementi inseriti",true,found_obj1&&found_obj2);
 
     }
 
+    /**
+     * Dipende dal metodo add()
+     * Controllo della correttezza con i metodi size() e contains()
+     */
+    @Test
+    public void testToObjectGivenArray() {
+        Object[] objArray = se.toArray(new Object[0]);
+        assertEquals("Il set inizialmente non contiene nessun elemento",0,objArray.length);
+
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        se.add(obj1);
+        se.add(obj2);
+
+        //Controllo cosa succede se passo una dimensione nulla
+        objArray = se.toArray(new Object[0]);
+
+
+        assertEquals("Controllo la dimensione dell'array sia corretta",2,objArray.length);
+        boolean found_obj1, found_obj2;
+        found_obj1=false;
+        found_obj2=false;
+        for(int i=0;i<objArray.length;i++){
+            Object tmp = objArray[i];
+            if(!found_obj1 && tmp.equals(obj1)) found_obj1=true;
+            else if(!found_obj2 && tmp.equals(obj2)) found_obj2 = true;
+        }
+        assertEquals("Controllo contenga i due elementi inseriti",true,found_obj1&&found_obj2);
+
+        //Controllo cosa succede se passo una dimensione maggiore di quella del set
+        objArray = se.toArray(new Object[12]);
+
+        assertEquals("Controllo la dimensione dell'array sia corretta",2,objArray.length);
+        found_obj1=false;
+        found_obj2=false;
+        int null_counter=0;
+        for(int i=0;i<objArray.length;i++){
+            Object tmp = objArray[i];
+            if(tmp == null) null_counter++;
+            else if(!found_obj1 && tmp.equals(obj1)) found_obj1=true;
+            else if(!found_obj2 && tmp.equals(obj2)) found_obj2 = true;
+        }
+        assertEquals("Controllo contenga i due elementi inseriti",true,found_obj1&&found_obj2);
+        assertEquals("Controllo contenga 10 valori nulli (12 - 2)",10,null_counter);
+
+    }
 }

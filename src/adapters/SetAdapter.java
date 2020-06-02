@@ -1,7 +1,10 @@
 package adapters;
 
-import interfaces.HCollection;
+import interfaces.HSet;
 
-public class SetAdapter implements HCollection {
+/**
+ * This implementation of HSet interface DOES NOT ALLOW null values as input
+ */
+public class SetAdapter implements HSet {
 
 }
