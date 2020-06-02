@@ -1,10 +1,10 @@
 package test;
 
-import adapters.CollectionAdapter;
 import adapters.ListAdapter;
 import adapters.SetAdapter;
 import interfaces.HCollection;
 import interfaces.HIterator;
+import interfaces.HListIterator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -389,14 +389,74 @@ public class ListAdapterTester {
      * TODO: Possibile l'integrazione tra i metodi IndexOf e LastIndexOf
      */
 
+    /**
+     * Dipende dal metodo get()
+     */
     @Test
-    public void testListIterator(){}
+    public void testListIterator(){
+        HListIterator it = la.listIterator();
+        assertEquals("La lista è vuota quindi l'iteratore non ha un successivo",false,it.hasNext());
+
+        //Assumo siano testati tutti i metodi di un iteratore standard
+
+        Object toAdd = new Object();
+        it.add(toAdd);
+        assertEquals("Controllo abbia inserito l'oggetto nella prima posizione",toAdd,la.get(0));
+
+        assertEquals("Controllo che abbia un precedente",true,it.hasPrevious());
+        assertEquals("Controllo che il precedente sia l'elemento appena inserito",toAdd,it.previous());
+
+        assertEquals("Controllo che l'iteratore sia a inzio lista",-1,it.previousIndex());
+        assertEquals("Controllo che l'iteratore sia a inzio lista",0,it.nextIndex());
+
+        //Riporto in testa l'iteratore
+        it=la.listIterator();
+        Object newValue = new Object();
+        it.set(newValue);
+        assertEquals("Controllo che abbia modificato l'ogggetto iniziale",newValue,la.get(0));
+
+        assertThrows(IllegalStateException.class, ()->{
+            la.clear();
+            HListIterator li = la.listIterator();
+            li.set(new Object());
+        });
+
+        /**
+         * TODO: Controllare
+         */
+
+        //remove or add have been called after the last call to next or previous.
+        assertThrows(IllegalStateException.class, ()->{
+            la.clear();
+            HListIterator li = la.listIterator();
+            Object toInsert = new Object();
+            li.add(toInsert);
+            li.set(new Object());
+        });
+        assertThrows(IllegalStateException.class, ()->{
+            la.clear();
+            HListIterator li = la.listIterator();
+            Object toInsert = new Object();
+            li.add(toInsert);
+            li.remove();
+            li.set(new Object());
+        });
+
+    }
 
     @Test
-    public void testListIteratorIndex(){}
+    public void testListIteratorIndex(){
+        /**
+         * TODO
+         */
+    }
 
     @Test
-    public void testRemoveIndex(){}
+    public void testRemoveIndex(){
+        /**
+         * TODO
+         */
+    }
 
     @Test
     public void testRemove(){
@@ -449,8 +509,6 @@ public class ListAdapterTester {
         assertEquals(1,la.size());
     }
 
-    @Test
-    public void testReplaceAll(){}
 
     /**
      * Dipende dal metodo add() e contains()
@@ -512,7 +570,11 @@ public class ListAdapterTester {
     }
 
     @Test
-    public void testSubList(){}
+    public void testSubList(){
+        /**
+         * TODO
+         */
+    }
 
     /**
      * Controllo mantenga la sequenza di visita della lista.

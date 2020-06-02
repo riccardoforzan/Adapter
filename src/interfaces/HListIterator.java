@@ -4,7 +4,7 @@ import java.util.NoSuchElementException;
 public interface HListIterator extends HIterator {
 
     /**
-     * Inserisce l'elemento passato come parametro
+     * Inserisce l'elemento passato come parametro prima della posizione dell'iteratore
      * @param o elemento da aggiungere
      */
     void add(Object o);
