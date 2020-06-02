@@ -1,11 +1,14 @@
 package test;
 
+import adapters.ListAdapter;
 import adapters.MapAdapter;
 
+import interfaces.HCollection;
+import interfaces.HMap;
+import interfaces.HSet;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 public class MapAdapterTester {
 
@@ -17,49 +20,152 @@ public class MapAdapterTester {
     }
 
     @Test
-    public void testEntry(){}
+    public void testEntrySet(){
+        /**
+         * TODO: Test con iteratore attivo
+         */
+    }
 
     @Test
-    public void testEntrySet(){}
+    public void testGet(){
+        Object value = new Object();
+        Integer key = value.hashCode();
+        assertNotEquals("Cerco una chiave NON presente",null,ma.get(key));
+
+        ma.put(key,value);
+        assertEquals("Cerco una chiave presente",value,ma.get(key));
+
+        assertThrows("Non è permesso l'inserimento di chiavi nulle",NullPointerException.class,()->{
+            ma.containsKey(null);
+        });
+    }
 
     @Test
-    public void testGet(){}
+    public void testKeySet(){
+
+        /**
+         * TODO: Modifiche con iteratore attivo
+         */
+
+        assertEquals("Una mappa vuota non ha chiavi",true,ma.keySet().isEmpty());
+
+        Object value = new Object();
+        Integer key = value.hashCode();
+        Object value2 = new Object();
+        Integer key2 = value2.hashCode();
+        ma.put(key,value);
+        ma.put(key2,value2);
+
+        HSet keySet = ma.keySet();
+        assertEquals("Controllo siano presenti le due chiavi",true,keySet.contains(key) && keySet.contains(key2));
+    }
 
     @Test
-    public void testGetOrDefault(){}
+    public void testPut(){
+        Object toInsert = new Object();
+        Integer key = toInsert.hashCode();
+
+        assertEquals("Controllo non ci fosse nessun altro valore associato",null,ma.put(key,toInsert));
+        assertEquals("Controllo sia aumentata la dimensione",1,ma.size());
+        assertEquals("Controllo la coerenza con il metodo containsKey",true,ma.containsKey(key));
+        assertEquals("Controllo la coerenza con il metodo containsValue",true,ma.containsKey(toInsert));
+        assertEquals("Controllo la coerenza con il metodo get",toInsert,ma.get(key));
+
+        Object substitute = new Object();
+        assertEquals("Controllo ci fosse il precedente valore associato",toInsert,ma.put(key,substitute));
+        assertEquals("Controllo non sia cambiata la dimensione",1,ma.size());
+        assertEquals("Controllo la coerenza con il metodo containsKey",true,ma.containsKey(key));
+        assertEquals("Controllo la coerenza con il metodo containsValue",true,ma.containsKey(substitute));
+        assertNotEquals("Controllo non sia più presente il valore precedente",true,ma.containsKey(toInsert));
+        assertEquals("Controllo la coerenza con il metodo get",substitute,ma.get(key));
+
+        assertThrows("Non è permesso l'inserimento di chiavi nulle",NullPointerException.class,()->{
+            ma.put(null,new Object());
+        });
+        assertThrows("Non è permesso l'inserimento di valori nulli",NullPointerException.class,()->{
+            ma.put(new Object().hashCode(),null);
+        });
+    }
 
     @Test
-    public void testKeySet(){}
+    public void testPutAll(){
+        HMap oldMap = new MapAdapter();
+
+        ma.putAll(oldMap);
+        assertNotEquals("Controllo non sia aumentata la dimensione fornando una mappa nulla",false,ma.isEmpty());
+
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        oldMap.put(obj1.hashCode(),obj1);
+        oldMap.put(obj2.hashCode(),obj2);
+
+        ma.putAll(oldMap);
+        assertEquals("Controllo sia aumentata la dimensione",2,ma.size());
+        assertEquals("Controllo la coerenza con il metodo containsKey",true,ma.containsKey(obj1.hashCode()) && ma.containsKey(obj2.hashCode()));
+        assertEquals("Controllo la coerenza con il metodo containsValue",true,ma.containsKey(obj1) && ma.containsKey(obj2));
+
+        assertThrows("Non è permesso fornire un parametro mappa nullo",NullPointerException.class,()->{
+            ma.putAll(null);
+        });
+    }
 
     @Test
-    public void testPut(){}
+    public void testContainsKey(){
+        Object value = new Object();
+        Integer key = value.hashCode();
+        assertNotEquals("Cerco una chiave NON presente",true,ma.containsKey(key));
+
+        ma.put(key,value);
+        assertEquals("Cerco una chiave presente",true,ma.containsKey(key));
+
+        assertThrows("Non è permesso l'inserimento di chiavi nulle",NullPointerException.class,()->{
+            ma.containsKey(null);
+        });
+    }
 
     @Test
-    public void testPutAll(){}
+    public void testContainsValue(){
+        Object value = new Object();
+        Integer key = value.hashCode();
+        assertNotEquals("Cerco una valore NON presente",true,ma.containsValue(value));
+
+        ma.put(key,value);
+        assertEquals("Cerco un valore presente",true,ma.containsValue(value));
+
+        assertThrows("Non è permesso l'inserimento di chiavi nulle",NullPointerException.class,()->{
+            ma.containsKey(null);
+        });
+    }
 
     @Test
-    public void testPutIfAbsent(){}
+    public void testRemoveKey(){
+        Object toRemove = new Object();
+        Integer key = toRemove.hashCode();
+
+        assertEquals("Rimozione di un elemento non presente",null,ma.remove(key));
+
+        ma.put(key,toRemove);
+
+        assertEquals("Rimozione dell'elemento",toRemove,ma.remove(key));
+        assertEquals("Controllo la coerenza con il metodo size",0,ma.size());
+        assertNotEquals("Controllo la coerenza con il metodo containsKey",true,ma.containsKey(key));
+        assertNotEquals("Controllo la coerenza con il metodo containsValue",true,ma.containsKey(toRemove));
+        assertNotEquals("Controllo la coerenza con il metodo get",toRemove,ma.get(key));
+
+
+        assertThrows("Non è permesso l'inserimento di chiavi nulle",NullPointerException.class,()->{
+            ma.put(null,new Object());
+        });
+        assertThrows("Non è permesso l'inserimento di valori nulli",NullPointerException.class,()->{
+            ma.put(new Object().hashCode(),null);
+        });}
 
     @Test
-    public void testContainsKey(){}
-
-    @Test
-    public void testContainsValue(){}
-
-    @Test
-    public void testRemoveKey(){}
-
-    @Test
-    public void testRemoveKeyValue(){}
-
-    @Test
-    public void testReplaceKeyValue(){}
-
-    @Test
-    public void testReplaceKeyOldValueNewValue(){}
-
-    @Test
-    public void testValues(){}
+    public void testValues(){
+        /**
+         * TODO: Test modifiche con iteratore attivo
+         */
+    }
 
     @Test
     public void testSize(){
