@@ -21,7 +21,6 @@ public class Tester {
         toTest.add(SetAdapterTester.class);
         toTest.add(MapAdapterTester.class);
         toTest.add(ListAdapterTester.class);
-        toTest.add(CollectionAdapterTester.class);
 
         for(Class cls : toTest){
             System.out.println("TEST DI: " + cls.getCanonicalName());
