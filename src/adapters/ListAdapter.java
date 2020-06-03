@@ -4,9 +4,9 @@ import interfaces.HCollection;
 import interfaces.HIterator;
 import interfaces.HList;
 import interfaces.HListIterator;
-import exception.IllegalStateException;
 
 import java.util.Vector;
+import java.util.NoSuchElementException;
 
 /**
  * This implementation of HList interface DOES NOT ALLOW null values as input
@@ -58,16 +58,6 @@ public class ListAdapter implements HList {
     }
 
     /**
-     * Returns an iterator over the elements in this list in proper sequence.
-     *
-     * @return an iterator over the elements in this list in proper sequence
-     */
-    @Override
-    public HIterator iterator() {
-        return null;
-    }
-
-    /**
      * Returns an array containing all of the elements in this list in proper
      * sequence (from first to last element).
      *
@@ -76,15 +66,14 @@ public class ListAdapter implements HList {
      * allocate a new array even if this list is backed by an array).
      * The caller is thus free to modify the returned array.
      *
-     * <p>This method acts as bridge between array-based and collection-based
-     * APIs.
-     *
      * @return an array containing all of the elements in this list in proper
      * sequence
      */
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        Object[] rv = new Object[size()];
+        ve.copyInto(rv);
+        return rv;
     }
 
     /**
@@ -98,21 +87,7 @@ public class ListAdapter implements HList {
      * <p>If the list fits in the specified array with room to spare (i.e.,
      * the array has more elements than the list), the element in the array
      * immediately following the end of the list is set to <tt>null</tt>.
-     * (This is useful in determining the length of the list <i>only</i> if
-     * the caller knows that the list does not contain any null elements.)
      *
-     * <p>Like the toArray() method, this method acts as bridge between
-     * array-based and collection-based APIs.  Further, this method allows
-     * precise control over the runtime type of the output array, and may,
-     * under certain circumstances, be used to save allocation costs.
-     *
-     * <p>Suppose <tt>x</tt> is a list known to contain only strings.
-     * The following code can be used to dump the list into a newly
-     * allocated array of <tt>String</tt>:
-     *
-     * <pre>
-     *     String[] y = x.toArray(new String[0]);</pre>
-     * <p>
      * Note that <tt>toArray(new Object[0])</tt> is identical in function to
      * <tt>toArray()</tt>.
      *
@@ -120,14 +95,15 @@ public class ListAdapter implements HList {
      *          be stored, if it is big enough; otherwise, a new array of the
      *          same runtime type is allocated for this purpose.
      * @return an array containing the elements of this list
-     * @throws ArrayStoreException  if the runtime type of the specified array
-     *                              is not a supertype of the runtime type of every element in
-     *                              this list
      * @throws NullPointerException if the specified array is null
      */
     @Override
     public Object[] toArray(Object[] a) {
-        return new Object[0];
+        //If a == null throws NullPointerException
+        if(a.length<size()) a = new Object[size()];
+        //If a.length>size() all positions after are set to null by default
+        ve.copyInto(a);
+        return a;
     }
 
     /**
@@ -163,16 +139,12 @@ public class ListAdapter implements HList {
      *
      * @param o element to be removed from this list, if present
      * @return <tt>true</tt> if this list contained the specified element
-     * @throws ClassCastException            if the type of the specified element
-     *                                       is incompatible with this list (optional)
-     * @throws NullPointerException          if the specified element is null and this
-     *                                       list does not permit null elements (optional)
-     * @throws UnsupportedOperationException if the <tt>remove</tt> operation
-     *                                       is not supported by this list
+     * @throws NullPointerException          if the specified element is null
      */
     @Override
     public boolean remove(Object o) {
-        return false;
+        if(o==null) throw new NullPointerException();
+        return ve.remove(o);
     }
 
     /**
@@ -182,16 +154,19 @@ public class ListAdapter implements HList {
      * @param c collection to be checked for containment in this list
      * @return <tt>true</tt> if this list contains all of the elements of the
      * specified collection
-     * @throws ClassCastException   if the types of one or more elements
-     *                              in the specified collection are incompatible with this
-     *                              list (optional)
      * @throws NullPointerException if the specified collection contains one
-     *                              or more null elements and this list does not permit null
-     *                              elements (optional), or if the specified collection is null
+     *                              or more null elements or if the specified collection is null
      */
     @Override
     public boolean containsAll(HCollection c) {
-        return false;
+        //Throws NullPointerException if c is null
+        HIterator itc = c.iterator();
+        while(itc.hasNext()){
+            Object tmp = itc.next();
+            //If at least 1 element of c is not contained in this list, return false;
+            if(ve.contains(tmp)) return false;
+        }
+        return true;
     }
 
     /**
@@ -234,7 +209,17 @@ public class ListAdapter implements HList {
      */
     @Override
     public boolean addAll(int index, HCollection c) {
-        return false;
+        if(index<0 || index>size()) throw new IndexOutOfBoundsException();
+        //Throws NullPointerException if c == null
+        HIterator itc = c.iterator();
+        boolean isChanged = false;
+        while(itc.hasNext()){
+            Object tmp = itc.hasNext();
+            //Throws NullPointerException if tmp == null
+            add(index++,tmp);
+            isChanged = true;
+        }
+        return isChanged;
     }
 
     /**
@@ -243,17 +228,20 @@ public class ListAdapter implements HList {
      *
      * @param c collection containing elements to be removed from this list
      * @return <tt>true</tt> if this list changed as a result of the call
-     * @throws UnsupportedOperationException if the <tt>removeAll</tt> operation
-     *                                       is not supported by this list
-     * @throws ClassCastException            if the class of an element of this list
-     *                                       is incompatible with the specified collection (optional)
-     * @throws NullPointerException          if this list contains a null element and the
-     *                                       specified collection does not permit null elements (optional),
+     * @throws NullPointerException          if this list contains a null element
      *                                       or if the specified collection is null
      */
     @Override
     public boolean removeAll(HCollection c) {
-        return false;
+        //Throws NullPointerException if c == null
+        HIterator itc = c.iterator();
+        boolean isChanged = false;
+        while(itc.hasNext()){
+            Object tmp = itc.hasNext();
+            //Throws NullPointerException if tmp == null
+            isChanged |= remove(tmp);
+        }
+        return isChanged;
     }
 
     /**
@@ -264,17 +252,25 @@ public class ListAdapter implements HList {
      *
      * @param c collection containing elements to be retained in this list
      * @return <tt>true</tt> if this list changed as a result of the call
-     * @throws UnsupportedOperationException if the <tt>retainAll</tt> operation
-     *                                       is not supported by this list
-     * @throws ClassCastException            if the class of an element of this list
-     *                                       is incompatible with the specified collection (optional)
-     * @throws NullPointerException          if this list contains a null element and the
-     *                                       specified collection does not permit null elements (optional),
+     * @throws NullPointerException          if this list contains a null element
      *                                       or if the specified collection is null
      */
     @Override
     public boolean retainAll(HCollection c) {
-        return false;
+        //Throws NullPointerException if c == null
+        HIterator it = this.iterator();
+        boolean isChanged = false;
+
+        while(it.hasNext()){
+            Object tmp = it.next();
+            //Throws NullPointerException if tmp == null
+            if(!c.contains(tmp)){
+                isChanged = true;
+                it.remove();
+            }
+        }
+
+        return isChanged;
     }
 
     /**
@@ -296,7 +292,8 @@ public class ListAdapter implements HList {
      */
     @Override
     public Object get(int index) {
-        return null;
+        if(index<0 || index>size()) throw new IndexOutOfBoundsException();
+        return ve.elementAt(index);
     }
 
     /**
@@ -306,20 +303,17 @@ public class ListAdapter implements HList {
      * @param index   index of the element to replace
      * @param element element to be stored at the specified position
      * @return the element previously at the specified position
-     * @throws UnsupportedOperationException if the <tt>set</tt> operation
-     *                                       is not supported by this list
-     * @throws ClassCastException            if the class of the specified element
-     *                                       prevents it from being added to this list
-     * @throws NullPointerException          if the specified element is null and
-     *                                       this list does not permit null elements
-     * @throws IllegalArgumentException      if some property of the specified
-     *                                       element prevents it from being added to this list
+     * @throws NullPointerException          if the specified element is null
      * @throws IndexOutOfBoundsException     if the index is out of range
      *                                       (<tt>index &lt; 0 || index &gt;= size()</tt>)
      */
     @Override
     public Object set(int index, Object element) {
-        return null;
+        if(element == null) throw new NullPointerException();
+        //Method get(index) throws IndexOutOfBoundException if (index<0 || index>size())
+        Object rv = this.get(index);
+        ve.setElementAt(element,index);
+        return rv;
     }
 
     /**
@@ -349,14 +343,15 @@ public class ListAdapter implements HList {
      *
      * @param index the index of the element to be removed
      * @return the element previously at the specified position
-     * @throws UnsupportedOperationException if the <tt>remove</tt> operation
-     *                                       is not supported by this list
      * @throws IndexOutOfBoundsException     if the index is out of range
      *                                       (<tt>index &lt; 0 || index &gt;= size()</tt>)
      */
     @Override
     public Object remove(int index) {
-        return null;
+        //Method get(index) throws IndexOutOfBoundException if (index<0 || index>size())
+        Object rv = this.get(index);
+        ve.removeElementAt(index);
+        return rv;
     }
 
     /**
@@ -369,14 +364,12 @@ public class ListAdapter implements HList {
      * @param o element to search for
      * @return the index of the first occurrence of the specified element in
      * this list, or -1 if this list does not contain the element
-     * @throws ClassCastException   if the type of the specified element
-     *                              is incompatible with this list (optional)
-     * @throws NullPointerException if the specified element is null and this
-     *                              list does not permit null elements (optional)
+     * @throws NullPointerException if the specified element is null
      */
     @Override
     public int indexOf(Object o) {
-        return 0;
+        if(o==null) throw new NullPointerException();
+        return ve.indexOf(o);
     }
 
     /**
@@ -389,14 +382,22 @@ public class ListAdapter implements HList {
      * @param o element to search for
      * @return the index of the last occurrence of the specified element in
      * this list, or -1 if this list does not contain the element
-     * @throws ClassCastException   if the type of the specified element
-     *                              is incompatible with this list (optional)
-     * @throws NullPointerException if the specified element is null and this
-     *                              list does not permit null elements (optional)
+     * @throws NullPointerException if the specified element is null
      */
     @Override
     public int lastIndexOf(Object o) {
-        return 0;
+        if(o==null) throw new NullPointerException();
+        return ve.lastIndexOf(o);
+    }
+
+    /**
+     * Returns an iterator over the elements in this list in proper sequence.
+     *
+     * @return an iterator over the elements in this list in proper sequence
+     */
+    @Override
+    public HIterator iterator() {
+        return new ListIterator(0,size());
     }
 
     /**
@@ -408,7 +409,7 @@ public class ListAdapter implements HList {
      */
     @Override
     public HListIterator listIterator() {
-        return null;
+        return listIterator(0);
     }
 
     /**
@@ -428,7 +429,184 @@ public class ListAdapter implements HList {
      */
     @Override
     public HListIterator listIterator(int index) {
-        return null;
+        if(index<0 || index>size()) throw new IndexOutOfBoundsException();
+        return new ListIterator(index,size());
+    }
+
+    class ListIterator implements HListIterator{
+
+        private int cursor;
+        private int actual;
+        private int limit;
+
+        public ListIterator(int index, int limit){
+            //Starting point
+            this.actual = -1;
+            this.cursor = index;
+            this.limit = limit;
+        }
+
+        /**
+         * Returns {@code true} if this list iterator has more elements when
+         * traversing the list in the forward direction. (In other words,
+         * returns {@code true} if next() would return an element rather
+         * than throwing an exception.)
+         *
+         * @return {@code true} if the list iterator has more elements when
+         * traversing the list in the forward direction
+         */
+        @Override
+        public boolean hasNext() {
+            return cursor<limit;
+        }
+
+        /**
+         * Returns the next element in the list and advances the cursor position.
+         * This method may be called repeatedly to iterate through the list,
+         * or intermixed with calls to previous() to go back and forth.
+         * (Note that alternating calls to {@code next} and {@code previous}
+         * will return the same element repeatedly.)
+         *
+         * @return the next element in the list
+         * @throws NoSuchElementException if the iteration has no next element
+         */
+        @Override
+        public Object next() {
+            if(!this.hasNext()) throw new NoSuchElementException();
+            actual = ++cursor;
+            return ve.get(actual);
+        }
+
+        /**
+         * Returns {@code true} if this list iterator has more elements when
+         * traversing the list in the reverse direction.  (In other words,
+         * returns {@code true} if previous() would return an element
+         * rather than throwing an exception.)
+         *
+         * @return {@code true} if the list iterator has more elements when
+         * traversing the list in the reverse direction
+         */
+        @Override
+        public boolean hasPrevious() {
+            return cursor>0;
+        }
+
+        /**
+         * Returns the previous element in the list and moves the cursor
+         * position backwards.  This method may be called repeatedly to
+         * iterate through the list backwards, or intermixed with calls to
+         * next() to go back and forth.  (Note that alternating calls
+         * to {@code next} and {@code previous} will return the same
+         * element repeatedly.)
+         *
+         * @return the previous element in the list
+         * @throws NoSuchElementException if the iteration has no previous
+         *                                element
+         */
+        @Override
+        public Object previous() {
+            if(!this.hasPrevious()) throw new NoSuchElementException();
+            actual = --cursor;
+            return ve.get(actual);
+        }
+
+        /**
+         * Returns the index of the element that would be returned by a
+         * subsequent call to next(). (Returns list size if the list
+         * iterator is at the end of the list.)
+         *
+         * @return the index of the element that would be returned by a
+         * subsequent call to {@code next}, or list size if the list
+         * iterator is at the end of the list
+         */
+        @Override
+        public int nextIndex() {
+            return cursor;
+        }
+
+        /**
+         * Returns the index of the element that would be returned by a
+         * subsequent call to previous(). (Returns -1 if the list
+         * iterator is at the beginning of the list.)
+         *
+         * @return the index of the element that would be returned by a
+         * subsequent call to {@code previous}, or -1 if the list
+         * iterator is at the beginning of the list
+         */
+        @Override
+        public int previousIndex() {
+            return cursor-1;
+        }
+
+        /**
+         * Removes from the list the last element that was returned by
+         * next() or previous() (optional operation).  This call can
+         * only be made once per call to {@code next} or {@code previous}.
+         * It can be made only if add() has not been
+         * called after the last call to {@code next} or {@code previous}.
+         *
+         * @throws IllegalStateException         if neither {@code next} nor
+         *                                       {@code previous} have been called, or {@code remove} or
+         *                                       {@code add} have been called after the last call to
+         *                                       {@code next} or {@code previous}
+         */
+        @Override
+        public void remove() {
+            if(actual==-1) throw new exception.IllegalStateException();
+            ve.remove(actual);
+            if(actual != cursor) cursor --;
+            limit--;
+            actual = -1;
+        }
+
+        /**
+         * Replaces the last element returned by next() or
+         * previous() with the specified element (optional operation).
+         * This call can be made only if neither remove() nor
+         * add() have been called after the last call to {@code next} or
+         * {@code previous}.
+         *
+         * @param o the element with which to replace the last element returned by
+         *          {@code next} or {@code previous}
+         *
+         * @throws IllegalArgumentException      if some aspect of the specified
+         *                                       element prevents it from being added to this list
+         * @throws IllegalStateException         if neither {@code next} nor
+         *                                       {@code previous} have been called, or {@code remove} or
+         *                                       {@code add} have been called after the last call to
+         *                                       {@code next} or {@code previous}
+         */
+        @Override
+        public void set(Object o) {
+            if(actual==-1) throw new IllegalStateException();
+            if(o==null) throw new IllegalArgumentException("A null for Object o is not allowed");
+            ve.set(actual,o);
+
+        }
+
+        /**
+         * Inserts the specified element into the list (optional operation).
+         * The element is inserted immediately before the next element that
+         * would be returned by next(), if any, and after the next
+         * element that would be returned by previous(), if any.  (If the
+         * list contains no elements, the new element becomes the sole element
+         * on the list.)  The new element is inserted before the implicit
+         * cursor: a subsequent call to {@code next} would be unaffected, and a
+         * subsequent call to {@code previous} would return the new element.
+         * (This call increases by one the value that would be returned by a
+         * call to {@code nextIndex} or {@code previousIndex}.)
+         *
+         * @param o the element to insert
+         * @throws IllegalArgumentException      if some aspect of this element
+         *                                       prevents it from being added to this list
+         */
+        @Override
+        public void add(Object o) {
+            if(o==null) throw new IllegalArgumentException("A null for Object o is not allowed");
+            ve.add(cursor++,o);
+            limit++;
+            actual = -1;
+        }
     }
 
     /**
