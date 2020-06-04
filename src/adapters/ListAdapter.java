@@ -549,7 +549,7 @@ public class ListAdapter implements HList {
         return new SubList(this,fromIndex, toIndex);
     }
 
-    private class SubList extends ListAdapter{
+    private class SubList implements HList{
 
         private final HList parent;
         private final int fromIndex;
