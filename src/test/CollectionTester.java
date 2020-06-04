@@ -2,14 +2,15 @@ package test;
 
 import interfaces.HCollection;
 
+import interfaces.HIterator;
 import org.junit.Test;
+
+import java.util.NoSuchElementException;
+
 import static org.junit.Assert.*;
 
 /**
- * Test of the methods shared by all the implementation of HCollection Interface.
- * This class tests only the common behavior and does not distinguish between ListAdapter or SetAdapter.
- * ListAdapter and SetAdapter DOES NOT ALLOW insertion of null values.
- * Specific test are demanded to respective test class.
+ * Shard test between Set and List
  */
 public abstract class CollectionTester{
 
@@ -46,6 +47,15 @@ public abstract class CollectionTester{
     }
 
     /**
+     * @title Test of add(object) method
+     * @description Test adding an object already contained in the collection
+     * @expectedResults for ListAdapter true, the object is added
+     * @expectedResults for SetAdapter false, the object is already contained
+     * @preConditions the object to add must be already added
+     */
+    public abstract void test_addDuplicate();
+
+    /**
      * @title Test if add(Object o) throws NullPointerException
      * @description the method add(Object o) throws NullPointerException if o==null
      * @expectedResults throws NullPointerException
@@ -78,7 +88,7 @@ public abstract class CollectionTester{
      * @preConditions the collection on which it is invoked must be not empty
      */
     @Test
-    public void test_clearOnEmpty() {
+    public void test_clear() {
         itt.add(new Object());
         itt.clear();
         assertEquals("Collection now must be empty",true,itt.isEmpty());
@@ -105,7 +115,7 @@ public abstract class CollectionTester{
      * @preConditions collection must be empty
      */
     @Test
-    public void test_containsNot() {
+    public void test_containsNotPresent() {
         Object toFind = new Object();
         assertEquals("The object isn't found on the collection",false,itt.contains(toFind));
     }
@@ -233,5 +243,140 @@ public abstract class CollectionTester{
         });
     }
 
+    /**
+     * @title Test of Iterator.hasNext()
+     * @description Test the iterator
+     * @expectedResults false, the collection is empty
+     * @dependencies HCollection.iterator()
+     * @preConditions The collection must be empty
+     */
+    @Test
+    public void test_Iterator_hasNext_EmptyCollection() {
+        HIterator it = itt.iterator();
+        assertEquals("Collection is empty",false,it.hasNext());
+    }
+
+    /**
+     * @title Test of Iterator.hasNext()
+     * @description Test the iterator
+     * @expectedResults false, the collection is empty
+     * @dependencies HCollection.iterator() and HCollection.add(Object a)
+     * @preConditions The collection must be not empty
+     */
+    @Test
+    public void test_Iterator_hasNext_NotEmptyCollection() {
+        itt.add(new Object());
+        HIterator it = itt.iterator();
+        assertEquals("Collection has got some elements",true,it.hasNext());
+    }
+
+    /**
+     * @title Test of Iterator.next()
+     * @description Call of next on an empty collection throws NullPointerException
+     * @expectedResults Throws NullPointerException
+     * @dependencies HCollection.iterator()
+     * @preConditions The collection must be empty
+     */
+    @Test
+    public void test_Iterator_next_npe() {
+        assertThrows("No element in this collection", NoSuchElementException.class, () -> {
+            itt.iterator().next();
+        });
+    }
+
+    /**
+     * @title Test of Iterator.next()
+     * @description Checking that iterator iterates on all the element of this collection
+     * @expectedResults All elements are iterated
+     * @dependencies HCollection.iterator() and HCollection.add(Object a)
+     * @preConditions The collection must be empty
+     */
+    @Test
+    public void test_Iterator_next() {
+        HIterator it = itt.iterator();
+
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        Object obj3 = new Object();
+        itt.add(obj1);
+        itt.add(obj2);
+        itt.add(obj3);
+
+
+        int items=0;
+        int found_obj1 = 0;
+        int found_obj2 = 0;
+        int found_obj3 = 0;
+        while(it.hasNext()){
+            Object tmp = it.next();
+            items++;
+            if(obj1.equals(tmp)){
+                found_obj1++;
+                break;
+            }
+            if(obj2.equals(tmp)) {
+                found_obj2++;
+                break;
+            }
+            if(obj3.equals(tmp)){
+                found_obj1++;
+                break;
+            }
+        }
+        boolean test = items==3 && found_obj1==1 && found_obj2==1 && found_obj3==1;
+        assertEquals("Iterator found all 3 elements",true,test);
+    }
+
+    /**
+     * @title Test of Iterator.remove()
+     * @description Checking that iterator removes element in the correct way
+     * @expectedResults All elements are iterated
+     * @dependencies HCollection.iterator(), HCollection.add(Object a) and HCollection.contains(Object o)
+     * @preConditions The collection must be empty
+     */
+    @Test
+    public void test_Iterator_remove() {
+        HIterator it = itt.iterator();
+
+        int initSize = itt.size();
+
+        Object removed = it.next();
+        it.remove();
+
+        HIterator it2 = itt.iterator();
+        int actualSize = 0;
+        while(it2.hasNext()) actualSize++;
+        assertEquals("Dimension of the collection decreased by 1",true,(actualSize+1)==initSize);
+        assertEquals("The removed element does not belong to this collection",true,itt.contains(removed));
+    }
+
+    /**
+     * @title Test of Iterator.remove()
+     * @description Checking that invocation of Iterator.remove() not preceded by a call of Iterator.next() throws NullPointerException
+     * @expectedResults NullPointerException
+     * @dependencies HCollection.iterator()
+     */
+    public void test_Iterator_remove_npe(){
+        assertThrows("Il metodo Remove() non può essere invocato sull'iteratore prima di aver invocato next", NoSuchElementException.class, () -> {
+            HIterator it = itt.iterator();
+            it.remove();
+        });
+    }
+
+    /**
+     * @title Test invocation of Iterator.remove() two times in a row
+     * @description Checking that invocation of Iterator.remove() not preceded by a call of Iterator.next() throws NullPointerException
+     * @expectedResults NullPointerException
+     * @dependencies HCollection.iterator(), HCollection.add(Object a)
+     */
+    public void test_Iterator_remove_tt(){
+        assertThrows("remove() can not be called two times in a row", NoSuchElementException.class, () -> {
+            itt.add(new Object());
+            itt.add(new Object());
+            HIterator it = itt.iterator();
+            it.remove();
+            it.remove();
+        });
+    }
 
 }

@@ -1,7 +1,6 @@
 package test;
 
 import interfaces.HCollection;
-import interfaces.HIterator;
 import interfaces.HListIterator;
 
 import adapters.ListAdapter;
@@ -15,31 +14,35 @@ import java.util.NoSuchElementException;
 
 public class ListAdapterTester {
 
-    private ListAdapter la;
+    //Instance to test
+    private ListAdapter itt;
 
     @Before
     public void setup(){
-        la = new ListAdapter();
+        itt = new ListAdapter();
     }
 
     /**
-     * Dipende da size()
+     * @title Test of add(object) method
+     * @description Test adding an object already contained in the collection
+     * @expectedResults true, the object is added
+     * @preConditions the object to add must be already added
      */
     @Test
-    public void testAdd(){
+    public void test_addDuplicate() {
         Object toAdd = new Object();
-        assertEquals("Aggiunta di un oggetto alla collezione",true,la.add(toAdd));
-        assertEquals("Controllo sia aumentata la dimensione",1,la.size());
-
-        assertEquals("Aggiunta dello stesso oggetto alla collezione",true,la.add(toAdd));
-        assertEquals("Controllo sia aumentata la dimensione",2,la.size());
-
-        assertEquals("Aggiunta di un NULL alla collezione",true,la.add(toAdd));
-        assertEquals("Controllo sia aumentata la dimensione",1,la.size());
+        itt.add(toAdd);
+        assertEquals("Adding a new element on an empty colleciton",true,itt.add(toAdd));
     }
 
     /**
-     * Dipende da size() e get()
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
      */
     @Test
     public void testAddIndex(){
@@ -48,12 +51,6 @@ public class ListAdapterTester {
         Object toAdd = new Object();
         la.add(0,toAdd);
         assertEquals("Inserimento di un elemento nella prima posizione",true,la.get(0).equals(toAdd) && la.size()==1);
-
-        //Inserimento in testa
-        Object toAdd2 = new Object();
-        la.add(0,toAdd2);
-        assertEquals("Inserimento di un secondo elemento nella prima posizione",true,la.get(0).equals(toAdd2) && la.size()==2);
-        assertEquals("Controllo che l'elemento che precedentemente era il primo ora sia shiftato",true,la.get(1).equals(toAdd));
 
         //Inserimento in coda
         Object toAdd3 = new Object();
@@ -71,7 +68,13 @@ public class ListAdapterTester {
     }
 
     /**
-     * Dipende da size() get() e add()
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
      */
     @Test
     public void testAddAll(){
@@ -97,7 +100,13 @@ public class ListAdapterTester {
     }
 
     /**
-     * Dipende da size(), contains() e add()
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
      */
     @Test
     public void testAddAllIndex(){
@@ -135,33 +144,14 @@ public class ListAdapterTester {
     }
 
     /**
-     * Dipende da add(), size() e isEmpty()
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
      */
-    @Test
-    public void testClear(){
-        assertEquals("Controllo sia vuota una lista appena creata",true,la.isEmpty());
-
-        la.add(new Object());
-        la.add(new Object());
-        assertEquals("Controllo non sia vuota in partenza",2,la.size());
-
-        la.clear();
-        assertEquals("Controllo sia vuota dopo l'invocazione",true,la.isEmpty());
-    }
-
-    /**
-     * Dipende da add()
-     */
-    @Test
-    public void testContains(){
-        Object toFind = new Object();
-
-        assertEquals("Cerco un oggetto non presente nella lista",false,la.contains(toFind));
-
-        la.add(toFind);
-        assertEquals("Cerco un oggetto presente nella lista",true,la.contains(toFind));
-    }
-
     @Test
     public void testContainsAll(){
         HCollection collection = new ListAdapter();
@@ -177,80 +167,13 @@ public class ListAdapterTester {
     }
 
     /**
-     * Dipende dal metodo add()
-     */
-    @Test
-    public void testEquals(){
-        ListAdapter la2 = new ListAdapter();
-
-        assertEquals(true, la.equals(la2));
-
-        //Costruisco due liste con gli stessi elementi
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        la.add(obj1);
-        la.add(obj2);
-        la2.add(obj1);
-        la2.add(obj2);
-        assertEquals("Controllo che liste con gli stessi elementi siano uguali",true,la.equals(la2));
-
-        la2.add(new Object());
-        assertNotEquals("Controllo che dopo l'aggiunta le due non siano più uguali",true,la.equals(la2));
-    }
-
-    /**
-     * Dipende dal metodo add()
-     */
-    @Test
-    public void testHashCode(){
-        ListAdapter la2 = new ListAdapter();
-
-        //Costruisco due liste con gli stessi elementi
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        la.add(obj1);
-        la.add(obj2);
-        la2.add(obj1);
-        la2.add(obj2);
-
-        //L'hashcode viene creato come somma degli hascode degli oggetti
-        assertEquals("Controllo abbiano il medesimo hashcode, dato dalla somma degli hashcode degli elementi al suo interno",true, (la.hashCode() == la2.hashCode()) );
-
-        //Aggiungo un oggetto, mi aspetto che gli hashcode siano diversi, perchè quello del nuovo Object inserito è legato all'indirizzo di memoria dell'oggetto
-        la2.add(new Object());
-        assertNotEquals("Controllo non abbiano il medesimo hashcode",true, (la.hashCode() == la2.hashCode()) );
-    }
-
-    /**
-     * Test della consistenza tra il metodo equals() e hashCode()
-     * Dipende da add(), equals() e hashCode()
-     */
-    @Test
-    public void TestConsistencyEqualsHashCode(){
-        ListAdapter la2 = new ListAdapter();
-        assertEquals("Se entrambe sono vuote allora sono uguali",true, (la.equals(la2)&&la.hashCode()==la2.hashCode()));
-
-        //Costruisco due set con gli stessi elementi
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        la.add(obj1);
-        la.add(obj2);
-        la2.add(obj1);
-        la2.add(obj2);
-
-        //L'hashcode viene creato come somma degli hascode degli oggetti
-        assertEquals("Se entrambe hanno gli stessi elementi allora sono uguali",true, (la.equals(la2)&&la.hashCode()==la2.hashCode()));
-
-        //Aggiungo un oggetto, mi aspetto che gli hashcode siano diversi e che i due oggetti non siano più uguali
-        la2.add(new Object());
-        assertNotEquals("Controllo non siano uguali",true,la.equals(la2));
-        assertNotEquals("Controllo non abbiano il medesimo hashcode",true, (la.hashCode() == la2.hashCode()) );
-    }
-
-    /**
-     * Dipende da add()
-     * Controllo della coerenza con il metodo contains()
-     * TODO: Forse meglio splittare il controllo della coerenza
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
      */
     @Test
     public void testIndexOf(){
@@ -270,104 +193,16 @@ public class ListAdapterTester {
         assertNotEquals("Controllo che non venga trovato un oggetto non presente nella lista",true,la.contains(notPresent));
     }
 
-    /**
-     * Dipende da add() e remove()
-     */
-    @Test
-    public void testIsEmpty(){
-        assertEquals("Controllo che una collezione appena creata sia vuota",true,la.isEmpty());
-
-        Object toAdd = new Object();
-        la.add(toAdd);
-        assertNotEquals("Controllo che dopo l'inserimento di un elemento non sia vuota",true,la.isEmpty());
-
-        la.remove(toAdd);
-        assertEquals("Controllo che dopo la rimozione dell'unico elemento sia vuota",true,la.isEmpty());
-    }
 
     /**
-     * Dipende da add(), size()
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
      */
-    @Test
-    public void testIterator(){
-        HIterator it = la.iterator();
-        assertEquals("La lista è vuota quindi l'iteratore non ha un successivo",false,it.hasNext());
-
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        Object obj3 = new Object();
-        la.add(obj1);
-        la.add(obj2);
-        la.add(obj3);
-
-        it = la.iterator();
-        assertEquals("La collezione ha più elementi quindi deve eslare possibile invocare next",true,it.hasNext());
-
-        /**
-         * Mi assicuro che l'iteratore iteri sul numero corretto di elementi, e che veda tutti gli elementi una sola
-         * volta visto che sono presenti una sola volta per costruzione
-         */
-        int items=0;
-        int found_obj1 = 0;
-        int found_obj2 = 0;
-        int found_obj3 = 0;
-        while(it.hasNext()){
-            Object tmp = it.next();
-            items++;
-            if(obj1.equals(tmp)){
-                found_obj1++;
-                break;
-            }
-            if(obj2.equals(tmp)) {
-                found_obj2++;
-                break;
-            }
-            if(obj3.equals(tmp)){
-                found_obj1++;
-                break;
-            }
-        }
-        boolean test = items==3 && found_obj1==1 && found_obj2==1 && found_obj3==1;
-        assertEquals("L'iteratore itera sul numero corretto di elemeti e nella maniera corretta",true,test);
-
-        assertNotEquals("L'iteratore non può più avanzare dopo aver restituito tutti gli elementi della lista",true,it.hasNext());
-
-        //Rimozione del primo elemento trovato dall'iteratore
-        Object removed;
-        int initSize = la.size();
-        it = la.iterator();
-        removed = it.next();
-        it.remove();
-
-        HIterator it2 = la.iterator();
-        int actualSize = 0;
-        while(it2.hasNext()) actualSize++;
-        assertEquals("Dopo l'invocazione di remove la dimensione è diminuita di 1 unità",true,(actualSize+1)==initSize);
-        assertEquals("L'elemento rimosso non deve più far parte del lat",true,la.contains(removed));
-
-        assertThrows("L'iteratore non ha un elemento successivo", NoSuchElementException.class, () -> {
-            la.clear();
-            la.iterator().next();
-        });
-
-        assertThrows("Il metodo Remove() non può eslare invocato sull'iteratore prima di aver invocato next", NoSuchElementException.class, () -> {
-            la.clear();
-            la.add(new Object());
-            HIterator it1 = la.iterator();
-            it1.remove();
-        });
-
-        assertThrows("Il metodo Remove() non può eslare invocato due volte conlacutivamente", NoSuchElementException.class, () -> {
-            la.clear();
-            la.add(new Object());
-            la.add(new Object());
-            HIterator it12 = la.iterator();
-            it12.next();
-            it12.remove();
-            it12.remove();
-        });
-    }
-
     @Test
     public void testLastIndexOf(){
         Object toFind = new Object();
@@ -387,11 +222,13 @@ public class ListAdapterTester {
     }
 
     /**
-     * TODO: Possibile l'integrazione tra i metodi IndexOf e LastIndexOf
-     */
-
-    /**
-     * Dipende dal metodo get()
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
      */
     @Test
     public void testListIterator(){
@@ -445,6 +282,15 @@ public class ListAdapterTester {
 
     }
 
+    /**
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
+     */
     @Test
     public void testListIteratorIndex(){
         /**
@@ -452,6 +298,15 @@ public class ListAdapterTester {
          */
     }
 
+    /**
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
+     */
     @Test
     public void testRemoveIndex(){
         /**
@@ -459,23 +314,14 @@ public class ListAdapterTester {
          */
     }
 
-    @Test
-    public void testRemove(){
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        la.add(obj1);
-        la.add(obj2);
-
-        /**
-         * TODO: Forse potrei aggiungere una dipendenza dal metodo size()
-         */
-
-        assertEquals("Rimozione di un oggetto contenuto",true,la.remove(obj1));
-        assertNotEquals("Controllo non permetta la rimozione dello stesso oggetto due volte",true,la.remove(obj1));
-    }
-
     /**
-     * Dipende dal metodo add() e contains()
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
      */
     @Test
     public void testRemoveAll(){
@@ -510,9 +356,14 @@ public class ListAdapterTester {
         assertEquals(1,la.size());
     }
 
-
     /**
-     * Dipende dal metodo add() e contains()
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
      */
     @Test
     public void testRetainAll(){
@@ -537,7 +388,13 @@ public class ListAdapterTester {
     }
 
     /**
-     * Dipende dal metodo add(), size() e get()
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
      */
     @Test
     public void testSet(){
@@ -561,15 +418,14 @@ public class ListAdapterTester {
     }
 
     /**
-     * Dipende da add()
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
      */
-    @Test
-    public void testSize(){
-        assertEquals("La lista inizialmente è creata vuota",0,la.size());
-        la.add(new Object());
-        assertEquals("La lista contiene un elemento",1,la.size());
-    }
-
     @Test
     public void testSubList(){
         /**
@@ -578,8 +434,13 @@ public class ListAdapterTester {
     }
 
     /**
-     * Controllo mantenga la sequenza di visita della lista.
-     * Dipende dal metodo add()
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
      */
     @Test
     public void testToArray(){

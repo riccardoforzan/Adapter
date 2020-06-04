@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
 
 /**
  * This implementation of HSet interface DOES NOT ALLOW null values as input.
- * This implementation of HSet doesn't make any gaurantees about the order of its elements.
+ * This implementation of HSet doesn't make any guarantees about the order of its elements.
  */
 public class SetAdapter implements HSet {
 
