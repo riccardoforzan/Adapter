@@ -106,8 +106,6 @@ public interface HCollection{
      */
     Object[] toArray(Object[] a);
 
-    // Modification Operations
-
     /**
      * Ensures that this collection contains the specified element (optional
      * operation).  Returns <tt>true</tt> if this collection changed as a
@@ -162,9 +160,6 @@ public interface HCollection{
      *         is not supported by this collection
      */
     boolean remove(Object o);
-
-
-    // Bulk Operations
 
     /**
      * Returns <tt>true</tt> if this collection contains all of the elements

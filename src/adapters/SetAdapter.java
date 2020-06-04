@@ -290,6 +290,45 @@ public class SetAdapter implements HSet {
     }
 
     /**
+     * Compares the specified object with this set for equality.  Returns
+     * <tt>true</tt> if the specified object is also a set, the two sets
+     * have the same size, and every member of the specified set is
+     * contained in this set (or equivalently, every member of this set is
+     * contained in the specified set).  This definition ensures that the
+     * equals method works properly across different implementations of the
+     * set interface.
+     *
+     * @param o object to be compared for equality with this set
+     * @return <tt>true</tt> if the specified object is equal to this set
+     */
+    public boolean equals(Object o){
+        /**
+         * TODO: Implementazione
+         */
+        return false;
+    }
+
+    /**
+     * Returns the hash code value for this set.  The hash code of a set is
+     * defined to be the sum of the hash codes of the elements in the set,
+     * where the hash code of a <tt>null</tt> element is defined to be zero.
+     * This ensures that <tt>s1.equals(s2)</tt> implies that
+     * <tt>s1.hashCode()==s2.hashCode()</tt> for any two sets <tt>s1</tt>
+     * and <tt>s2</tt>, as required by the general contract of
+     * Object.hashCode().
+     *
+     * @return the hash code value for this set
+     */
+    @Override
+    public int hashCode(){
+        int hashCode=0;
+        /**
+         * TODO: Implementazione
+         */
+        return hashCode;
+    }
+
+    /**
      * Returns an iterator over the elements in this set.
      * The elements are returned in no particular order.
      *

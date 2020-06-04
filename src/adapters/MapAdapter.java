@@ -11,6 +11,7 @@ import java.util.Hashtable;
  */
 public class MapAdapter implements HMap {
 
+
     private Hashtable ht;
 
     public MapAdapter(){
@@ -219,6 +220,43 @@ public class MapAdapter implements HMap {
     @Override
     public HSet entrySet() {
         return null;
+    }
+
+    /**
+     * Compares the specified object with this map for equality.  Returns
+     * <tt>true</tt> if the given object is also a map and the two maps
+     * represent the same mappings.  More formally, two maps <tt>m1</tt> and
+     * <tt>m2</tt> represent the same mappings if
+     * <tt>m1.entrySet().equals(m2.entrySet())</tt>.  This ensures that the
+     * <tt>equals</tt> method works properly across different implementations
+     * of the <tt>Map</tt> interface.
+     *
+     * @param o object to be compared for equality with this map
+     * @return <tt>true</tt> if the specified object is equal to this map
+     */
+    public boolean equals(Object o){
+        /**
+         * TODO: Implementazione
+         */
+        return false;
+    }
+
+    /**
+     * Returns the hash code value for this map.  The hash code of a map is
+     * defined to be the sum of the hash codes of each entry in the map's
+     * <tt>entrySet()</tt> view.  This ensures that <tt>m1.equals(m2)</tt>
+     * implies that <tt>m1.hashCode()==m2.hashCode()</tt> for any two maps
+     * <tt>m1</tt> and <tt>m2</tt>, as required by the general contract of
+     * <tt>Object.hashCode</tt>
+     *
+     * @return the hash code value for this map
+     */
+    public int hashCode(){
+        int hashCode = 0;
+        /**
+         * TODO: Implementazione
+         */
+        return hashCode;
     }
 
 }
