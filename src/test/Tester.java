@@ -10,6 +10,10 @@ public class Tester {
 
     public static void main(String[] args) {
 
+        /**
+         * TODO: Togliere il ciclo for esteso e l'array list
+         */
+
         ArrayList<Class> toTest = new ArrayList<>();
         toTest.add(SetAdapterTester.class);
         //toTest.add(MapAdapterTester.class);
