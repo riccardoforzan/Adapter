@@ -23,7 +23,7 @@ public abstract class CollectionTester{
      */
     @Test
     public void test_isEmpty() {
-        assertEquals("New collection must be empty",true,itt.isEmpty());
+        assertTrue("New collection must be empty", itt.isEmpty());
     }
 
     /**
@@ -43,7 +43,7 @@ public abstract class CollectionTester{
     @Test
     public void test_add() {
         Object toAdd = new Object();
-        assertEquals("Adding a new element on an empty colleciton",true,itt.add(toAdd));
+        assertTrue("Adding a new element on an empty colleciton", itt.add(toAdd));
     }
 
     /**
@@ -62,9 +62,7 @@ public abstract class CollectionTester{
      */
     @Test
     public void check_add_npe(){
-        assertThrows("Null parameter for value o given to add(Object o)",NullPointerException.class, () -> {
-            itt.add(null);
-        });
+        assertThrows("Null parameter for value o given to add(Object o)",NullPointerException.class, () -> itt.add(null));
     }
 
     /**
@@ -77,7 +75,7 @@ public abstract class CollectionTester{
     @Test
     public void check_consistencySizeIsEmpty(){
         itt.add(new Object());
-        assertNotEquals("Collection ins't empty",true,itt.isEmpty());
+        assertFalse("Collection ins't empty",itt.isEmpty());
         assertNotEquals("Collection isn't empty, so size !=0 ",0,itt.size());
     }
 
@@ -91,7 +89,7 @@ public abstract class CollectionTester{
     public void test_clear() {
         itt.add(new Object());
         itt.clear();
-        assertEquals("Collection now must be empty",true,itt.isEmpty());
+        assertTrue("Collection now must be empty", itt.isEmpty());
     }
 
     /**
@@ -105,7 +103,7 @@ public abstract class CollectionTester{
     public void test_contains() {
         Object toFind = new Object();
         itt.add(toFind);
-        assertEquals("The object is found on the collection",true,itt.contains(toFind));
+        assertTrue("The object is found on the collection", itt.contains(toFind));
     }
 
     /**
@@ -117,7 +115,7 @@ public abstract class CollectionTester{
     @Test
     public void test_containsNotPresent() {
         Object toFind = new Object();
-        assertEquals("The object isn't found on the collection",false,itt.contains(toFind));
+        assertFalse("The object isn't found on the collection", itt.contains(toFind));
     }
 
     /**
@@ -127,9 +125,7 @@ public abstract class CollectionTester{
      */
     @Test
     public void check_contains_npe(){
-        assertThrows("Null parameter for value o given to contains(Object o)",NullPointerException.class, () -> {
-            itt.contains(null);
-        });
+        assertThrows("Null parameter for value o given to contains(Object o)",NullPointerException.class, () -> itt.contains(null));
     }
 
     /**
@@ -253,7 +249,7 @@ public abstract class CollectionTester{
     @Test
     public void test_Iterator_hasNext_EmptyCollection() {
         HIterator it = itt.iterator();
-        assertEquals("Collection is empty",false,it.hasNext());
+        assertFalse("Collection is empty", it.hasNext());
     }
 
     /**
@@ -267,7 +263,7 @@ public abstract class CollectionTester{
     public void test_Iterator_hasNext_NotEmptyCollection() {
         itt.add(new Object());
         HIterator it = itt.iterator();
-        assertEquals("Collection has got some elements",true,it.hasNext());
+        assertTrue("Collection has got some elements", it.hasNext());
     }
 
     /**
@@ -279,9 +275,7 @@ public abstract class CollectionTester{
      */
     @Test
     public void test_Iterator_next_npe() {
-        assertThrows("No element in this collection", NoSuchElementException.class, () -> {
-            itt.iterator().next();
-        });
+        assertThrows("No element in this collection", NoSuchElementException.class, () -> itt.iterator().next());
     }
 
     /**
@@ -297,34 +291,29 @@ public abstract class CollectionTester{
 
         Object obj1 = new Object();
         Object obj2 = new Object();
-        Object obj3 = new Object();
         itt.add(obj1);
         itt.add(obj2);
-        itt.add(obj3);
-
 
         int items=0;
         int found_obj1 = 0;
         int found_obj2 = 0;
-        int found_obj3 = 0;
         while(it.hasNext()){
             Object tmp = it.next();
             items++;
             if(obj1.equals(tmp)){
                 found_obj1++;
-                break;
-            }
-            if(obj2.equals(tmp)) {
+            }else if(obj2.equals(tmp)) {
                 found_obj2++;
-                break;
-            }
-            if(obj3.equals(tmp)){
-                found_obj1++;
-                break;
             }
         }
-        boolean test = items==3 && found_obj1==1 && found_obj2==1 && found_obj3==1;
-        assertEquals("Iterator found all 3 elements",true,test);
+
+        boolean test;
+
+        test = items==2;
+        test &= found_obj1==1;
+        test &= found_obj2==1;
+
+        assertTrue("Iterator found all 3 elements", test);
     }
 
     /**
@@ -346,8 +335,8 @@ public abstract class CollectionTester{
         HIterator it2 = itt.iterator();
         int actualSize = 0;
         while(it2.hasNext()) actualSize++;
-        assertEquals("Dimension of the collection decreased by 1",true,(actualSize+1)==initSize);
-        assertEquals("The removed element does not belong to this collection",true,itt.contains(removed));
+        assertEquals("Dimension of the collection decreased by 1", (actualSize + 1), initSize);
+        assertTrue("The removed element does not belong to this collection", itt.contains(removed));
     }
 
     /**
