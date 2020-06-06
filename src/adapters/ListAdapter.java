@@ -261,15 +261,15 @@ public class ListAdapter implements HList {
     @Override
     public boolean retainAll(HCollection c) {
         //Throws NullPointerException if c == null
-        HIterator it = this.iterator();
+        HIterator itc = c.iterator();
         boolean isChanged = false;
 
-        while(it.hasNext()){
-            Object tmp = it.next();
+        while(itc.hasNext()){
+            Object tmp = itc.next();
             //Throws NullPointerException if tmp == null
-            if(!c.contains(tmp)){
+            if(!this.contains(tmp)){
                 isChanged = true;
-                it.remove();
+                this.remove(tmp);
             }
         }
 

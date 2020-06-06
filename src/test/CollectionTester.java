@@ -10,9 +10,9 @@ import java.util.NoSuchElementException;
 import static org.junit.Assert.*;
 
 /**
- * Shard test between Set and List
+ * Shared test between all HCollection implementation
  */
-public abstract class CollectionTester{
+public abstract class CollectionTester implements IteratorTester{
 
     //HCollection instance to test
     protected HCollection itt;
@@ -48,7 +48,7 @@ public abstract class CollectionTester{
 
     /**
      * @title Test of add(object) method
-     * @description Test adding an object already contained in the collection
+     * @description Test adding an object already contained in the collection, the behavior depends:
      * @expectedResults for ListAdapter true, the object is added
      * @expectedResults for SetAdapter false, the object is already contained
      * @preConditions the object to add must be already added
@@ -139,7 +139,7 @@ public abstract class CollectionTester{
     public void test_remove() {
         Object toRemove = new Object();
         itt.add(toRemove);
-        assertEquals("The object is removed",true,itt.remove(toRemove));
+        assertTrue("The object is removed", itt.remove(toRemove));
     }
 
     /**
@@ -151,7 +151,7 @@ public abstract class CollectionTester{
     @Test
     public void test_removeNotPresent() {
         Object toRemove = new Object();
-        assertEquals("The object is not removed",false,itt.remove(toRemove));
+        assertFalse("The object is not removed", itt.remove(toRemove));
     }
 
     /**
@@ -176,12 +176,11 @@ public abstract class CollectionTester{
     @Test
     public void  check_ARC(){
         Object obj = new Object();
-        assertEquals("The object is added to the collection",true,itt.add(obj));
-        assertEquals("The object is contained in the collection",true,itt.contains(obj));
-        assertEquals("The object is removed from the collection",true,itt.remove(obj));
-        assertEquals("The object is not contained in the collection",false,itt.contains(obj));
+        assertTrue("The object is added to the collection", itt.add(obj));
+        assertTrue("The object is contained in the collection", itt.contains(obj));
+        assertTrue("The object is removed from the collection", itt.remove(obj));
+        assertFalse("The object is not contained in the collection", itt.contains(obj));
     }
-
 
     /**
      * @title Test if toArray(Object[] a) throws NullPointerException
@@ -195,15 +194,122 @@ public abstract class CollectionTester{
         });
     }
 
+    //METHOD THAT MUST BE OVERRIDE TO TEST *ALL METHOD
+
+    /**
+     * Method that returns a non empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     * @return a not empty HCollection
+     */
+    protected abstract HCollection createNotEmptyCollection();
+
+    /**
+     * Method that returns a non empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     * @return a HCollection with at least a null value inside
+     */
+    protected abstract HCollection createCollectionWithNull();
+
+    /**
+     * Method that creates an empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     * @return an empty HCollection
+     */
+    protected abstract HCollection createEmptyCollection();
+
+    //TEST addAll METHOD
+
+    /**
+     * @title Test of addAll(HCollection c) method
+     * @description Test adding a void collection to test collection
+     * @expectedResults false, the collection has not been modified because the given collection is empty
+     */
+    @Test
+    public void test_addAll_Empty(){
+        HCollection given = this.createEmptyCollection();
+        assertFalse("Adding 0 elements from another collection",itt.addAll(given));
+    }
+
+    /**
+     * @title Test of addAll(HCollection c) method
+     * @description Test adding a non empty collection to test collection
+     * @expectedResults true, the collection has been modified
+     */
+    @Test
+    public void test_addAll_NotEmpty(){
+        HCollection given = this.createNotEmptyCollection();
+        assertTrue("Adding elements from another collection",itt.addAll(given));
+    }
+
+    /**
+     * @title Test if addAll(HCollection c) throws NullPointerException
+     * @description the method addAll(HCollection c) throws NullPointerException if an element of given collection is null
+     * @expectedResults throws NullPointerException
+     */
+    @Test
+    public void test_addAll_nullInside(){
+        HCollection given = this.createCollectionWithNull();
+        assertThrows("Null parameter inside given collection to addAll(HCollection c)",NullPointerException.class, () -> itt.addAll(given));
+    }
+
     /**
      * @title Test if addAll(HCollection c) throws NullPointerException
      * @description the method addAll(HCollection c) throws NullPointerException if c==null
      * @expectedResults throws NullPointerException
      */
+    @Test
     public void check_addAll_npe(){
-        assertThrows("Null parameter for value a given to toArray(Object[] a)",NullPointerException.class, () -> {
-            itt.addAll(null);
-        });
+        assertThrows("Null parameter as value given to addAll(HCollection c)",NullPointerException.class, () -> itt.addAll(null));
+    }
+
+    //TEST containsAll METHOD
+
+    /**
+     * @title Test of containsAll(HCollection c) method
+     * @description Test containsAll(HCollection c) passing a void collection
+     * @expectedResults true, an empty collection is contained in every other collection
+     */
+    @Test
+    public void test_containsAll_Empty(){
+        HCollection given = this.createEmptyCollection();
+        assertTrue("An empty collection is contained in every other collection",itt.containsAll(given));
+    }
+
+    /**
+     * @title Test of containsAll(HCollection c) method
+     * @description Test containsAll(HCollection c) passing a not empty collection
+     * @expectedResults true, all elements are contained because they were previuosly added
+     * @dependencies addAll(HCollection) is used to grow this collection
+     */
+    @Test
+    public void test_containsAll_NotEmpty(){
+        HCollection given = this.createNotEmptyCollection();
+        itt.addAll(given);
+        assertTrue("All elements added from given collection are contained",itt.containsAll(given));
+    }
+
+    /**
+     * @title Test of containsAll(HCollection c) method
+     * @description Test containsAll(HCollection c) adding some, but not all, elements of a non empty collection
+     * @expectedResults false, not all elements are inserted in the collection
+     * @dependencies addAll(HCollection) is used to grow this collection
+     */
+    public void test_containsAll_Part(){
+        HCollection given = createNotEmptyCollection();
+        itt.addAll(given);
+        //Changing given after addAll
+        given.add(new Object());
+        assertFalse("Not all elements of given collection are contained",itt.containsAll(given));
+    }
+
+    /**
+     * @title Test if containsAll(HCollection c) throws NullPointerException
+     * @description the method addAll(HCollection c) throws NullPointerException if an element of given collection is null
+     * @expectedResults throws NullPointerException
+     */
+    public void test_containsAll_nullInside(){
+        HCollection given = this.createCollectionWithNull();
+        assertThrows("Null parameter inside given collection to containsAll(HCollection c)",NullPointerException.class, () -> itt.containsAll(given));
     }
 
     /**
@@ -212,9 +318,64 @@ public abstract class CollectionTester{
      * @expectedResults throws NullPointerException
      */
     public void check_containsAll_npe(){
-        assertThrows("Null parameter for value a given to toArray(Object[] a)",NullPointerException.class, () -> {
-            itt.containsAll(null);
-        });
+        assertThrows("Null parameter as value given to containsAll(HCollection c)",NullPointerException.class, () -> itt.containsAll(null));
+    }
+
+    //TEST removeAll METHOD
+
+    /**
+     * @title Test of removeAll(HCollection c) method
+     * @description Test removeAll(HCollection c) passing a void collection
+     * @expectedResults false, removing an empty collection does not modify the test collection
+     */
+    @Test
+    public void test_removeAll_Empty(){
+        HCollection given = this.createEmptyCollection();
+        assertFalse("Removing an empty collection does not modify the test collection",itt.removeAll(given));
+    }
+
+    /**
+     * @title Test of removeAll(HCollection c) method
+     * @description Test removeAll(HCollection c) passing a not empty collection
+     * @expectedResults true, collection has been modified deleting all objects previously added
+     * @dependencies addAll(HCollection) is used to grow this collection and isEmpty() to check correctness
+     */
+    @Test
+    public void test_removeAll_NotEmpty(){
+        HCollection given = this.createNotEmptyCollection();
+        itt.addAll(given);
+        assertTrue("Collection has been modified",itt.removeAll(given));
+        assertTrue("All elements are removed from the test collection",itt.isEmpty());
+    }
+
+    /**
+     * @title Test of removeAll(HCollection c) method
+     * @description Test removeAll(HCollection c) removing some, but not all, elements
+     * @expectedResults true, collection has been modified after the call
+     * @dependencies addAll(HCollection) is used to grow this collection,
+     *               size() and contains(Object o) are used to check correctness
+     */
+    @Test
+    public void test_removeAll_Part(){
+        HCollection given = createNotEmptyCollection();
+        itt.addAll(given);
+        //Changing given after addAll
+        Object stillPresent = new Object();
+        itt.add(stillPresent);
+        assertTrue("Collection has been modified",itt.removeAll(given));
+        assertEquals("Collection still contain an element",1,itt.size());
+        assertTrue("The object is still present",itt.contains(stillPresent));
+    }
+
+    /**
+     * @title Test if removeAll(HCollection c) throws NullPointerException
+     * @description the method addAll(HCollection c) throws NullPointerException if an element of given collection is null
+     * @expectedResults throws NullPointerException
+     */
+    @Test
+    public void test_removeAll_nullInside(){
+        HCollection given = this.createCollectionWithNull();
+        assertThrows("Null parameter inside given collection to removeAll(HCollection c)",NullPointerException.class, () -> itt.removeAll(given));
     }
 
     /**
@@ -222,10 +383,69 @@ public abstract class CollectionTester{
      * @description the method removeAll(HCollection c) throws NullPointerException if c==null
      * @expectedResults throws NullPointerException
      */
+    @Test
     public void check_removeAll_npe(){
-        assertThrows("Null parameter for value a given to toArray(Object[] a)",NullPointerException.class, () -> {
-            itt.removeAll(null);
-        });
+        assertThrows("Null parameter as value given to removeAll(HCollection c)",NullPointerException.class, () -> itt.removeAll(null));
+    }
+
+    //TEST retainAll METHOD
+
+    /**
+     * @title Test of retainAll(HCollection c) method
+     * @description Test retainAll(HCollection c) passing a void collection
+     * @expectedResults true, the collection has been modified and all elements have been removed
+     * @dependencies isEmpty() used to check correctness
+     */
+    @Test
+    public void test_retainAll_Empty(){
+        HCollection given = this.createEmptyCollection();
+        assertTrue("Collection has been modified",itt.retainAll(given));
+        assertTrue("All elemnts have been removed",itt.isEmpty());
+    }
+
+    /**
+     * @title Test of retainAll(HCollection c) method
+     * @description Test retainAll(HCollection c) passing a not empty collection
+     * @expectedResults false, test collection contains the same elements of the collection given as parameter to retain
+     * @dependencies addAll(HCollection) is used to grow this collection
+     */
+    @Test
+    public void test_retainAll_NotEmpty(){
+        HCollection given = this.createNotEmptyCollection();
+        itt.addAll(given);
+        assertFalse("Collection has not been modified",itt.retainAll(given));
+    }
+
+    /**
+     * @title Test of retainAll(HCollection c) method
+     * @description Test retainAll(HCollection c) adding a collection and then saving a subset of the added collection
+     * @expectedResults true, collection has been modified
+     * @dependencies addAll(HCollection c) and add(Object o) and clear() are used to grow the collection,
+     *               size() and contains(Object o) are used to check correctness
+     */
+    public void test_retainAll_Part(){
+        HCollection given = createNotEmptyCollection();
+        Object toSave = new Object();
+        given.add(toSave);
+        itt.addAll(given);
+
+        //Removing all objects and adding the one to save
+        given.clear();
+        given.add(toSave);
+
+        assertFalse("Collection has been modified",itt.retainAll(given));
+        assertEquals("The collection contains 1 element",1,itt.size());
+        assertTrue("Contains the element to save",itt.contains(toSave));
+    }
+
+    /**
+     * @title Test if retainAll(HCollection c) throws NullPointerException
+     * @description the method addAll(HCollection c) throws NullPointerException if an element of given collection is null
+     * @expectedResults throws NullPointerException
+     */
+    public void test_retainAll_nullInside(){
+        HCollection given = this.createCollectionWithNull();
+        assertThrows("Null parameter inside given collection to retainAll(HCollection c)",NullPointerException.class, () -> itt.retainAll(given));
     }
 
     /**
@@ -234,11 +454,25 @@ public abstract class CollectionTester{
      * @expectedResults throws NullPointerException
      */
     public void check_retainAll_npe(){
-        assertThrows("Null parameter for value a given to toArray(Object[] a)",NullPointerException.class, () -> {
-            itt.retainAll(null);
-        });
+        assertThrows("Null parameter as value given to retainAll(HCollection c)",NullPointerException.class, () -> itt.retainAll(null));
     }
 
+    /**
+     * @title Test of addAll(), containsAll() and removeAll()
+     * @description test the common behavior of the collection when adding, checking and removing a collection
+     * @expectedResults the collection adds, finds and removes the objects
+     * @dependencies uses the method addAll(), removeAll() and containsAll()
+     */
+    @Test
+    public void  check_ARC_All(){
+        HCollection given = createNotEmptyCollection();
+        assertTrue("Test collection has been modified", itt.addAll(given));
+        assertTrue("All objects are contained in the test collection", itt.containsAll(given));
+        assertTrue("All objects are removed in the test collection", itt.removeAll(given));
+        assertFalse("All objects are not contained in the test collection", itt.containsAll(given));
+    }
+
+    //TEST ITERATOR
     /**
      * @title Test of Iterator.hasNext()
      * @description Test the iterator
@@ -346,7 +580,7 @@ public abstract class CollectionTester{
      * @dependencies HCollection.iterator()
      */
     public void test_Iterator_remove_npe(){
-        assertThrows("Il metodo Remove() non può essere invocato sull'iteratore prima di aver invocato next", NoSuchElementException.class, () -> {
+        assertThrows("Method remove can not be called if not preceded by a call to next()", NoSuchElementException.class, () -> {
             HIterator it = itt.iterator();
             it.remove();
         });

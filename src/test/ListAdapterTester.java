@@ -32,7 +32,7 @@ public class ListAdapterTester {
     public void test_addDuplicate() {
         Object toAdd = new Object();
         itt.add(toAdd);
-        assertEquals("Adding a new element on an empty colleciton",true,itt.add(toAdd));
+        assertTrue("Adding a new element on an empty collection", itt.add(toAdd));
     }
 
     /**
