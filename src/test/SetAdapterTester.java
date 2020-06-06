@@ -23,6 +23,31 @@ public class SetAdapterTester extends CollectionTester {
     }
 
     /**
+     * Method that returns a non empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     *
+     * @return a not empty HCollection
+     */
+    @Override
+    protected HCollection createNotEmptyCollection() {
+        SetAdapter rv = new SetAdapter();
+        rv.contains(new Object());
+        rv.contains(new Object());
+        return rv;
+    }
+
+    /**
+     * Method that creates an empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     *
+     * @return an empty HCollection
+     */
+    @Override
+    protected HCollection createEmptyCollection() {
+        return new SetAdapter();
+    }
+
+    /**
      * @title Test of add(object) method
      * @description Test adding an object already contained in the collection
      * @expectedResults false, the object is already part of the collection
@@ -80,28 +105,6 @@ public class SetAdapterTester extends CollectionTester {
     @Override
     public void test_toArrayGivenType_large() {
 
-    }
-
-    /**
-     * Method that returns a non empty collection
-     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
-     *
-     * @return a not empty HCollection
-     */
-    @Override
-    protected HCollection createNotEmptyCollection() {
-        return null;
-    }
-
-    /**
-     * Method that creates an empty collection
-     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
-     *
-     * @return an empty HCollection
-     */
-    @Override
-    protected HCollection createEmptyCollection() {
-        return null;
     }
 
 }

@@ -4,17 +4,16 @@ import interfaces.HCollection;
 import interfaces.HIterator;
 import interfaces.HList;
 import interfaces.HListIterator;
-import jdk.swing.interop.SwingInterOpUtils;
 
-import java.util.Vector;
 import java.util.NoSuchElementException;
+import java.util.Vector;
 
 /**
  * This implementation of HList interface DOES NOT ALLOW null values as input
  */
 public class ListAdapter implements HList {
 
-    private Vector ve;
+    private final Vector ve;
 
     public ListAdapter(){
         ve = new Vector();

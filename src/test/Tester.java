@@ -1,31 +1,26 @@
 package test;
 
-import java.util.ArrayList;
-
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
-import org.junit.runner.notification.Failure;
+import java.util.Vector;
 
 public class Tester {
 
     public static void main(String[] args) {
 
-        /**
-         * TODO: Togliere il ciclo for esteso e l'array list
-         */
+        Vector tt = new Vector();
+        tt.add(ListAdapterTester.class);
+        //tt.add(SetAdapterTester.class);
+        //tt.add(MapAdapterTester.class);
 
-        ArrayList<Class> toTest = new ArrayList<>();
-        //toTest.add(SetAdapterTester.class);
-        //toTest.add(MapAdapterTester.class);
-        toTest.add(ListAdapterTester.class);
-
-        for(Class cls : toTest){
+        for(int i=0;i<tt.size();i++){
+            Class cls = (Class) tt.get(i);
             System.out.println("TEST DI: " + cls.getCanonicalName());
             Result result = JUnitCore.runClasses(cls);
 
-            for (Failure failure : result.getFailures()) {
-                System.out.println(failure.toString());
-            }
+            Object[] failures = result.getFailures().toArray();
+            for (int j=0;j<failures.length;j++)
+                System.out.println(failures[j].toString());
 
             System.out.println("TEST EFFETTUATI: " + result.getRunCount());
             System.out.println("TEST CORRETTI:" + (result.getRunCount() - result.getFailures().size()) );

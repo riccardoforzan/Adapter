@@ -57,12 +57,7 @@ public class SetAdapter implements HSet {
      */
     @Override
     public boolean contains(Object o) {
-        int hashCode = o.hashCode();
-        /**
-         * If the hashTable contains the key it must contain the object, two identical object have the same
-         * hashCode, so they can't be inserted in an HashMap because duplicated key are not allowed.
-         */
-        return ht.containsKey(hashCode);
+        return ht.containsKey(o);
     }
 
     /**
@@ -142,9 +137,8 @@ public class SetAdapter implements HSet {
     @Override
     public boolean add(Object e) {
         //Throws NullPointerException if e == null
-        int hashCode = e.hashCode();
-        if(ht.containsKey(hashCode)) return false;
-        ht.put(hashCode,e);
+        if(ht.containsKey(e)) return false;
+        ht.put(e,e);
         return true;
     }
 
@@ -165,9 +159,8 @@ public class SetAdapter implements HSet {
     @Override
     public boolean remove(Object o) {
         //Throws NullPointerException if e == null
-        int hashCode = o.hashCode();
-        if(!ht.containsKey(hashCode)) return false;
-        ht.remove(hashCode);
+        if(!ht.containsKey(o)) return false;
+        ht.remove(o);
         return true;
     }
 
@@ -190,7 +183,7 @@ public class SetAdapter implements HSet {
         while(itc.hasNext()){
             Object tmp = itc.next();
             //If at least 1 element of c is not contained in this set, return false;
-            if(ht.containsKey(tmp.hashCode())) return false;
+            if(ht.containsKey(tmp)) return false;
         }
         return true;
     }
