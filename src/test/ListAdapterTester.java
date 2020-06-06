@@ -1,13 +1,11 @@
 package test;
 
+import adapters.ListAdapter;
 import interfaces.HCollection;
 import interfaces.HListIterator;
-
-import adapters.ListAdapter;
-import adapters.SetAdapter;
-
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ListAdapterTester extends CollectionTester{
@@ -122,7 +120,6 @@ public class ListAdapterTester extends CollectionTester{
         assertArrayEquals("Testing array equals",expected,result);
     }
 
-
     /**
      * @title Test of toArray(Object[] a) method
      * @description Test toArray(Object[] a) method giving an array larger than the collection's size, the behavior depends:
@@ -136,7 +133,7 @@ public class ListAdapterTester extends CollectionTester{
         Object[] expected = new Object[] {new Object(), new Object()};
         la.add(expected[0]);
         la.add(expected[1]);
-        Object[] parameterToChange = new Object[0];
+        Object[] parameterToChange = new Object[10];
         la.toArray(parameterToChange);
 
         boolean correct = true;
@@ -146,7 +143,7 @@ public class ListAdapterTester extends CollectionTester{
                     correct = false;
                 }
             } else {
-                if(expected[i]!=null) correct = false;
+                if(parameterToChange[i]!=null) correct = false;
             }
         }
 
@@ -163,7 +160,7 @@ public class ListAdapterTester extends CollectionTester{
      * @preConditions list must be empty
      */
     @Test
-    public void testAddIndex(){
+    public void test_AddIndex(){
         ListAdapter la = (ListAdapter) itt;
 
         Object toAdd = new Object();
@@ -208,7 +205,7 @@ public class ListAdapterTester extends CollectionTester{
      * @preConditions list contains 1 element
      */
     @Test
-    public void testAddAllIndex(){
+    public void test_AddAllIndex(){
         ListAdapter la = (ListAdapter) itt;
 
         Object alreadyInside = new Object();
@@ -230,7 +227,7 @@ public class ListAdapterTester extends CollectionTester{
      * @preConditions list must be empty
      */
     @Test
-    public void testAddAllIndex_void(){
+    public void test_AddAllIndex_void(){
         ListAdapter la = (ListAdapter) itt;
         HCollection given = createEmptyCollection();
         assertFalse("Collection is not changed",la.addAll(given));
@@ -261,108 +258,248 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * TODO
-     */
-
-    /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Test indexOf method
+     * @description Testing IndexOf method looking for an object in an empty list
+     * @expectedResults -1 not found
+     * @preConditions List must be empty
      */
     @Test
-    public void testIndexOf(){
+    public void test_IndexOf_empty(){
+        ListAdapter la = (ListAdapter) itt;
         Object toFind = new Object();
-        assertEquals("Controllo che nella collezione vuota non venga trovato l'oggetto",-1,la.indexOf(toFind));
+        assertEquals("Looking for an object in an empty collection",-1,la.indexOf(toFind));
+    }
 
-        la.add(toFind);
-        assertEquals("Controllo che l'oggetto sia presente nella collezione",true,la.contains(toFind));
+    /**
+     * @title Test indexOf method
+     * @description Testing IndexOf method looking for an object contained in a list
+     * @expectedResults object found in the list
+     * @dependencies add() method to setup and get() method to check correctness
+     * @preConditions
+     */
+    @Test
+    public void test_IndexOf_found(){
+        ListAdapter la = (ListAdapter) itt;
+        Object toFind = new Object();
         int indexResult = la.indexOf(toFind);
-        assertEquals("Controllo che effettivamente restituisca l'indice corretto",true,la.get(indexResult).equals(toFind));
+        assertEquals("Check correctness",toFind,la.get(indexResult));
+    }
 
+    /**
+     * @title Test indexOf method
+     * @description Testing IndexOf method looking for the first index of an object contained in a list
+     * @expectedResults first position containing the object found in the list
+     * @dependencies add() method to setup and get() method to check correctness
+     * @preConditions
+     */
+    @Test
+    public void test_IndexOf_first(){
+        ListAdapter la = (ListAdapter) itt;
+
+        Object toFind = new Object();
         la.add(toFind);
-        assertEquals("Controllo che effettivamente restituisca la prima occorrenza trovata",0,la.indexOf(toFind));
+        la.add(toFind);
+
+        int indexResult = la.indexOf(toFind);
+
+        assertEquals("Checking returns the first",0,indexResult);
+    }
+
+    /**
+     * @title Test indexOf method
+     * @description Testing IndexOf method looking for an object not present in a non empty list
+     * @expectedResults The object is not found
+     * @dependencies method add() is used to setup the list and contains() is used to check correctness
+     * @preConditions
+     */
+    @Test
+    public void test_IndexOf_notFound(){
+        ListAdapter la = (ListAdapter) itt;
+
+        Object toFind = new Object();
+        la.add(toFind);
+        la.add(toFind);
 
         Object notPresent = new Object();
-        assertEquals("Controllo che non venga trovato un oggetto non presente nella lista",-1,la.indexOf(notPresent));
-        assertNotEquals("Controllo che non venga trovato un oggetto non presente nella lista",true,la.contains(notPresent));
+
+        assertEquals("Looking for an object not present in a non empty list",-1,la.indexOf(notPresent));
+        assertNotEquals("Checking correctness",true,la.contains(notPresent));
     }
 
     /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Test indexOf throws NullPointerException
+     * @description Test the case in which the method throws NullPointerException
+     * @expectedResults NullPointerException thrown
      */
     @Test
-    public void testLastIndexOf(){
+    public void check_IndexOf_npe(){
+        ListAdapter la = (ListAdapter) itt;
+        assertThrows("Testing if NullPointerException is thrown",NullPointerException.class, () -> la.indexOf(null));
+    }
+
+    /**
+     * @title Test lastIndexOf method
+     * @description Testing lastIndexOf method looking for an object in an empty list
+     * @expectedResults -1 not found
+     * @preConditions List must be empty
+     */
+    @Test
+    public void test_lastIndexOf_empty(){
+        ListAdapter la = (ListAdapter) itt;
         Object toFind = new Object();
-        assertEquals("Controllo che nella collezione vuota non venga trovato l'oggetto",-1,la.indexOf(toFind));
+        assertEquals("Looking for an object in an empty collection",-1,la.lastIndexOf(toFind));
+    }
 
+    /**
+     * @title Test last IndexOf method
+     * @description Testing lastIndexOf method looking for an object contained in a list
+     * @expectedResults object found in the list
+     * @dependencies add() method to setup and get() method to check correctness
+     * @preConditions
+     */
+    @Test
+    public void test_lastIndexOf_found(){
+        ListAdapter la = (ListAdapter) itt;
+        Object toFind = new Object();
+        int indexResult = la.lastIndexOf(toFind);
+        assertEquals("Check correctness",toFind,la.get(indexResult));
+    }
+
+    /**
+     * @title Test lastIndexOf method
+     * @description Testing lastIndexOf method looking for the last index of an object contained in a list
+     * @expectedResults last position containing the object found in the list
+     * @dependencies add() method to setup and get() method to check correctness
+     * @preConditions
+     */
+    @Test
+    public void test_lastIndexOf_first(){
+        ListAdapter la = (ListAdapter) itt;
+
+        Object toFind = new Object();
         la.add(toFind);
-        assertEquals("Controllo che l'oggetto sia presente nella collezione",true,la.contains(toFind));
+        la.add(toFind);
+
         int indexResult = la.indexOf(toFind);
-        assertEquals("Controllo che effettivamente restituisca l'indice corretto",true,la.get(indexResult).equals(toFind));
 
+        assertEquals("Checking returns the last",1,indexResult);
+    }
+
+    /**
+     * @title Test lastIndexOf method
+     * @description Testing lastIndexOf method looking for an object not present in a non empty list
+     * @expectedResults The object is not found
+     * @dependencies method add() is used to setup the list and contains() is used to check correctness
+     * @preConditions
+     */
+    @Test
+    public void test_lastIndexOf_notFound(){
+        ListAdapter la = (ListAdapter) itt;
+
+        Object toFind = new Object();
         la.add(toFind);
-        assertEquals("Controllo che effettivamente restituisca l'ultima occorrenza trovata",1,la.indexOf(toFind));
+        la.add(toFind);
 
         Object notPresent = new Object();
-        assertEquals("Controllo che non venga trovato un oggetto non presente nella lista",-1,la.indexOf(notPresent));
-        assertNotEquals("Controllo che non venga trovato un oggetto non presente nella lista",true,la.contains(notPresent));
+
+        assertEquals("Looking for an object not present in a non empty list",-1,la.lastIndexOf(notPresent));
+        assertNotEquals("Checking correctness",true,la.contains(notPresent));
     }
 
     /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Test lastIndexOf throws NullPointerException
+     * @description Test the case in which the method throws NullPointerException
+     * @expectedResults NullPointerException thrown
      */
     @Test
-    public void testRemoveIndex(){
-        /**
-         * TODO
-         */
+    public void check_lastIndexOf_npe(){
+        ListAdapter la = (ListAdapter) itt;
+        assertThrows("Testing if NullPointerException is thrown",NullPointerException.class, () -> la.lastIndexOf(null));
     }
 
     /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Test remove method
+     * @description Test remove method
+     * @expectedResults The object is removed from the list
+     * @dependencies uses the add() method
+     * @preConditions the object to remove belongs to the collection
      */
     @Test
-    public void testSet(){
+    public void test_RemoveIndex(){
+        ListAdapter la = (ListAdapter) itt;
+
+        la.add(new Object());
+
+        Object target = new Object();
+        la.add(target);
+
+        Object removed = la.remove(1);
+        assertEquals("Removing the object",target,removed);
+        assertEquals("Only 1 object left",1,la.size());
+    }
+
+    /**
+     * @title Test remove method throws IndexOutOfBoundException
+     * @description Test if remove method throws IndexOutOfBoundException
+     * @expectedResults throws IndexOutOfBoundException
+     */
+    @Test
+    public void check_RemoveIndex_ioobe(){
+        ListAdapter la = (ListAdapter) itt;
+        assertThrows("Removing position < 0",IndexOutOfBoundsException.class, () -> la.remove(-1));
+        assertThrows("Removing position > size()",IndexOutOfBoundsException.class, () -> la.remove(1));
+    }
+
+    /**
+     * @title Test of set method
+     * @description Testing set method calling it in a valid position
+     * @expectedResults After set method invocation the object saved in position 0 in modified
+     * @dependencies uses add() method to setup the invocation, uses size() and get() to check correctness
+     */
+    @Test
+    public void test_set(){
+        ListAdapter la = (ListAdapter) itt;
         Object obj1 = new Object();
-        la.add(0,obj1);
+        la.add(obj1);
 
         Object substitute = new Object();
         Object previous = la.set(0,substitute);
 
-        assertEquals("Controllo che la dimensione non sia cambiata",1,la.size());
-        assertEquals("Controllo che sia stato restituto l'elemento contenuto precedentemente",true,obj1.equals(previous));
-        assertEquals("Controllo che sia stato inserito il nuovo elemento",true,la.get(0).equals(substitute));
-
-        assertThrows("Cerco di posizionare un elemento in una posizione non permessa (>= size())",IndexOutOfBoundsException.class, () -> {
-            //Non è permesso usare set al posto di add()
-            la.set(la.size(),new Object());
-        });
-        assertThrows("Cerco di posizionare un elemento in una posizione non permessa (<0)",IndexOutOfBoundsException.class, () -> {
-            la.set(-1,new Object());
-        });
+        assertEquals("Checking size is not changed",1,la.size());
+        assertEquals("Checking the returned object",previous,obj1);
+        assertEquals("Checking substitute element inserted",substitute,la.get(0));
     }
+
+    /**
+     * @title Test set method throws NullPointerException
+     * @description Test if set method throws NullPointerException
+     * @expectedResults throws NullPointerException
+     * @dependencies method add() is used to setup the invocation
+     */
+    @Test
+    public void check_set_npe(){
+        ListAdapter la = (ListAdapter) itt;
+        la.add(new Object());
+        assertThrows("Setting position with null",NullPointerException.class, () -> la.set(1,null));
+    }
+
+    /**
+     * @title Test set method throws IndexOutOfBoundException
+     * @description Test if set method throws IndexOutOfBoundException
+     * @expectedResults throws IndexOutOfBoundException
+     */
+    @Test
+    public void check_set_ioobe(){
+        ListAdapter la = (ListAdapter) itt;
+        assertThrows("Setting position < 0",IndexOutOfBoundsException.class, () -> la.set(-1,new Object()));
+        assertThrows("Setting position > size()",IndexOutOfBoundsException.class, () -> la.set(1,new Object()));
+    }
+
+    /**
+     * TODO: Implement the test of ListIterator and SubList
+     */
+
+    //TEST LIST ITERATOR
 
     /**
      * @title
@@ -374,56 +511,7 @@ public class ListAdapterTester extends CollectionTester{
      * @postConditions
      */
     @Test
-    public void testListIterator(){
-        HListIterator it = la.listIterator();
-        assertEquals("La lista è vuota quindi l'iteratore non ha un successivo",false,it.hasNext());
-
-        //Assumo siano testati tutti i metodi di un iteratore standard
-
-        Object toAdd = new Object();
-        it.add(toAdd);
-        assertEquals("Controllo abbia inserito l'oggetto nella prima posizione",toAdd,la.get(0));
-
-        assertEquals("Controllo che abbia un precedente",true,it.hasPrevious());
-        assertEquals("Controllo che il precedente sia l'elemento appena inserito",toAdd,it.previous());
-
-        assertEquals("Controllo che l'iteratore sia a inzio lista",-1,it.previousIndex());
-        assertEquals("Controllo che l'iteratore sia a inzio lista",0,it.nextIndex());
-
-        //Riporto in testa l'iteratore
-        it=la.listIterator();
-        Object newValue = new Object();
-        it.set(newValue);
-        assertEquals("Controllo che abbia modificato l'ogggetto iniziale",newValue,la.get(0));
-
-        assertThrows(IllegalStateException.class, ()->{
-            la.clear();
-            HListIterator li = la.listIterator();
-            li.set(new Object());
-        });
-
-        /**
-         * TODO: Controllare
-         */
-
-        //remove or add have been called after the last call to next or previous.
-        assertThrows(IllegalStateException.class, ()->{
-            la.clear();
-            HListIterator li = la.listIterator();
-            Object toInsert = new Object();
-            li.add(toInsert);
-            li.set(new Object());
-        });
-        assertThrows(IllegalStateException.class, ()->{
-            la.clear();
-            HListIterator li = la.listIterator();
-            Object toInsert = new Object();
-            li.add(toInsert);
-            li.remove();
-            li.set(new Object());
-        });
-
-    }
+    public void test_listIterator_nextIndex(){}
 
     /**
      * @title
@@ -435,11 +523,18 @@ public class ListAdapterTester extends CollectionTester{
      * @postConditions
      */
     @Test
-    public void testListIteratorIndex(){
-        /**
-         * TODO
-         */
-    }
+    public void test_listIterator_hasPrevious(){}
+    /**
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
+     */
+    @Test
+    public void test_listIterator_previous(){}
 
     /**
      * @title
@@ -451,11 +546,44 @@ public class ListAdapterTester extends CollectionTester{
      * @postConditions
      */
     @Test
-    public void testSubList(){
-        /**
-         * TODO
-         */
-    }
+    public void test_listIterator_previousIndex(){}
 
+    /**
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
+     */
+    @Test
+    public void test_listIterator_add(){}
+
+    /**
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
+     */
+    @Test
+    public void test_listIterator_set(){}
+
+    //TEST SUBLIST
+
+    /**
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
+     */
+    @Test
+    public void testSubList(){}
 
 }
