@@ -10,16 +10,49 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import java.util.NoSuchElementException;
-
-public class ListAdapterTester {
-
-    //Instance to test
-    private ListAdapter itt;
+public class ListAdapterTester extends CollectionTester{
 
     @Before
     public void setup(){
-        itt = new ListAdapter();
+        super.itt = new ListAdapter();
+    }
+
+    /**
+     * Method that returns a non empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     *
+     * @return a not empty HCollection
+     */
+    @Override
+    protected HCollection createNotEmptyCollection() {
+        HCollection rv = new ListAdapter();
+        rv.add(new Object());
+        rv.add(new Object());
+        return rv;
+    }
+
+    /**
+     * Method that returns a non empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     *
+     * @return a HCollection with at least a null value inside
+     */
+    @Override
+    protected HCollection createCollectionWithNull() {
+        HCollection rv = new ListAdapter();
+        rv.add(null);
+        return rv;
+    }
+
+    /**
+     * Method that creates an empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     *
+     * @return an empty HCollection
+     */
+    @Override
+    protected HCollection createEmptyCollection() {
+        return new ListAdapter();
     }
 
     /**
@@ -36,135 +69,200 @@ public class ListAdapterTester {
     }
 
     /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Test of toArray() method
+     * @description Test toArray() method , the behavior depends:
+     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
+     * @dependencies uses ListAdapter.add(element) to setup the object
+     * @preConditions list must not be empty
+     */
+    @Override
+    public void test_toArray_notEmpty() {
+        ListAdapter la = (ListAdapter) itt;
+        Object[] expected = new Object[] {new Object(), new Object()};
+        la.add(expected[0]);
+        la.add(expected[1]);
+        Object[] result = la.toArray();
+        assertArrayEquals("Checking the array (also the order)",expected,result);
+
+    }
+
+    /**
+     * @title Test of toArray(Object[] a) method
+     * @description Test toArray(Object[] a) method giving as parameter an array that array.length == collection.size(), the behavior depends:
+     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
+     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
+     * @expectedResults in both cases it uses to return the array given as parameter
+     */
+    @Override
+    public void test_toArrayGivenType_notEmpty() {
+        ListAdapter la = (ListAdapter) itt;
+        Object[] expected = new Object[] {new Object(), new Object()};
+        la.add(expected[0]);
+        la.add(expected[1]);
+        Object[] parameterToChange = new Object[2];
+        la.toArray(parameterToChange);
+        assertArrayEquals("Parameter changed",expected,parameterToChange);
+    }
+
+    /**
+     * @title Test of toArray(Object[] a) method
+     * @description Test toArray(Object[] a) method giving an array smaller than the collection's size, the behavior depends:
+     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
+     *                  in both cases it allocates a NEW array of the same length as the size of the collection
+     * @dependencies  uses ListAdapter.add(element) to setup the object and uses ListAdapter.toArray() to check correctness
+     * @preConditions list must not be empty
+     */
+    @Override
+    public void test_toArrayGivenType_small() {
+        ListAdapter la = (ListAdapter) itt;
+        Object[] expected = new Object[] {new Object(), new Object()};
+        la.add(expected[0]);
+        la.add(expected[1]);
+        Object[] result = la.toArray(new Object[0]);
+        assertArrayEquals("Testing array equals",expected,result);
+    }
+
+
+    /**
+     * @title Test of toArray(Object[] a) method
+     * @description Test toArray(Object[] a) method giving an array larger than the collection's size, the behavior depends:
+     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
+     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
+     * @expectedResults in both cases it uses to return the array given as a parameter, with the empty positions set at null
+     */
+    @Override
+    public void test_toArrayGivenType_large() {
+        ListAdapter la = (ListAdapter) itt;
+        Object[] expected = new Object[] {new Object(), new Object()};
+        la.add(expected[0]);
+        la.add(expected[1]);
+        Object[] parameterToChange = new Object[0];
+        la.toArray(parameterToChange);
+
+        boolean correct = true;
+        for(int i=0;i<parameterToChange.length && correct;i++){
+            if(i<expected.length) {
+                if (!expected[i].equals(parameterToChange[i])){
+                    correct = false;
+                }
+            } else {
+                if(expected[i]!=null) correct = false;
+            }
+        }
+
+        assertTrue("The given array has been modified and it's correct",correct);
+    }
+
+    //STARTING TEST OF ListAdapter ONLY METHODS
+
+    /**
+     * @title Test add(index,element) method
+     * @description Testing some insertion using add(index,element)
+     * @expectedResults Successful insertions on specified positions
+     * @dependencies uses the method ListAdapter.get(index) and ListAdapter.size() to check correctness
+     * @preConditions list must be empty
      */
     @Test
     public void testAddIndex(){
+        ListAdapter la = (ListAdapter) itt;
 
-        //Inserimento in una lista vuota
         Object toAdd = new Object();
         la.add(0,toAdd);
-        assertEquals("Inserimento di un elemento nella prima posizione",true,la.get(0).equals(toAdd) && la.size()==1);
+        assertEquals("Inserting an element in first position", la.get(0), toAdd);
 
-        //Inserimento in coda
-        Object toAdd3 = new Object();
-        la.add(2,toAdd3);
-        assertEquals("Inserimento di un terzo elemento in coda",true,la.get(2).equals(toAdd3) && la.size()==3);
-        assertEquals("Controllo siano presenti i due elementi precedenti",true,la.get(0).equals(toAdd2) && la.get(1).equals(toAdd));
-
-        assertThrows("Cerco di posizionare un elemento in una posizione non permessa (>= size())",IndexOutOfBoundsException.class, () -> {
-            la.add(5,new Object());
-        });
-        assertThrows("Cerco di posizionare un elemento in una posizione non permessa (<0)",IndexOutOfBoundsException.class, () -> {
-            la.add(-1,new Object());
-        });
-
+        Object toAdd2 = new Object();
+        la.add(1,toAdd2);
+        assertTrue("Checking the list after tail insertion ", la.get(0).equals(toAdd2) && la.get(1).equals(toAdd) && la.size()==2);
     }
 
     /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Testing add(index,element) throws IndexOutOfBoundException
+     * @description Test the case in which the method throws IndexOutOfBoundException
+     * @expectedResults IndexOutOfBoundException thrown
+     * @preConditions List where insertions are made must be empty
      */
     @Test
-    public void testAddAll(){
-        ListAdapter cta = new ListAdapter();
-        assertEquals("L'aggiunta di una collezione vuota non modifica la lista",false,la.addAll(cta));
-
-        //Costruzione della collezione
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        Object obj3 = new Object();
-        cta.add(obj1);
-        cta.add(obj2);
-        cta.add(obj3);
-
-        assertEquals("Aggiungo a questa lista una collezione",true,la.addAll(cta));
-        assertEquals("Controllo sia stata aggiunta",3,la.size());
-        assertEquals("Controllo che effettivamente contenga gli elementi inseriti",true,la.get(0).equals(obj1)&&la.get(1).equals(obj2)&&la.get(2).equals(obj3));
-
-        assertEquals("Aggiungo a questa lista la stessa collezione una seconda volta, mi aspetto che la lista si modifichi visto che permette duplicati",true,la.addAll(cta));
-        assertEquals("Controllo sia stata aggiunta",6,la.size());
-        assertEquals("Controllo che effettivamente contenga gli elementi inseriti",true,
-                la.get(0).equals(obj1) && la.get(1).equals(obj2) && la.get(2).equals(obj3) && la.get(3).equals(obj1) && la.get(4).equals(obj2) && la.get(5).equals(obj3));
+    public void check_AddIndex_ioobe(){
+        ListAdapter la = (ListAdapter) itt;
+        assertThrows("Inserting in position >= size())",IndexOutOfBoundsException.class, () -> la.add(5,new Object()));
+        assertThrows("Inserting in position <0",IndexOutOfBoundsException.class, () -> la.add(-1,new Object()));
     }
 
     /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Testing add(index,element) throws NullPointerException
+     * @description Test the case in which the method throws NullPointerException
+     * @expectedResults NullPointerException thrown
+     */
+    @Test
+    public void check_AddIndex_npe(){
+        ListAdapter la = (ListAdapter) itt;
+        assertThrows("Inserting a null value",NullPointerException.class, () -> la.add(0,null));
+    }
+
+    /**
+     * @title Test addAll(index,collection) method
+     * @description Testing insertion using addAll(index,collection)
+     * @expectedResults Successful insertions of given collection on specified position
+     * @dependencies uses the method ListAdapter.add(element) to set up the list
+     *               uses the method ListAdapter.get(index) and ListAdapter.size() to check correctness
+     * @preConditions list contains 1 element
      */
     @Test
     public void testAddAllIndex(){
-        ListAdapter cta = new ListAdapter();
-        assertEquals("L'aggiunta di una collezione vuota non modifica la lista",false,la.addAll(0,cta));
-
-        //Costruzione della collezione
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        Object obj3 = new Object();
-        cta.add(obj1);
-        cta.add(obj2);
-        cta.add(obj3);
+        ListAdapter la = (ListAdapter) itt;
 
         Object alreadyInside = new Object();
         la.add(alreadyInside);
 
-        assertEquals("Aggiungo a questa lista una collezione in testa shiftando gli oggetti",true,la.addAll(0,cta));
-        assertEquals("Controllo sia stata aggiunta",4,la.size());
-        assertEquals("Controllo che effettivamente contenga gli elementi inseriti",true,la.get(0).equals(obj1)&&la.get(1).equals(obj2)&&la.get(2).equals(obj3)&&la.get(3).equals(alreadyInside));
+        ListAdapter given = (ListAdapter) createNotEmptyCollection();
 
-        assertEquals("Aggiungo a questa lista la stessa collezione una seconda volta però in coda",true,la.addAll(cta));
-        assertEquals("Controllo sia stata aggiunta",7,la.size());
-        assertEquals("Controllo che effettivamente contenga gli elementi inseriti",true,
-                la.get(0).equals(obj1) && la.get(1).equals(obj2) && la.get(2).equals(obj3)
-                        && la.get(3).equals(alreadyInside)
-                        &&  la.get(4).equals(obj1) && la.get(5).equals(obj2) && la.get(6).equals(obj3));
+        assertTrue("Adding elements on head of collection",la.addAll(0,given));
+        assertEquals("Checking size",3,la.size());
 
-        assertThrows("Cerco di posizionare una collezione in una posizione non permessa (>= size())",IndexOutOfBoundsException.class, () -> {
-            la.add(15, cta);
-        });
-        assertThrows("Cerco di posizionare una collezione in una posizione non permessa (<0)",IndexOutOfBoundsException.class, () -> {
-            la.add(-1, cta);
-        });
+        boolean result = la.get(0) == given.get(0) && la.get(1) == given.get(1) && la.get(2) == alreadyInside;
+        assertTrue("Checking result correctness",result);
     }
 
     /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Test addAll(index,collection) method
+     * @description Testing insertion of an empty using addAll(index,collection)
+     * @expectedResults False, the collection has not been changed after invocation
+     * @preConditions list must be empty
      */
     @Test
-    public void testContainsAll(){
-        HCollection collection = new ListAdapter();
-        collection.add(new Object());
-        collection.add(new Object());
-        la.addAll(collection);
-
-        assertEquals("Controllo se la lista contiene tutti gli elementi della collezione",true,la.containsAll(collection));
-
-        Object NotFound = new Object();
-        collection.add(NotFound);
-        assertNotEquals("Aggiungo un oggetto alla collezione e controllo che ora la lista non li contenga più tutti ",true,la.containsAll(collection));
+    public void testAddAllIndex_void(){
+        ListAdapter la = (ListAdapter) itt;
+        HCollection given = createEmptyCollection();
+        assertFalse("Collection is not changed",la.addAll(given));
     }
+
+    /**
+     * @title Testing add(index,element) throws IndexOutOfBoundException
+     * @description Test the case in which the method throws IndexOutOfBoundException
+     * @expectedResults IndexOutOfBoundException thrown
+     * @preConditions List where insertions are made must be empty
+     */
+    @Test
+    public void check_AddAllIndex_ioobe(){
+        ListAdapter la = (ListAdapter) itt;
+        assertThrows("Inserting in position >= size())",IndexOutOfBoundsException.class, () -> la.add(5,new Object()));
+        assertThrows("Inserting in position <0",IndexOutOfBoundsException.class, () -> la.add(-1,new Object()));
+    }
+
+    /**
+     * @title Testing add(index,element) throws NullPointerException
+     * @description Test the case in which the method throws NullPointerException
+     * @expectedResults NullPointerException thrown
+     */
+    @Test
+    public void check_AddAllIndex_npe(){
+        ListAdapter la = (ListAdapter) itt;
+        assertThrows("Inserting a null value",NullPointerException.class, () -> la.add(0,null));
+    }
+
+    /**
+     * TODO
+     */
 
     /**
      * @title
@@ -193,7 +291,6 @@ public class ListAdapterTester {
         assertNotEquals("Controllo che non venga trovato un oggetto non presente nella lista",true,la.contains(notPresent));
     }
 
-
     /**
      * @title
      * @description
@@ -219,6 +316,52 @@ public class ListAdapterTester {
         Object notPresent = new Object();
         assertEquals("Controllo che non venga trovato un oggetto non presente nella lista",-1,la.indexOf(notPresent));
         assertNotEquals("Controllo che non venga trovato un oggetto non presente nella lista",true,la.contains(notPresent));
+    }
+
+    /**
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
+     */
+    @Test
+    public void testRemoveIndex(){
+        /**
+         * TODO
+         */
+    }
+
+    /**
+     * @title
+     * @description
+     * @expectedResults
+     * @actualResult
+     * @dependencies
+     * @preConditions
+     * @postConditions
+     */
+    @Test
+    public void testSet(){
+        Object obj1 = new Object();
+        la.add(0,obj1);
+
+        Object substitute = new Object();
+        Object previous = la.set(0,substitute);
+
+        assertEquals("Controllo che la dimensione non sia cambiata",1,la.size());
+        assertEquals("Controllo che sia stato restituto l'elemento contenuto precedentemente",true,obj1.equals(previous));
+        assertEquals("Controllo che sia stato inserito il nuovo elemento",true,la.get(0).equals(substitute));
+
+        assertThrows("Cerco di posizionare un elemento in una posizione non permessa (>= size())",IndexOutOfBoundsException.class, () -> {
+            //Non è permesso usare set al posto di add()
+            la.set(la.size(),new Object());
+        });
+        assertThrows("Cerco di posizionare un elemento in una posizione non permessa (<0)",IndexOutOfBoundsException.class, () -> {
+            la.set(-1,new Object());
+        });
     }
 
     /**
@@ -308,152 +451,11 @@ public class ListAdapterTester {
      * @postConditions
      */
     @Test
-    public void testRemoveIndex(){
-        /**
-         * TODO
-         */
-    }
-
-    /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
-     */
-    @Test
-    public void testRemoveAll(){
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        Object obj3 = new Object();
-        Object obj4 = new Object();
-        la.add(obj1);
-        la.add(obj2);
-        la.add(obj3);
-        la.add(obj4);
-
-        HCollection toDelete = new SetAdapter();
-        toDelete.add(obj3);
-        toDelete.add(obj4);
-
-        assertEquals("Rimozione degli oggetti della collezione dalla lista",true,la.removeAll(toDelete));
-        assertEquals(2,la.size());
-        assertEquals("Controllo che gli oggetti non presenti nella collezione appartengano ancora alla lista", true, (la.contains(obj1) && la.contains(obj2)) );
-        assertNotEquals("Controllo che gli oggetti presenti nella collezione non appartengano alla lista", true, (la.contains(obj3) || la.contains(obj4)) );
-
-        //Modifica della collezione da eliminare
-        toDelete.add(obj2);
-        assertEquals("Aggiunto un elemento alla collezione da eliminare, controllo sia stato eliminato",true,la.removeAll(toDelete));
-        assertEquals(1,la.size());
-        assertEquals(la.contains(obj1), true);
-        assertNotEquals(la.contains(obj2), true);
-        assertNotEquals(la.contains(obj3), true);
-        assertNotEquals(la.contains(obj4), true);
-
-        assertNotEquals("Controllo una ulteriore invocazione non faccia alcuna modifica",true,la.removeAll(toDelete));
-        assertEquals(1,la.size());
-    }
-
-    /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
-     */
-    @Test
-    public void testRetainAll(){
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        Object obj3 = new Object();
-        Object obj4 = new Object();
-        la.add(obj1);
-        la.add(obj2);
-        la.add(obj3);
-        la.add(obj4);
-
-        HCollection toRetain = new SetAdapter();
-        toRetain.add(obj1);
-        toRetain.add(obj2);
-
-        assertEquals("Rimuovo tutti gli oggetti tranne quelli nella collezione, il metodo modifica la collezione",true,la.retainAll(toRetain));
-        assertEquals("Controllo che contenga i due oggetti nella collezione",true,(la.contains(obj1) && la.contains(obj2)) );
-        assertNotEquals("Controllo che non contenga i due oggetti non presenti nella collezione",true, (la.contains(obj3) || la.contains(obj4)) );
-
-        assertNotEquals("La seconda invocazione non deve modificare la collezione",true,la.retainAll(toRetain));
-    }
-
-    /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
-     */
-    @Test
-    public void testSet(){
-        Object obj1 = new Object();
-        la.add(0,obj1);
-
-        Object substitute = new Object();
-        Object previous = la.set(0,substitute);
-
-        assertEquals("Controllo che la dimensione non sia cambiata",1,la.size());
-        assertEquals("Controllo che sia stato restituto l'elemento contenuto precedentemente",true,obj1.equals(previous));
-        assertEquals("Controllo che sia stato inserito il nuovo elemento",true,la.get(0).equals(substitute));
-
-        assertThrows("Cerco di posizionare un elemento in una posizione non permessa (>= size())",IndexOutOfBoundsException.class, () -> {
-            //Non è permesso usare set al posto di add()
-            la.set(la.size(),new Object());
-        });
-        assertThrows("Cerco di posizionare un elemento in una posizione non permessa (<0)",IndexOutOfBoundsException.class, () -> {
-            la.set(-1,new Object());
-        });
-    }
-
-    /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
-     */
-    @Test
     public void testSubList(){
         /**
          * TODO
          */
     }
 
-    /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
-     */
-    @Test
-    public void testToArray(){
-        Object[] objArray = la.toArray();
-        assertEquals("La lista inizialmente non contiene nessun elemento",0,objArray.length);
-
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        la.add(obj1);
-        la.add(obj2);
-        Object[] expected = new Object[]{obj1,obj2};
-        //Il metodo assertArrayEquals controlla che gli oggetti negli array si trovino nello stesso ordine
-        assertArrayEquals("Array con due oggetti inseriti, nello stesso ordine",expected,la.toArray());
-    }
 
 }

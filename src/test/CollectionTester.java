@@ -17,6 +17,29 @@ public abstract class CollectionTester implements IteratorTester{
     //HCollection instance to test
     protected HCollection itt;
 
+    //METHOD THAT MUST BE OVERRIDE TO TEST *ALL METHOD
+
+    /**
+     * Method that returns a non empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     * @return a not empty HCollection
+     */
+    protected abstract HCollection createNotEmptyCollection();
+
+    /**
+     * Method that returns a non empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     * @return a HCollection with at least a null value inside
+     */
+    protected abstract HCollection createCollectionWithNull();
+
+    /**
+     * Method that creates an empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     * @return an empty HCollection
+     */
+    protected abstract HCollection createEmptyCollection();
+
     /**
      * @title Test of isEmpty() method
      * @expectedResults a HCollection just created must be empty
@@ -53,6 +76,7 @@ public abstract class CollectionTester implements IteratorTester{
      * @expectedResults for SetAdapter false, the object is already contained
      * @preConditions the object to add must be already added
      */
+    @Test
     public abstract void test_addDuplicate();
 
     /**
@@ -161,9 +185,7 @@ public abstract class CollectionTester implements IteratorTester{
      */
     @Test
     public void check_remove_npe(){
-        assertThrows("Null parameter for value o given to remove(Object o)",NullPointerException.class, () -> {
-            itt.remove(null);
-        });
+        assertThrows("Null parameter for value o given to remove(Object o)",NullPointerException.class, () -> itt.remove(null));
     }
 
     /**
@@ -183,39 +205,75 @@ public abstract class CollectionTester implements IteratorTester{
     }
 
     /**
+     * @title Test of toArray() method
+     * @description Test toArray() method on a collection with 0 elements
+     * @expectedResults an array with length == 0
+     */
+    @Test
+    public void test_toArray_empty(){
+        Object[] result = itt.toArray();
+        assertEquals("Array with 0 elements",0,result.length);
+    }
+
+    /**
+     * @title Test of toArray() method
+     * @description Test toArray() method , the behavior depends:
+     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
+     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
+     */
+    @Test
+    public abstract void test_toArray_notEmpty();
+
+    /**
+     * @title Test of toArray(Object[] a) method
+     * @description Test toArray(Object[] a) method , the behavior depends:
+     * @expectedResults an array with length == 0
+     */
+    @Test
+    public void test_toArrayGivenType_empty(){
+        Object[] result = itt.toArray(new Object[0]);
+        assertEquals("Array with 0 elements",0,result.length);
+    }
+
+    /**
+     * @title Test of toArray(Object[] a) method
+     * @description Test toArray(Object[] a) method giving as parameter an array that array.length == collection.size(), the behavior depends:
+     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
+     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
+     * @expectedResults in both cases it uses to return the array given as parameter
+     */
+    @Test
+    public abstract void test_toArrayGivenType_notEmpty();
+
+    /**
+     * @title Test of toArray(Object[] a) method
+     * @description Test toArray(Object[] a) method giving an array smaller than the collection's size, the behavior depends:
+     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
+     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
+     * @expectedResults in both cases it allocates a NEW array of the same length as the size of the collection
+     */
+    @Test
+    public abstract void test_toArrayGivenType_small();
+
+    /**
+     * @title Test of toArray(Object[] a) method
+     * @description Test toArray(Object[] a) method giving an array larger than the collection's size, the behavior depends:
+     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
+     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
+     * @expectedResults in both cases it uses to return the array given as a parameter, with the empty positions set at null
+     */
+    @Test
+    public abstract void test_toArrayGivenType_large();
+
+    /**
      * @title Test if toArray(Object[] a) throws NullPointerException
      * @description the method toArray(Object[] a) throws NullPointerException if a==null
      * @expectedResults throws NullPointerException
      */
     @Test
     public void check_toArrayGivenType_npe(){
-        assertThrows("Null parameter for value a given to toArray(Object[] a)",NullPointerException.class, () -> {
-            itt.toArray(null);
-        });
+        assertThrows("Null parameter for value a given to toArray(Object[] a)",NullPointerException.class, () -> itt.toArray(null));
     }
-
-    //METHOD THAT MUST BE OVERRIDE TO TEST *ALL METHOD
-
-    /**
-     * Method that returns a non empty collection
-     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
-     * @return a not empty HCollection
-     */
-    protected abstract HCollection createNotEmptyCollection();
-
-    /**
-     * Method that returns a non empty collection
-     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
-     * @return a HCollection with at least a null value inside
-     */
-    protected abstract HCollection createCollectionWithNull();
-
-    /**
-     * Method that creates an empty collection
-     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
-     * @return an empty HCollection
-     */
-    protected abstract HCollection createEmptyCollection();
 
     //TEST addAll METHOD
 
@@ -294,6 +352,7 @@ public abstract class CollectionTester implements IteratorTester{
      * @expectedResults false, not all elements are inserted in the collection
      * @dependencies addAll(HCollection) is used to grow this collection
      */
+    @Test
     public void test_containsAll_Part(){
         HCollection given = createNotEmptyCollection();
         itt.addAll(given);
@@ -307,6 +366,7 @@ public abstract class CollectionTester implements IteratorTester{
      * @description the method addAll(HCollection c) throws NullPointerException if an element of given collection is null
      * @expectedResults throws NullPointerException
      */
+    @Test
     public void test_containsAll_nullInside(){
         HCollection given = this.createCollectionWithNull();
         assertThrows("Null parameter inside given collection to containsAll(HCollection c)",NullPointerException.class, () -> itt.containsAll(given));
@@ -317,6 +377,7 @@ public abstract class CollectionTester implements IteratorTester{
      * @description the method containsAll(HCollection c) throws NullPointerException if c==null
      * @expectedResults throws NullPointerException
      */
+    @Test
     public void check_containsAll_npe(){
         assertThrows("Null parameter as value given to containsAll(HCollection c)",NullPointerException.class, () -> itt.containsAll(null));
     }
@@ -423,6 +484,7 @@ public abstract class CollectionTester implements IteratorTester{
      * @dependencies addAll(HCollection c) and add(Object o) and clear() are used to grow the collection,
      *               size() and contains(Object o) are used to check correctness
      */
+    @Test
     public void test_retainAll_Part(){
         HCollection given = createNotEmptyCollection();
         Object toSave = new Object();
@@ -443,6 +505,7 @@ public abstract class CollectionTester implements IteratorTester{
      * @description the method addAll(HCollection c) throws NullPointerException if an element of given collection is null
      * @expectedResults throws NullPointerException
      */
+    @Test
     public void test_retainAll_nullInside(){
         HCollection given = this.createCollectionWithNull();
         assertThrows("Null parameter inside given collection to retainAll(HCollection c)",NullPointerException.class, () -> itt.retainAll(given));
@@ -453,6 +516,7 @@ public abstract class CollectionTester implements IteratorTester{
      * @description the method retainAll(HCollection c) throws NullPointerException if c==null
      * @expectedResults throws NullPointerException
      */
+    @Test
     public void check_retainAll_npe(){
         assertThrows("Null parameter as value given to retainAll(HCollection c)",NullPointerException.class, () -> itt.retainAll(null));
     }

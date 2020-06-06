@@ -1,6 +1,5 @@
 package test;
 
-import interfaces.HIterator;
 import interfaces.HCollection;
 
 import adapters.SetAdapter;
@@ -16,9 +15,7 @@ import java.util.NoSuchElementException;
  * the implementation of SetAdapter does not throw this exception
  */
 
-public class SetAdapterTester {
-
-    private SetAdapter itt;
+public class SetAdapterTester extends CollectionTester {
 
     @Before
     public void setup(){
@@ -39,241 +36,83 @@ public class SetAdapterTester {
     }
 
     /**
-     * @title Test of addAll(HCollection c) method
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Test of toArray() method
+     * @description Test toArray() method , the behavior depends:
+     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
+     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
      */
-    @Test
-    public void testAddAll() {
-        HCollection collection = new SetAdapter();
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        collection.add(obj1);
-        collection.add(obj2);
-
-        assertEquals("Il set viene modificato aggiungendo due elementi",true, se.addAll(collection));
-        assertEquals("Mi aspetto che siano stati aggiunti 2 elementi al set vuoto",2, se.size());
-        assertEquals("Controllo con il metodo contains",true,se.contains(obj1) && se.contains(obj2));
-
-        assertNotEquals("Controllo non vengano effettuati doppi inserimenti",true, se.addAll(collection));
-        assertEquals(2, se.size());
-
-        collection.add(new Object());
-        assertEquals("Il set viene modificato aggiungendo un elemento",true, se.addAll(collection));
-        assertEquals("Controllo che la dimensione sia aumentata sino a 3",3, se.size());
-
-        assertThrows(NullPointerException.class, () -> {
-            HCollection collection1 = new SetAdapter();
-            collection1.add(null);
-            se.addAll(collection1);
-        });
-    }
-
-    /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
-     */
-    @Test
-    public void testRetainAll() {
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        Object obj3 = new Object();
-        Object obj4 = new Object();
-        se.add(obj1);
-        se.add(obj2);
-        se.add(obj3);
-        se.add(obj4);
-
-        HCollection toRetain = new SetAdapter();
-        toRetain.add(obj1);
-        toRetain.add(obj2);
-
-        assertEquals("Rimuovo tutti gli oggetti tranne quelli nella collezione, il metodo modifica la collezione",true,se.retainAll(toRetain));
-        assertEquals("Controllo la dimensione del set rimanente",2,se.size());
-        assertEquals("Controllo che contenga i due oggetti nella collezione",true,se.contains(obj1) && se.contains(obj2));
-        assertNotEquals("Controllo che non contenga i due oggetti non presenti nella collezione",true,se.contains(obj3) || se.contains(obj4));
-
-        assertNotEquals("La seconda invocazione non deve modificare la collezione",true,se.retainAll(toRetain));
-        assertEquals("Controllo la dimensione del set, non deve essere modificata",2,se.size());
-
-        assertThrows(NullPointerException.class, () -> se.retainAll(null));
-        assertThrows(NullPointerException.class, () -> {
-            HCollection collection1 = new SetAdapter();
-            collection1.add(null);
-            se.retainAll(collection1);
-        });
-    }
-
-    /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
-     */
-    @Test
-    public void testContainsAll() {
-        HCollection collection = new SetAdapter();
-        collection.add(new Object());
-        collection.add(new Object());
-        se.addAll(collection);
-
-        assertEquals("Controllo se il set contiene tutti gli elementi della collezione",true,se.containsAll(collection));
-
-        Object NotFound = new Object();
-        collection.add(NotFound);
-        assertNotEquals("Aggiungo un oggetto alla collezione e controllo che ora il set non li contenga più tutti ",true,se.containsAll(collection));
-
-        assertThrows("Tento la ricerca di un riferimento a null",NullPointerException.class, () -> se.containsAll(null));
-        assertThrows(NullPointerException.class, () -> {
-            HCollection collection1 = new SetAdapter();
-            collection1.add(null);
-            se.containsAll(collection1);
-        });
-    }
-
-    /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
-     */
-    @Test
-    public void testRemoveAll() {
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        Object obj3 = new Object();
-        Object obj4 = new Object();
-        se.add(obj1);
-        se.add(obj2);
-        se.add(obj3);
-        se.add(obj4);
-
-        HCollection toDelete = new SetAdapter();
-        toDelete.add(obj3);
-        toDelete.add(obj4);
-
-        assertEquals("Rimozione degli oggetti della collezione dal set",true,se.removeAll(toDelete));
-        assertEquals(2,se.size());
-        assertEquals("Controllo che gli oggetti non presenti nella collezione appartengano ancora al set", true, se.contains(obj1) && se.contains(obj2));
-        assertNotEquals("Controllo che gli oggetti presenti nella collezione non appartengano al set", true, (se.contains(obj3) || se.contains(obj4)) );
-
-        //Modifica della collezione da eliminare
-        toDelete.add(obj2);
-        assertEquals("Aggiunto un elemento alla collezione da eliminare, controllo sia stato eliminato",true,se.removeAll(toDelete));
-        assertEquals(1,se.size());
-        assertEquals(se.contains(obj1), true);
-        assertNotEquals(se.contains(obj2), true);
-        assertNotEquals(se.contains(obj3), true);
-        assertNotEquals(se.contains(obj4), true);
-
-        assertNotEquals("Controllo una ulteriore invocazione non faccia alcuna modifica",true,se.removeAll(toDelete));
-        assertEquals(1,se.size());
-
-        assertThrows(NullPointerException.class, () -> se.remove(null));
-        assertThrows(NullPointerException.class, () -> {
-            HCollection collection1 = new SetAdapter();
-            collection1.add(null);
-            se.removeAll(collection1);
-        });
-    }
-
-    // ________________________________________________________ //
-
-    /**
-     * L'implementazione dei due metodi sul controllo degli array è da riverede, ma
-     * TODO: Il metodo assertArrayEquals() TIENE conto dell'ordinamento, non definito per set, quindi non può essere usato
-     * Object[] expected = new Object[]{obj1,obj2};
-     * assertArrayEquals("Array con due oggetti inseriti",expected,se.toArray());
-     */
-
-    /**
-     * Dipende dal metodo add()
-     * Controllo della correttezza con i metodi size() e contains()
-     */
-    @Test
-    public void testToObjectArray() {
-        Object[] objArray = se.toArray();
-        assertEquals("Il set inizialmente non contiene nessun elemento",0,objArray.length);
-
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        se.add(obj1);
-        se.add(obj2);
-
-        objArray = se.toArray();
-
-        assertEquals("Controllo la dimensione dell'array sia corretta",2,objArray.length);
-
-        boolean found_obj1 = false, found_obj2=false;
-        for(int i=0;i<objArray.length;i++){
-            Object tmp = objArray[i];
-            if(!found_obj1 && tmp.equals(obj1)) found_obj1=true;
-            else if(!found_obj2 && tmp.equals(obj2)) found_obj2 = true;
-        }
-
-        assertEquals("Controllo contenga i due elementi inseriti",true,found_obj1&&found_obj2);
+    @Override
+    public void test_toArray_notEmpty() {
 
     }
 
     /**
-     * Dipende dal metodo add()
-     * Controllo della correttezza con i metodi size() e contains()
+     * @title Test of toArray(Object[] a) method
+     * @description Test toArray(Object[] a) method giving as parameter an array that array.length == collection.size(), the behavior depends:
+     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
+     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
+     * @expectedResults in both cases it uses to return the array given as parameter
      */
-    @Test
-    public void testToObjectGivenArray() {
-        Object[] objArray = se.toArray(new Object[0]);
-        assertEquals("Il set inizialmente non contiene nessun elemento",0,objArray.length);
-
-        Object obj1 = new Object();
-        Object obj2 = new Object();
-        se.add(obj1);
-        se.add(obj2);
-
-        //Controllo cosa succede se passo una dimensione nulla
-        objArray = se.toArray(new Object[0]);
-
-
-        assertEquals("Controllo la dimensione dell'array sia corretta",2,objArray.length);
-        boolean found_obj1, found_obj2;
-        found_obj1=false;
-        found_obj2=false;
-        for(int i=0;i<objArray.length;i++){
-            Object tmp = objArray[i];
-            if(!found_obj1 && tmp.equals(obj1)) found_obj1=true;
-            else if(!found_obj2 && tmp.equals(obj2)) found_obj2 = true;
-        }
-        assertEquals("Controllo contenga i due elementi inseriti",true,found_obj1&&found_obj2);
-
-        //Controllo cosa succede se passo una dimensione maggiore di quella del set
-        objArray = se.toArray(new Object[12]);
-
-        assertEquals("Controllo la dimensione dell'array sia corretta",2,objArray.length);
-        found_obj1=false;
-        found_obj2=false;
-        int null_counter=0;
-        for(int i=0;i<objArray.length;i++){
-            Object tmp = objArray[i];
-            if(tmp == null) null_counter++;
-            else if(!found_obj1 && tmp.equals(obj1)) found_obj1=true;
-            else if(!found_obj2 && tmp.equals(obj2)) found_obj2 = true;
-        }
-        assertEquals("Controllo contenga i due elementi inseriti",true,found_obj1&&found_obj2);
-        assertEquals("Controllo contenga 10 valori nulli (12 - 2)",10,null_counter);
+    @Override
+    public void test_toArrayGivenType_notEmpty() {
 
     }
+
+    /**
+     * @title Test of toArray(Object[] a) method
+     * @description Test toArray(Object[] a) method giving an array smaller than the collection's size, the behavior depends:
+     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
+     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
+     * @expectedResults in both cases it allocates a NEW array of the same length as the size of the collection
+     */
+    @Override
+    public void test_toArrayGivenType_small() {
+
+    }
+
+    /**
+     * @title Test of toArray(Object[] a) method
+     * @description Test toArray(Object[] a) method giving an array larger than the collection's size, the behavior depends:
+     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
+     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
+     * @expectedResults in both cases it uses to return the array given as a parameter, with the empty positions set at null
+     */
+    @Override
+    public void test_toArrayGivenType_large() {
+
+    }
+
+    /**
+     * Method that returns a non empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     *
+     * @return a not empty HCollection
+     */
+    @Override
+    protected HCollection createNotEmptyCollection() {
+        return null;
+    }
+
+    /**
+     * Method that returns a non empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     *
+     * @return a HCollection with at least a null value inside
+     */
+    @Override
+    protected HCollection createCollectionWithNull() {
+        return null;
+    }
+
+    /**
+     * Method that creates an empty collection
+     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
+     *
+     * @return an empty HCollection
+     */
+    @Override
+    protected HCollection createEmptyCollection() {
+        return null;
+    }
+
 }
