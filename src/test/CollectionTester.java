@@ -3,6 +3,7 @@ package test;
 import interfaces.HCollection;
 
 import interfaces.HIterator;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.NoSuchElementException;
@@ -420,7 +421,7 @@ public abstract class CollectionTester implements IteratorTester{
     @Test
     public void test_retainAll_Empty(){
         HCollection given = this.createEmptyCollection();
-        assertTrue("Collection has been modified",itt.retainAll(given));
+        assertFalse("Collection has not been modified, already empty",itt.retainAll(given));
         assertTrue("All elemnts have been removed",itt.isEmpty());
     }
 
@@ -455,7 +456,7 @@ public abstract class CollectionTester implements IteratorTester{
         given.clear();
         given.add(toSave);
 
-        assertFalse("Collection has been modified",itt.retainAll(given));
+        assertTrue("Collection has been modified",itt.retainAll(given));
         assertEquals("The collection contains 1 element",1,itt.size());
         assertTrue("Contains the element to save",itt.contains(toSave));
     }
@@ -474,15 +475,15 @@ public abstract class CollectionTester implements IteratorTester{
      * @title Test of addAll(), containsAll() and removeAll()
      * @description test the common behavior of the collection when adding, checking and removing a collection
      * @expectedResults the collection adds, finds and removes the objects
-     * @dependencies uses the method addAll(), removeAll() and containsAll()
+     * @dependencies uses the method addAll(), removeAll() containsAll() and isEmpty()
      */
     @Test
     public void  check_ARC_All(){
         HCollection given = createNotEmptyCollection();
         assertTrue("Test collection has been modified", itt.addAll(given));
         assertTrue("All objects are contained in the test collection", itt.containsAll(given));
-        assertTrue("All objects are removed in the test collection", itt.removeAll(given));
-        assertFalse("All objects are not contained in the test collection", itt.containsAll(given));
+        assertTrue("All objects in the test collection are removed", itt.removeAll(given));
+        assertTrue("The collection is now empty",itt.isEmpty());
     }
 
     //TEST ITERATOR
@@ -534,12 +535,12 @@ public abstract class CollectionTester implements IteratorTester{
      */
     @Test
     public void test_Iterator_next() {
-        HIterator it = itt.iterator();
-
         Object obj1 = new Object();
         Object obj2 = new Object();
         itt.add(obj1);
         itt.add(obj2);
+
+        HIterator it = itt.iterator();
 
         int items=0;
         int found_obj1 = 0;
@@ -572,18 +573,19 @@ public abstract class CollectionTester implements IteratorTester{
      */
     @Test
     public void test_Iterator_remove() {
-        HIterator it = itt.iterator();
+        itt.add(new Object());
+        itt.add(new Object());
 
+        HIterator it = itt.iterator();
         int initSize = itt.size();
 
         Object removed = it.next();
         it.remove();
 
-        HIterator it2 = itt.iterator();
-        int actualSize = 0;
-        while(it2.hasNext()) actualSize++;
-        assertEquals("Dimension of the collection decreased by 1", (actualSize + 1), initSize);
-        assertTrue("The removed element does not belong to this collection", itt.contains(removed));
+        int finalSize = itt.size();
+
+        assertEquals("Dimension of the collection decreased by 1", (finalSize + 1), initSize);
+        assertFalse("The removed element does not belong to this collection", itt.contains(removed));
     }
 
     /**

@@ -202,8 +202,8 @@ public class ListAdapterTester extends CollectionTester{
         assertTrue("Adding elements on head of collection",la.addAll(1,given));
         assertEquals("Checking size",3,la.size());
 
-        boolean result = la.get(0) == given.get(0) && la.get(1) == given.get(1) && la.get(2) == alreadyInside;
-        assertTrue("Checking result correctness",result);
+        boolean result = alreadyInside.equals(la.get(0)) && given.get(0).equals(la.get(1)) && given.get(1).equals(la.get(2));
+        assertTrue("Checking correctness",result);
     }
 
     /**
