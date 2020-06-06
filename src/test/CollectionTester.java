@@ -27,13 +27,6 @@ public abstract class CollectionTester implements IteratorTester{
     protected abstract HCollection createNotEmptyCollection();
 
     /**
-     * Method that returns a non empty collection
-     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
-     * @return a HCollection with at least a null value inside
-     */
-    protected abstract HCollection createCollectionWithNull();
-
-    /**
      * Method that creates an empty collection
      * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
      * @return an empty HCollection
@@ -301,17 +294,6 @@ public abstract class CollectionTester implements IteratorTester{
 
     /**
      * @title Test if addAll(HCollection c) throws NullPointerException
-     * @description the method addAll(HCollection c) throws NullPointerException if an element of given collection is null
-     * @expectedResults throws NullPointerException
-     */
-    @Test
-    public void test_addAll_nullInside(){
-        HCollection given = this.createCollectionWithNull();
-        assertThrows("Null parameter inside given collection to addAll(HCollection c)",NullPointerException.class, () -> itt.addAll(given));
-    }
-
-    /**
-     * @title Test if addAll(HCollection c) throws NullPointerException
      * @description the method addAll(HCollection c) throws NullPointerException if c==null
      * @expectedResults throws NullPointerException
      */
@@ -359,17 +341,6 @@ public abstract class CollectionTester implements IteratorTester{
         //Changing given after addAll
         given.add(new Object());
         assertFalse("Not all elements of given collection are contained",itt.containsAll(given));
-    }
-
-    /**
-     * @title Test if containsAll(HCollection c) throws NullPointerException
-     * @description the method addAll(HCollection c) throws NullPointerException if an element of given collection is null
-     * @expectedResults throws NullPointerException
-     */
-    @Test
-    public void test_containsAll_nullInside(){
-        HCollection given = this.createCollectionWithNull();
-        assertThrows("Null parameter inside given collection to containsAll(HCollection c)",NullPointerException.class, () -> itt.containsAll(given));
     }
 
     /**
@@ -426,17 +397,6 @@ public abstract class CollectionTester implements IteratorTester{
         assertTrue("Collection has been modified",itt.removeAll(given));
         assertEquals("Collection still contain an element",1,itt.size());
         assertTrue("The object is still present",itt.contains(stillPresent));
-    }
-
-    /**
-     * @title Test if removeAll(HCollection c) throws NullPointerException
-     * @description the method addAll(HCollection c) throws NullPointerException if an element of given collection is null
-     * @expectedResults throws NullPointerException
-     */
-    @Test
-    public void test_removeAll_nullInside(){
-        HCollection given = this.createCollectionWithNull();
-        assertThrows("Null parameter inside given collection to removeAll(HCollection c)",NullPointerException.class, () -> itt.removeAll(given));
     }
 
     /**
@@ -498,17 +458,6 @@ public abstract class CollectionTester implements IteratorTester{
         assertFalse("Collection has been modified",itt.retainAll(given));
         assertEquals("The collection contains 1 element",1,itt.size());
         assertTrue("Contains the element to save",itt.contains(toSave));
-    }
-
-    /**
-     * @title Test if retainAll(HCollection c) throws NullPointerException
-     * @description the method addAll(HCollection c) throws NullPointerException if an element of given collection is null
-     * @expectedResults throws NullPointerException
-     */
-    @Test
-    public void test_retainAll_nullInside(){
-        HCollection given = this.createCollectionWithNull();
-        assertThrows("Null parameter inside given collection to retainAll(HCollection c)",NullPointerException.class, () -> itt.retainAll(given));
     }
 
     /**

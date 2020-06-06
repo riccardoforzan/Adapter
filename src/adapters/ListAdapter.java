@@ -219,7 +219,8 @@ public class ListAdapter implements HList {
         while(itc.hasNext()){
             Object tmp = itc.hasNext();
             //Throws NullPointerException if tmp == null
-            add(index++,tmp);
+            add(index,tmp);
+            index++;
             isChanged = true;
         }
         return isChanged;
@@ -495,13 +496,13 @@ public class ListAdapter implements HList {
 
         @Override
         public boolean hasNext() {
-            return cursor<limit;
+            return cursor < limit;
         }
 
         @Override
         public Object next() {
             if(!this.hasNext()) throw new NoSuchElementException();
-            actual = ++cursor;
+            actual = cursor++;
             return ve.get(actual);
         }
 
@@ -551,6 +552,7 @@ public class ListAdapter implements HList {
             limit++;
             actual = -1;
         }
+
     }
 
     /**

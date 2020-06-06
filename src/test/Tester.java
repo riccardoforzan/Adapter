@@ -15,9 +15,9 @@ public class Tester {
          */
 
         ArrayList<Class> toTest = new ArrayList<>();
-        toTest.add(SetAdapterTester.class);
+        //toTest.add(SetAdapterTester.class);
         //toTest.add(MapAdapterTester.class);
-        //toTest.add(ListAdapterTester.class);
+        toTest.add(ListAdapterTester.class);
 
         for(Class cls : toTest){
             System.out.println("TEST DI: " + cls.getCanonicalName());

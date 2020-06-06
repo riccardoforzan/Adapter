@@ -94,17 +94,6 @@ public class SetAdapterTester extends CollectionTester {
     }
 
     /**
-     * Method that returns a non empty collection
-     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
-     *
-     * @return a HCollection with at least a null value inside
-     */
-    @Override
-    protected HCollection createCollectionWithNull() {
-        return null;
-    }
-
-    /**
      * Method that creates an empty collection
      * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
      *

@@ -2,7 +2,6 @@ package test;
 
 import adapters.ListAdapter;
 import interfaces.HCollection;
-import interfaces.HListIterator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,19 +25,6 @@ public class ListAdapterTester extends CollectionTester{
         HCollection rv = new ListAdapter();
         rv.add(new Object());
         rv.add(new Object());
-        return rv;
-    }
-
-    /**
-     * Method that returns a non empty collection
-     * This method must be OVERRIDE by the concrete implementation of a HCollection Tester
-     *
-     * @return a HCollection with at least a null value inside
-     */
-    @Override
-    protected HCollection createCollectionWithNull() {
-        HCollection rv = new ListAdapter();
-        rv.add(null);
         return rv;
     }
 
@@ -169,7 +155,7 @@ public class ListAdapterTester extends CollectionTester{
 
         Object toAdd2 = new Object();
         la.add(1,toAdd2);
-        assertTrue("Checking the list after tail insertion ", la.get(0).equals(toAdd2) && la.get(1).equals(toAdd) && la.size()==2);
+        assertTrue("Checking the list after tail insertion ", la.get(0).equals(toAdd) && la.get(1).equals(toAdd2) && la.size()==2);
     }
 
     /**
@@ -213,7 +199,7 @@ public class ListAdapterTester extends CollectionTester{
 
         ListAdapter given = (ListAdapter) createNotEmptyCollection();
 
-        assertTrue("Adding elements on head of collection",la.addAll(0,given));
+        assertTrue("Adding elements on head of collection",la.addAll(1,given));
         assertEquals("Checking size",3,la.size());
 
         boolean result = la.get(0) == given.get(0) && la.get(1) == given.get(1) && la.get(2) == alreadyInside;
@@ -281,6 +267,7 @@ public class ListAdapterTester extends CollectionTester{
     public void test_IndexOf_found(){
         ListAdapter la = (ListAdapter) itt;
         Object toFind = new Object();
+        la.add(toFind);
         int indexResult = la.indexOf(toFind);
         assertEquals("Check correctness",toFind,la.get(indexResult));
     }
@@ -361,6 +348,7 @@ public class ListAdapterTester extends CollectionTester{
     public void test_lastIndexOf_found(){
         ListAdapter la = (ListAdapter) itt;
         Object toFind = new Object();
+        la.add(toFind);
         int indexResult = la.lastIndexOf(toFind);
         assertEquals("Check correctness",toFind,la.get(indexResult));
     }
@@ -380,7 +368,7 @@ public class ListAdapterTester extends CollectionTester{
         la.add(toFind);
         la.add(toFind);
 
-        int indexResult = la.indexOf(toFind);
+        int indexResult = la.lastIndexOf(toFind);
 
         assertEquals("Checking returns the last",1,indexResult);
     }
