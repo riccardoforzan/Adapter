@@ -4,6 +4,7 @@ import interfaces.HCollection;
 import interfaces.HIterator;
 import interfaces.HList;
 import interfaces.HListIterator;
+import jdk.swing.interop.SwingInterOpUtils;
 
 import java.util.Vector;
 import java.util.NoSuchElementException;
@@ -217,7 +218,7 @@ public class ListAdapter implements HList {
         HIterator itc = c.iterator();
         boolean isChanged = false;
         while(itc.hasNext()){
-            Object tmp = itc.hasNext();
+            Object tmp = itc.next();
             //Throws NullPointerException if tmp == null
             add(index,tmp);
             index++;
@@ -241,7 +242,7 @@ public class ListAdapter implements HList {
         HIterator itc = c.iterator();
         boolean isChanged = false;
         while(itc.hasNext()){
-            Object tmp = itc.hasNext();
+            Object tmp = itc.next();
             //Throws NullPointerException if tmp == null
             isChanged |= remove(tmp);
         }
@@ -261,20 +262,13 @@ public class ListAdapter implements HList {
      */
     @Override
     public boolean retainAll(HCollection c) {
-        //Throws NullPointerException if c == null
-        HIterator itc = c.iterator();
-        boolean isChanged = false;
-
-        while(itc.hasNext()){
-            Object tmp = itc.next();
-            //Throws NullPointerException if tmp == null
-            if(!this.contains(tmp)){
-                isChanged = true;
-                this.remove(tmp);
-            }
+        if(c == null) throw new NullPointerException();
+        ListAdapter toRemove = new ListAdapter();
+        for(int i=0;i<this.size();i++){
+            Object tmp = this.get(i);
+            if(!c.contains(tmp))toRemove.add(tmp);
         }
-
-        return isChanged;
+        return removeAll(toRemove);
     }
 
     /**
