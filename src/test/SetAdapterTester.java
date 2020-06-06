@@ -31,8 +31,8 @@ public class SetAdapterTester extends CollectionTester {
     @Override
     protected HCollection createNotEmptyCollection() {
         SetAdapter rv = new SetAdapter();
-        rv.contains(new Object());
-        rv.contains(new Object());
+        rv.add(new Object());
+        rv.add(new Object());
         return rv;
     }
 

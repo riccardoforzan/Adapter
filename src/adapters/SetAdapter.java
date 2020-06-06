@@ -57,7 +57,9 @@ public class SetAdapter implements HSet {
      */
     @Override
     public boolean contains(Object o) {
-        return ht.containsKey(o);
+        int hashCode = o.hashCode();
+        if(!ht.containsKey(hashCode)) return false;
+        return o.equals(ht.get(hashCode));
     }
 
     /**
@@ -108,6 +110,7 @@ public class SetAdapter implements HSet {
      */
     @Override
     public Object[] toArray(Object[] a) {
+        if(a == null) throw new NullPointerException();
         if(a.length < ht.size()) a = new Object[ht.size()];
         HIterator it = this.iterator();
         int i=0;
@@ -137,8 +140,8 @@ public class SetAdapter implements HSet {
     @Override
     public boolean add(Object e) {
         //Throws NullPointerException if e == null
-        if(ht.containsKey(e)) return false;
-        ht.put(e,e);
+        if(contains(e)) return false;
+        ht.put(e.hashCode(),e);
         return true;
     }
 
@@ -159,8 +162,8 @@ public class SetAdapter implements HSet {
     @Override
     public boolean remove(Object o) {
         //Throws NullPointerException if e == null
-        if(!ht.containsKey(o)) return false;
-        ht.remove(o);
+        if(!this.contains(o)) return false;
+        ht.remove(o.hashCode());
         return true;
     }
 
@@ -183,7 +186,7 @@ public class SetAdapter implements HSet {
         while(itc.hasNext()){
             Object tmp = itc.next();
             //If at least 1 element of c is not contained in this set, return false;
-            if(ht.containsKey(tmp)) return false;
+            if(!this.contains(tmp)) return false;
         }
         return true;
     }
@@ -210,7 +213,7 @@ public class SetAdapter implements HSet {
         while(itc.hasNext()){
             Object tmp = itc.next();
             //Throws NullPointerException if tmp==null
-            isChanged |=this.add(tmp);
+            isChanged |= this.add(tmp);
         }
         return isChanged;
     }
@@ -231,20 +234,14 @@ public class SetAdapter implements HSet {
      */
     @Override
     public boolean retainAll(HCollection c) {
-        //Throws NullPointerException if c == null
-        HIterator it = this.iterator();
-        boolean isChanged = false;
-
-        while(it.hasNext()){
-            Object tmp = it.next();
-            //Throws NullPointerException if tmp == null
-            if(!c.contains(tmp)){
-                isChanged = true;
-                it.remove();
-            }
+        if(c == null) throw new NullPointerException();
+        SetAdapter toRemove = new SetAdapter();
+        HIterator it = iterator();
+        while(it.hasNext()) {
+            Object elem = it.next();
+            if(!c.contains(elem)) toRemove.add(elem);
         }
-
-        return isChanged;
+        return removeAll(toRemove);
     }
 
     /**
@@ -262,13 +259,15 @@ public class SetAdapter implements HSet {
      */
     @Override
     public boolean removeAll(HCollection c) {
-        //Throws NullPointerException if c == null
-        HIterator itc = c.iterator();
+        if(c == null) throw new NullPointerException();
+        HIterator it = this.iterator();
         boolean isChanged = false;
-        while(itc.hasNext()){
-            Object tmp = itc.next();
-            //Throws NullPointerException if tmp==null
-            isChanged |=this.remove(tmp);
+        while(it.hasNext()) {
+            Object tmp = it.next();
+            if(c.contains(tmp)) {
+                this.remove(tmp);
+                isChanged = true;
+            }
         }
         return isChanged;
     }
