@@ -615,4 +615,41 @@ public abstract class CollectionTester implements IteratorTester{
         });
     }
 
+    /**
+     * @title Test of iterator methods of an instance class that implements Collection interface.
+     * @description This test tests the behaviour of the iterator returned by iterator() method, this test
+     *              performs a complex sequence of operation with the iterator.
+     * @expectedResults The result of a sequence of operation performed by the iterator should be
+     *                  consistent and the changes should be correctly reflected to the Collection tested.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of method add().
+     * @preConditions The collection instance must be a new instance of Collection.
+     * @postConditions The collection instance should be modified by the execution of the method.
+     */
+    @Test
+    public void testIterator_removenext() {
+        itt.add(new Object());
+        itt.add(new Object());
+        itt.add(new Object());
+        itt.add(new Object());
+        itt.add(new Object());
+        itt.add(new Object());
+        HIterator it = itt.iterator();
+        it.next();
+        it.remove();
+        assertEquals("Size decreased", 5, itt.size());
+        it.next();
+        it.next();
+        it.remove();
+        assertEquals("Size decreased", 4, itt.size());
+        it.next();
+        it.next();
+        it.remove();
+        assertEquals("Size decreased", 3, itt.size());
+        it.next();
+        it.remove();
+        assertEquals("Size decreased", 2, itt.size());
+        assertFalse("Lower bound reached", it.hasNext());
+    }
+
 }

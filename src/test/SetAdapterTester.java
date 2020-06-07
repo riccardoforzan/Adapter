@@ -57,18 +57,30 @@ public class SetAdapterTester extends CollectionTester {
     public void test_addDuplicate() {
         Object toAdd = new Object();
         itt.add(toAdd);
-        assertEquals("Inserting the same element for the second time, not allowed",false, itt.add(toAdd));
+        assertFalse("Inserting the same element for the second time, not allowed", itt.add(toAdd));
     }
 
     /**
      * @title Test of toArray() method
      * @description Test toArray() method , the behavior depends:
      * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
-     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
      */
     @Override
     public void test_toArray_notEmpty() {
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        itt.add(obj1);
+        itt.add(obj2);
 
+        Object[] result = itt.toArray();
+        assertEquals("Checking expected length",2,result.length);
+
+        boolean found1=false, found2=false;
+        for(int i=0;i<result.length;i++){
+            if(result[i].equals(obj1)) found1 = true;
+            if(result[i].equals(obj2)) found2 = true;
+        }
+        assertTrue("All objects found in the array",found1&&found2);
     }
 
     /**
@@ -80,7 +92,21 @@ public class SetAdapterTester extends CollectionTester {
      */
     @Override
     public void test_toArrayGivenType_notEmpty() {
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        itt.add(obj1);
+        itt.add(obj2);
 
+        Object[] toChange = new Object[2];
+        itt.toArray(toChange);
+        assertEquals("Checking length",2,toChange.length);
+
+        boolean found1=false, found2=false;
+        for(int i=0;i<toChange.length;i++){
+            if(toChange[i].equals(obj1)) found1 = true;
+            if(toChange[i].equals(obj2)) found2 = true;
+        }
+        assertTrue("All objects found in the array",found1&&found2);
     }
 
     /**
@@ -92,7 +118,19 @@ public class SetAdapterTester extends CollectionTester {
      */
     @Override
     public void test_toArrayGivenType_small() {
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        itt.add(obj1);
+        itt.add(obj2);
+        Object[] res = itt.toArray(new Object[0]);
+        assertEquals("Checking length",2,res.length);
 
+        boolean found1=false, found2=false;
+        for(int i=0;i<res.length;i++){
+            if(res[i].equals(obj1)) found1 = true;
+            if(res[i].equals(obj2)) found2 = true;
+        }
+        assertTrue("All objects found in the array",found1&&found2);
     }
 
     /**
@@ -103,25 +141,25 @@ public class SetAdapterTester extends CollectionTester {
      * @expectedResults in both cases it uses to return the array given as a parameter, with the empty positions set at null
      */
     @Override
-    public void test_toArrayGivenType_large(){}
+    public void test_toArrayGivenType_large(){
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        itt.add(obj1);
+        itt.add(obj2);
 
-    @Test
-    public void testAdd_hash() {
-        boolean result = itt.add("AaAaBB");
-        assertEquals("elemento inserito", true, result);
-        result = itt.add("AaAaAa");
-        assertEquals("elemento inserito", true, result);
-        result = itt.contains("AaAaBB");
+        Object[] toChange = new Object[4];
+        itt.toArray(toChange);
+        assertEquals("Checking length",4,toChange.length);
 
-        assertEquals("elemento contenuto", true, result);
-        /*
-        SetAdapter dop = new SetAdapter();
-        dop.add("AaAaBB");
-        dop.add("AaAaAA");
-        result = itt.containsAll(dop);
-
-        assertEquals("elemento contenuto", true, result);
-         */
+        int nullFound = 0;
+        boolean found1=false, found2=false;
+        for(int i=0;i<toChange.length;i++){
+            if(toChange[i]==null) nullFound++;
+            else if(toChange[i].equals(obj1)) found1 = true;
+            else if(toChange[i].equals(obj2)) found2 = true;
+        }
+        assertTrue("All objects found in the array",found1&&found2);
+        assertEquals("Checking null values",2,nullFound);
     }
 
 }

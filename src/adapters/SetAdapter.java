@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
  */
 public class SetAdapter implements HSet {
 
-    private Hashtable ht;
+    private final Hashtable ht;
 
     public SetAdapter(){
         ht = new Hashtable();
@@ -294,10 +294,19 @@ public class SetAdapter implements HSet {
      * @return <tt>true</tt> if the specified object is equal to this set
      */
     public boolean equals(Object o){
-        /**
-         * TODO: Implementazione
-         */
-        return false;
+        if (o == this) return true;
+        if (!(o.getClass().equals(this.getClass()))) {
+            return false;
+        }
+        HSet other = (SetAdapter) o;
+        if (other.size() != this.size()) return false;
+        HIterator it = iterator();
+        while(it.hasNext()){
+            if (!other.contains(it.next())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -313,10 +322,12 @@ public class SetAdapter implements HSet {
      */
     @Override
     public int hashCode(){
-        int hashCode=0;
-        /**
-         * TODO: Implementazione
-         */
+        int hashCode = 0;
+        HIterator i = iterator();
+        while (i.hasNext()) {
+            Object tmp = i.next();
+            hashCode += tmp.hashCode();
+        }
         return hashCode;
     }
 
