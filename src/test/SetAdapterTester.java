@@ -103,8 +103,25 @@ public class SetAdapterTester extends CollectionTester {
      * @expectedResults in both cases it uses to return the array given as a parameter, with the empty positions set at null
      */
     @Override
-    public void test_toArrayGivenType_large() {
+    public void test_toArrayGivenType_large(){}
 
+    @Test
+    public void testAdd_hash() {
+        boolean result = itt.add("AaAaBB");
+        assertEquals("elemento inserito", true, result);
+        result = itt.add("AaAaAa");
+        assertEquals("elemento inserito", true, result);
+        result = itt.contains("AaAaBB");
+
+        assertEquals("elemento contenuto", true, result);
+        /*
+        SetAdapter dop = new SetAdapter();
+        dop.add("AaAaBB");
+        dop.add("AaAaAA");
+        result = itt.containsAll(dop);
+
+        assertEquals("elemento contenuto", true, result);
+         */
     }
 
 }
