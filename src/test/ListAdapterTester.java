@@ -2,6 +2,8 @@ package test;
 
 import adapters.ListAdapter;
 import interfaces.HCollection;
+import interfaces.HIterator;
+import interfaces.HList;
 import interfaces.HListIterator;
 import org.junit.Before;
 import org.junit.Test;
@@ -944,9 +946,271 @@ public class ListAdapterTester extends CollectionTester {
 
     //TEST SUBLIST
 
+    /**
+     * @title Test #1 of subList method, of Class list.
+     * @description This test tests the behaviour of subList() method when called on an empty list. When modify, the main list will always equal to the sublist.
+     * @expectedResults The returned list must be empty and should always equals to the upper list.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctnes of methods isEmpty(), add(), size(), remove(), equals().
+     * @preConditions The list instance must be a new istance of List.
+     * @postConditions The list instance should be modified directly by the execution of the method.
+     */
     @Test
-    public void testSubList(){
+    public void testSubList_empty() {
+        ListAdapter ls = (ListAdapter) itt;
+        HList sub = ls.subList(0, 0);
+        assertTrue("la sottolista è vuota", sub.isEmpty());
 
+        sub.add("pippo");
+        sub.add("pluto");
+        assertEquals("aggiunte apportate alla sottolista", 2, sub.size());
+        assertEquals("aggiunte apportate alla lista madre", 2, ls.size());
+
+        assertTrue("le due liste si equivalgono", sub.equals(ls));
+        sub.remove(0);
+        assertEquals("rimozioni apportate alla lista madre", 1, ls.size());
+        assertEquals("le due liste si equivalgono", sub, ls);
+    }
+
+    /**
+     * @title Test #2 of subList method, of Class list.
+     * @description This test tests the behaviour of subList() method when called on a not-empty list, using as parameters (0, size()) (the sublist is a view of all the main list).
+     * @expectedResults The returned list must contains all the elements of the main list and must be alway equals to it.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctnes of methods add, size(), equals() and remove().
+     * @preConditions The list instance must be a new istance of List.
+     * @postConditions The list instance should be modified directly by the execution of the method.
+     */
+    @Test
+    public void testSubList_all() {
+        ListAdapter ls = (ListAdapter) itt;
+        ls.add("pippo");
+        ls.add("pluto");
+        HList sub = ls.subList(0, ls.size());
+        assertEquals("la sottolista ha la stessa dimensione della main", 2, sub.size());
+        assertEquals("le due liste sono equivalenti", sub, ls);
+
+        sub.add("pippo");
+        sub.add("pluto");
+        assertEquals("aggiunte apportate alla lista madre", 4, ls.size());
+        //assertEquals("le due liste si equivalgono", sub, ls);
+        sub.remove(0);
+        assertEquals("rimozioni apportate alla lista madre", 3, ls.size());
+        //assertEquals("le due liste si equivalgono", sub, ls);
+    }
+
+    /**
+     * @title Test #3 of subList method, of Class list.
+     * @description This test tests the behaviour of subList() when the sublist is a a view of just a portion of the list.
+     * @expectedResults The returned list must reflect all the changes to the main list.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctnes of methods add(), size(), get() and remove().
+     * @preConditions The list instance must be a new istance of List.
+     * @postConditions The list instance should be modified directly by the execution of the method.
+     */
+    @Test
+    public void testSubList_portion() {
+        ListAdapter ls = (ListAdapter) itt;
+        ls.add("pippo");
+        ls.add("pluto");
+        ls.add("asso");
+        ls.add("pluto");
+        HList sub = ls.subList(1, 3);
+        assertEquals("controllo dimensione", 2, sub.size());
+        boolean result = sub.get(0).equals("pluto") && sub.get(1).equals("asso");
+        assertTrue("la sottolista deve essere una vista della sola porzione specificata", result);
+        sub.add("pippo");
+        sub.add("pluto");
+        assertEquals("aggiunte apportate alla lista madre", 6, ls.size());
+
+        assertEquals("controllo di uno degli elementi aggiunti nella lista principale", "pippo", ls.get(3));
+        sub.remove("pippo");
+        sub.remove("pluto");
+        assertEquals("rimozioni apportate alla lista madre", 4, ls.size());
+    }
+
+    /**
+     * @title Test #4 of subList method, of Class list.
+     * @description This test tests the behaviour of subList() when the sublist return is used to perform a complex sequence of operation.
+     * @expectedResults The returned list must reflect all the changes to the main list and must be coherent with the operations specified.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctnes of methods add, remove, size, get, addAll, removeAll.
+     * @preConditions The list instance must be a new istance of List.
+     * @postConditions The list instance should be modified directly by the execution of the method.
+     */
+    @Test
+    public void testSubList_complex() {
+        ListAdapter ls = (ListAdapter) itt;
+        ls.add("pippo");
+        ls.add("pluto");
+        ls.add("asso");
+        ls.add("pluto");
+        HList sub = ls.subList(0, 3);
+        assertEquals("controllo dimensione", 3, sub.size());
+        boolean result = sub.get(0).equals("pippo") && sub.get(1).equals("pluto") && sub.get(2).equals("asso");
+
+        //assertTrue("la sottolista deve essere una vista della sola porzione specificata", result);
+        sub.add("pippo");
+
+        assertEquals("aggiunte apportate alla lista madre", 5, ls.size());
+        assertEquals("controllo di uno degli elementi aggiunti nella lista principale", "pippo", ls.get(3));
+        sub.remove(0);
+        assertEquals("rimozioni apportate alla lista madre", 4, ls.size());
+        assertEquals("controllo di uno degli elementi aggiunti nella lista principale", "pluto", ls.get(0));
+        HCollection param = new ListAdapter();
+        param.add("pietra");
+        param.add("asso");
+        sub.addAll(0, param);
+        assertEquals("rimozioni apportate alla lista madre", 6, ls.size());
+        assertTrue("controllo elementi aggiunti", ls.get(0).equals("pietra") && ls.get(1).equals("asso"));
+        param.remove("pietra");
+        sub.removeAll(param);
+        assertEquals("rimozioni apportate alla lista madre", 4, ls.size());
+        assertEquals("controllo get", "pietra", sub.get(0));
+    }
+
+    /**
+     * @title Test #5 of subList method, of Class list.
+     * @description This test tests the behaviour of subList() when the sublist is used to clear a part of the main list.
+     * @expectedResults All the elements contained in the sublist must be removed from the main list.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctnes of methods add, size and get.
+     * @preConditions The list instance must be a new istance of List.
+     * @postConditions The list instance should be modified directly by the execution of the method.
+     */
+    @Test
+    public void testSubList_clear() {
+        ListAdapter ls = (ListAdapter) itt;
+        ls.add("pippo");
+        ls.add("pluto");
+        ls.add("asso");
+        ls.add("pietra");
+        HList sub = ls.subList(0, 3);
+        sub.clear();
+        assertEquals("rimozioni apportate alla lista madre", 1, ls.size());
+        assertEquals("unico elemento rimasto era fuori dalla sottolista", "pietra", ls.get(0));
+    }
+
+    /**
+     * @title Test #6 of subList method, of Class list.
+     * @description This test tests the behaviour of subList() when the sublist is used to find the indexOf or lastIndexOf a parameter in a view of the main list.
+     * @expectedResults The minIndex and maxIndex of an object in a specified view of the list.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctnes of method add().
+     * @preConditions The list instance must be a new istance of List.
+     * @postConditions The list instance should not be modified directly by the execution of the method.
+     */
+    @Test
+    public void testSubList_minMaxIndex() {
+        ListAdapter ls = (ListAdapter) itt;
+        ls.add("pippo");
+        ls.add("pippo");
+        ls.add("pippo");
+        ls.add("pippo");
+        HList sub = ls.subList(1, 4);
+        int min = sub.indexOf("pippo"), max = sub.lastIndexOf("pippo");
+        assertEquals("minimo indice nella vista", 0, min);
+        assertEquals("massimo indice nella vista", 2, max);
+    }
+
+    /**
+     * @title Test #7 of subList method, of Class list.
+     * @description This test tests the behaviour of subList() when the sublist is used to find the set a new value for an element contained in the list.
+     * @expectedResults The modifications should be reflected to the main list.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctnes of methods .
+     * @preConditions The list instance must be a new istance of List.
+     * @postConditions The list instance should be modified directly by the execution of the method.
+     */
+    @Test
+    public void testSubList_set() {
+        ListAdapter ls = (ListAdapter) itt;
+        ls.add("pippo");
+        ls.add("pluto");
+        ls.add("paperino");
+        HList sub = ls.subList(1, 2);
+        Object expected = ls.get(1);
+        Object result = sub.set(0, "asso");
+        assertEquals("vecchio valore oggetto", expected, result);
+        assertEquals("nuovo valore settato correttamente", "asso", ls.get(1));
+    }
+
+    /**
+     * @title Test #1 of toArray method, of Class list.
+     * @description This test tests the behaviour of toArray() method when called on a non-empty list. More in details, it tests that the returned array elements are placed in the right order defined by the iterator.
+     * @expectedResults The returned array must contains the list elements placed in the order defined by the iterator.
+     * @actualResult As expected result.
+     * @dependencies This test has no correctness dependencies on other class methods.
+     * @preConditions The list instance must be a new istance of List.
+     * @postConditions The list instance should not be modified directly by the execution of the method.
+     */
+    @Test
+    public void testToArray_notEmpty() {
+        ListAdapter ls = (ListAdapter) itt;
+        ls.add("pippo");
+        ls.add("pluto");
+
+        Object[] result = ls.toArray();
+        HIterator it = ls.iterator();
+        boolean check = true;
+        for(int i=0; it.hasNext() && i<result.length; i++) {
+            check = check && it.next().equals(result[i]);
+        }
+        assertTrue("gli elementi sono copiati nell'array nell'ordine definito dall'iteratore", check);
+    }
+
+    /**
+     * @title Test #1 of parametric toArray method, of class List.
+     * @description This test tests the behaviour of parametric method toArray() when is called on a not-empty list passing an array which length is greater than list size. More in detail, it tests that the elements are returned in the right order.
+     * @expectedResults The array returned should be exactly the one which has been passed as parameter, but the first size() must be modified, as they should contains the elements of this list in the right order.
+     * @actualResult As expected result.
+     * @dependencies Depends on the correctness of method add().
+     * @preConditions The list instance must be a new istance of List.
+     * @postConditions The list instance should not be directly modified by the call of the method tested.
+     */
+    @Test
+    public void testParametricToArray_notEmpty() {
+        ListAdapter ls = (ListAdapter) itt;
+        String[] param = new String[10];
+        for(int i=0; i<10; i++) param[i] = "pippo";
+        ls.add("pluto");
+        ls.add("paperino");
+        ls.add("topolino");
+
+        Object[] result = ls.toArray(param);
+        HIterator it = ls.iterator();
+        boolean check = true;
+        for(int i=0; it.hasNext(); i++) {
+            check = check && it.next().equals(result[i]);
+        }
+        assertEquals("gli elementi della lista sono stati copiati nell'ordine definito dall'iteratore", true, check);
+    }
+
+    /**
+     * @title Test #2 of parametric toArray method, of class List.
+     * @description This test tests the behaviour of parametric method toArray() when is called on a not-empty collection using an array which is not big enough to contain the whole list. More in details, the it tests the order of the returned array.
+     * @expectedResults The array returned should be a new istance of a generic Object array (the parameter should not be modified), and it should contains all the elements contained in the list in the proper order.
+     * @actualResult As expected result.
+     * @dependencies Depends on the correctess of method add().
+     * @preConditions The list instance must be a new istance of List.
+     * @postConditions The list instance should be directly modified by the call of this method.
+     */
+    @Test
+    public void testParametricToArray_notBigEnough() {
+        ListAdapter ls = (ListAdapter) itt;
+        String[] param = new String[1];
+        param[0] = "pippo";
+        ls.add("pluto");
+        ls.add("paperino");
+        ls.add("topolino");
+
+        Object[] result = ls.toArray(param);
+        HIterator it = ls.iterator();
+        boolean check = true;
+        for(int i=0; it.hasNext(); i++) {
+            check = check && it.next().equals(result[i]);
+        }
+        assertTrue("gli elementi della lista sono stati copiati nell'ordine definito dall'iteratore", check);
     }
 
 }

@@ -312,7 +312,7 @@ public class ListAdapter implements HList {
      */
     @Override
     public Object get(int index) {
-        if(index<0 || index>=size()) throw new IndexOutOfBoundsException();
+        if(index < 0 || index >= size()) throw new IndexOutOfBoundsException();
         return ve.elementAt(index);
     }
 
@@ -350,8 +350,8 @@ public class ListAdapter implements HList {
      */
     @Override
     public void add(int index, Object element) {
-        if(index<0 || index>this.size()) throw new IndexOutOfBoundsException();
         if(element==null) throw new NullPointerException();
+        if(index<0 || index>this.size()) throw new IndexOutOfBoundsException();
         ve.insertElementAt(element,index);
     }
 
@@ -427,8 +427,8 @@ public class ListAdapter implements HList {
     public boolean equals(Object o){
         if(o==this) return true;
         if(o==null) return false;
-        if(!(o instanceof ListAdapter)) return false;
-        ListAdapter other = (ListAdapter) o;
+        if(!(o instanceof HList)) return false;
+        HList other = (HList) o;
         if(other.size() != this.size()) return false;
 
         for(int i=0;i<size();i++){
@@ -469,7 +469,7 @@ public class ListAdapter implements HList {
      */
     @Override
     public HIterator iterator() {
-        return new ListIterator(0,0,size());
+        return new ListIterator(0,0,this.size());
     }
 
     /**
@@ -553,7 +553,7 @@ public class ListAdapter implements HList {
 
         @Override
         public int previousIndex() {
-            return cursor-1;
+            return cursor - lowerLimit - 1;
         }
 
         @Override
@@ -619,7 +619,7 @@ public class ListAdapter implements HList {
      */
     @Override
     public HList subList(int fromIndex, int toIndex) {
-        if(fromIndex < 0 || fromIndex > toIndex || toIndex >= size()) throw new IndexOutOfBoundsException();
+        if(fromIndex < 0 || fromIndex > toIndex || toIndex > size()) throw new IndexOutOfBoundsException();
         return new SubList(fromIndex, toIndex);
     }
 
@@ -773,7 +773,7 @@ public class ListAdapter implements HList {
         @Override
         public Object get(int index) {
             if (index < 0 || index >= this.size()) throw new IndexOutOfBoundsException();
-            return ListAdapter.this.get(this.toIndex + index);
+            return ListAdapter.this.get(this.fromIndex + index);
         }
 
         @Override
@@ -788,6 +788,7 @@ public class ListAdapter implements HList {
             if (index < 0 || index > size()) throw new IndexOutOfBoundsException();
             //ListAdapter.add() throws NullPointerException if element == null
             ListAdapter.this.add(this.fromIndex + index, element);
+            if(parent!=null) parent.toIndex++;
             ++toIndex;
         }
 
@@ -824,8 +825,8 @@ public class ListAdapter implements HList {
         public boolean equals(Object o) {
             if (o == this) return true;
             if (o == null) return false;
-            if (!(o instanceof ListAdapter)) return false;
-            ListAdapter other = (ListAdapter) o;
+            if (!(o instanceof HList)) return false;
+            HList other = (HList) o;
             if (other.size() != this.size()) return false;
 
             for (int i = 0; i < size(); i++) {
@@ -857,7 +858,7 @@ public class ListAdapter implements HList {
 
         @Override
         public HList subList(int fromIndex, int toIndex) {
-            if (fromIndex < 0 || fromIndex > toIndex || toIndex >= size()) throw new IndexOutOfBoundsException();
+            if (fromIndex < 0 || fromIndex > toIndex || toIndex > size()) throw new IndexOutOfBoundsException();
             return new SubList(this.fromIndex + fromIndex, this.toIndex + toIndex, this);
         }
 
