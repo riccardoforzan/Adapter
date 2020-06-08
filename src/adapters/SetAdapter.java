@@ -392,7 +392,7 @@ public class SetAdapter implements HSet {
          */
         @Override
         public void remove() {
-            if(current==null) throw new IllegalStateException();
+            if(current==null) throw new exception.IllegalStateException();
             ht.remove(current);
             current=null;
         }
