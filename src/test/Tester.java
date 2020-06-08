@@ -11,7 +11,7 @@ public class Tester {
         Vector tt = new Vector();
         tt.add(ListAdapterTester.class);
         tt.add(SetAdapterTester.class);
-        tt.add(MapAdapterTester.class);
+        //tt.add(MapAdapterTester.class);
 
         for(int i=0;i<tt.size();i++){
             Class cls = (Class) tt.get(i);

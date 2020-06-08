@@ -481,7 +481,7 @@ public class ListAdapter implements HList {
      */
     @Override
     public HListIterator listIterator() {
-        return listIterator(0);
+        return this.listIterator(0);
     }
 
     /**
@@ -501,7 +501,7 @@ public class ListAdapter implements HList {
      */
     @Override
     public HListIterator listIterator(int index) {
-        if(index<0 || index>=size()) throw new IndexOutOfBoundsException();
+        if(index<0 || index>size()) throw new IndexOutOfBoundsException();
         return new ListIterator(0,index,size());
     }
 
@@ -536,7 +536,7 @@ public class ListAdapter implements HList {
 
         @Override
         public boolean hasPrevious() {
-            return cursor>lowerLimit;
+            return cursor > lowerLimit;
         }
 
         @Override
@@ -567,8 +567,8 @@ public class ListAdapter implements HList {
 
         @Override
         public void set(Object o) {
-            if(actual==-1) throw new IllegalStateException();
             if(o==null) throw new IllegalArgumentException("A null for Object o is not allowed");
+            if(actual==-1) throw new exception.IllegalStateException();
             ve.set(actual,o);
 
         }

@@ -8,8 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import java.util.NoSuchElementException;
-
 /**
  * UnsupportedOperationException, ClassCastException, IllegalArgumentException are not tested because
  * the implementation of SetAdapter does not throw this exception

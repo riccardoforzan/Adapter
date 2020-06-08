@@ -4,6 +4,9 @@ import org.junit.Test;
 
 public interface IteratorTester {
 
+    //TODO: Rivedere la documentazione
+
+
     /**
      * @title Test of Iterator.hasNext()
      * @description Test the iterator
@@ -53,13 +56,15 @@ public interface IteratorTester {
      */
     @Test
     void test_Iterator_remove();
+
     /**
      * @title Test of Iterator.remove()
      * @description Checking that invocation of Iterator.remove() not preceded by a call of Iterator.next() throws NullPointerException
      * @expectedResults NullPointerException
      * @dependencies HCollection.iterator()
      */
-    void test_Iterator_remove_npe();
+    @Test
+    void check_Iterator_remove_nse();
 
     /**
      * @title Test invocation of Iterator.remove() two times in a row
@@ -67,5 +72,6 @@ public interface IteratorTester {
      * @expectedResults NullPointerException
      * @dependencies HCollection.iterator(), HCollection.add(Object a)
      */
-    void test_Iterator_remove_tt();
+    @Test
+    void check_Iterator_remove_tt();
 }

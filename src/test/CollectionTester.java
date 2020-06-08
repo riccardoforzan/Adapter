@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 /**
  * Shared test between all HCollection implementation
  */
-public abstract class CollectionTester implements IteratorTester{
+public abstract class CollectionTester implements IteratorTester {
 
     //HCollection instance to test
     protected HCollection itt;
@@ -144,7 +144,7 @@ public abstract class CollectionTester implements IteratorTester{
 
     /**
      * @title Test invocation of contains()
-     * @description Tests if invocation of contains() on a HCollection.
+     * @description Tests invocation of contains() on a HCollection.
      *              The searched element is added to the HCollection before the invocation.
      * @expectedResults The test collection should contain the element researched.
      * @actualResult As expected result.
@@ -161,7 +161,7 @@ public abstract class CollectionTester implements IteratorTester{
     }
 
     /**
-     * @title Test invocation of addAll()
+     * @title Test invocation of contains()
      * @description Tests if invocation of contains() on an empty collection.
      * @expectedResults The test collection does not contain the element researched, it's empty.
      * @actualResult As expected result.
@@ -300,8 +300,8 @@ public abstract class CollectionTester implements IteratorTester{
     }
 
     /**
-     * @title Test invocation of toArray()
-     * @description Tests if invocation of toArray() on a non empty collection, passing an array with same length as
+     * @title Test invocation of toArray(Object[] a)
+     * @description Tests invocation of toArray() on a non empty collection, passing an array with same length as
      *              collection size.
      * @expectedResults The result depends on the implementation of the collection.
      *                  If the collection makes any about order of inserted object the returned array must have the
@@ -315,7 +315,7 @@ public abstract class CollectionTester implements IteratorTester{
 
     /**
      * @title Test invocation of toArray(Object[] a)
-     * @description Tests if invocation of addAll() on an empty collection using as parameter an array which
+     * @description Tests if invocation of toArray(Object[] a) on an empty collection using as parameter an array which
      *              length > collection's size.
      * @expectedResults The result depends on the implementation of the collection.
      *                  If the collection makes any about order of inserted object the returned array must have the
@@ -330,7 +330,7 @@ public abstract class CollectionTester implements IteratorTester{
 
     /**
      * @title Test invocation of toArray(Object[] a)
-     * @description Tests if invocation of addAll() on an empty collection using as parameter an array which
+     * @description Tests if invocation of toArray(Object[] a) on an empty collection using as parameter an array which
      *              length > collection's size.
      * @expectedResults The result depends on the implementation of the collection.
      *                  If the collection makes any about order of inserted object the returned array must have the
@@ -798,7 +798,7 @@ public abstract class CollectionTester implements IteratorTester{
      * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
-    public void test_Iterator_remove_npe(){
+    public void check_Iterator_remove_nse(){
         assertThrows("Method remove can not be called if not preceded by a call to next()", exception.IllegalStateException.class, () -> {
             HIterator it = itt.iterator();
             it.remove();
@@ -817,7 +817,7 @@ public abstract class CollectionTester implements IteratorTester{
      * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
-    public void test_Iterator_remove_tt(){
+    public void check_Iterator_remove_tt(){
         assertThrows("remove() can not be called two times in a row", exception.IllegalStateException.class, () -> {
             itt.add(new Object());
             itt.add(new Object());

@@ -2,12 +2,15 @@ package test;
 
 import adapters.ListAdapter;
 import interfaces.HCollection;
+import interfaces.HListIterator;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.NoSuchElementException;
+
 import static org.junit.Assert.*;
 
-public class ListAdapterTester extends CollectionTester{
+public class ListAdapterTester extends CollectionTester {
 
     @Before
     public void setup(){
@@ -40,12 +43,18 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test of add(object) method
-     * @description Test adding an object already contained in the collection
-     * @expectedResults true, the object is added
-     * @preConditions the object to add must be already added
+     * @title Test invocation of add()
+     * @description Tests if invocation of add() on an empty collection. This test try to insert the same element
+     * two times in the same collection.
+     * @expectedResults The collection does not allow replicated object insertion, the collection should not
+     *                  be modified after the call
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
-    @Test
+    @Override
     public void test_addDuplicate() {
         Object toAdd = new Object();
         itt.add(toAdd);
@@ -53,11 +62,14 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test of toArray() method
-     * @description Test toArray() method , the behavior depends:
-     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
-     * @dependencies uses ListAdapter.add(element) to setup the object
-     * @preConditions list must not be empty
+     * @title Test invocation of toArray()
+     * @description Tests if invocation of toArray() on a non empty collection
+     * @expectedResults The returned array must contains the same element in the same order as those are contained in
+     *                  the collection which the method is invoked.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Override
     public void test_toArray_notEmpty() {
@@ -71,11 +83,15 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test of toArray(Object[] a) method
-     * @description Test toArray(Object[] a) method giving as parameter an array that array.length == collection.size(), the behavior depends:
-     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
-     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
-     * @expectedResults in both cases it uses to return the array given as parameter
+     * @title Test invocation of toArray(Object[] a)
+     * @description Tests invocation of toArray() on a non empty collection, passing an array with same length as
+     *              collection size.
+     * @expectedResults The returned array must contains the same element in the same order as those are contained in
+     *                  the collection which the method is invoked.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Override
     public void test_toArrayGivenType_notEmpty() {
@@ -89,12 +105,16 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test of toArray(Object[] a) method
-     * @description Test toArray(Object[] a) method giving an array smaller than the collection's size, the behavior depends:
-     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
-     *                  in both cases it allocates a NEW array of the same length as the size of the collection
-     * @dependencies  uses ListAdapter.add(element) to setup the object and uses ListAdapter.toArray() to check correctness
-     * @preConditions list must not be empty
+     * @title Test invocation of toArray(Object[] a)
+     * @description Tests if invocation of addAll() on an empty collection using as parameter an array which
+     *              length > collection's size.
+     * @expectedResults The returned array must contains the same element in the same order as those are contained in
+     *                  the collection which the method is invoked. The returned array is a new instance
+     *                  and not the element given as a parameter.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Override
     public void test_toArrayGivenType_small() {
@@ -107,11 +127,16 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test of toArray(Object[] a) method
-     * @description Test toArray(Object[] a) method giving an array larger than the collection's size, the behavior depends:
-     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
-     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
-     * @expectedResults in both cases it uses to return the array given as a parameter, with the empty positions set at null
+     * @title Test invocation of toArray(Object[] a)
+     * @description Tests if invocation of addAll() on an empty collection using as parameter an array which
+     *              length > collection's size.
+     * @expectedResults The returned array must contains the same element in the same order as those are contained in
+     *                  the collection which the method is invoked.
+     *                  The array used as a parameter must contain null values after the last valid collection element.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Override
     public void test_toArrayGivenType_large() {
@@ -139,11 +164,13 @@ public class ListAdapterTester extends CollectionTester{
     //STARTING TEST OF ListAdapter ONLY METHODS
 
     /**
-     * @title Test add(index,element) method
-     * @description Testing some insertion using add(index,element)
-     * @expectedResults Successful insertions on specified positions
-     * @dependencies uses the method ListAdapter.get(index) and ListAdapter.size() to check correctness
-     * @preConditions list must be empty
+     * @title Test invocation of add(index,element)
+     * @description Tests if invocation of add() on an empty collection using as parameter a new object.
+     * @expectedResults The test collection should be modified, an element should be inserted in first and last position.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other methods.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void test_AddIndex(){
@@ -159,10 +186,13 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Testing add(index,element) throws IndexOutOfBoundException
-     * @description Test the case in which the method throws IndexOutOfBoundException
-     * @expectedResults IndexOutOfBoundException thrown
-     * @preConditions List where insertions are made must be empty
+     * @title Test if invocation of add(index,element) with an invalid index throws IndexOutOfBoundException
+     * @description Tests if invocation of add(index,element) with an invalid index throws IndexOutOfBoundException.
+     * @expectedResults The class is expected to throw a IndexOutOfBoundException.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other method.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void check_AddIndex_ioobe(){
@@ -172,9 +202,13 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Testing add(index,element) throws NullPointerException
-     * @description Test the case in which the method throws NullPointerException
-     * @expectedResults NullPointerException thrown
+     * @title Test if invocation of add(index,element) with a null element parameter throws NullPointerException.
+     * @description Tests if invocation of add() with a null element parameter throws NullPointerException.
+     * @expectedResults The class is expected to throw a NullPointerException.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other method.
+     * @preConditions The ListAdapter instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void check_AddIndex_npe(){
@@ -183,12 +217,14 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test addAll(index,collection) method
-     * @description Testing insertion using addAll(index,collection)
-     * @expectedResults Successful insertions of given collection on specified position
-     * @dependencies uses the method ListAdapter.add(element) to set up the list
-     *               uses the method ListAdapter.get(index) and ListAdapter.size() to check correctness
-     * @preConditions list contains 1 element
+     * @title Test invocation of addAll(index,collection)
+     * @description Tests if invocation of addAll(index,collection) on a non empty collection using as parameter a non
+     *              empty collection of items to add.
+     * @expectedResults The test collection should be modified adding elements from given collection.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the private method createNotEmptyCollection().
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void test_AddAllIndex(){
@@ -207,10 +243,14 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test addAll(index,collection) method
-     * @description Testing insertion of an empty using addAll(index,collection)
-     * @expectedResults False, the collection has not been changed after invocation
-     * @preConditions list must be empty
+     * @title Test invocation of addAll(index,collection)
+     * @description Tests if invocation of addAll(index,collection) on a non empty collection using as parameter an
+     *              empty collection of items to add.
+     * @expectedResults The test collection should not be modified, there are no elements in the given collection.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the private method createEmptyCollection().
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void test_AddAllIndex_void(){
@@ -220,10 +260,13 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Testing add(index,element) throws IndexOutOfBoundException
-     * @description Test the case in which the method throws IndexOutOfBoundException
-     * @expectedResults IndexOutOfBoundException thrown
-     * @preConditions List where insertions are made must be empty
+     * @title Test if invocation of add(index,element) with an invalid index throws IndexOutOfBoundException.
+     * @description Tests if invocation of add(index,element) with an invalid index throws IndexOutOfBoundException.
+     * @expectedResults The class is expected to throw a IndexOutOfBoundException.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other method.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void check_AddAllIndex_ioobe(){
@@ -233,9 +276,13 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Testing add(index,element) throws NullPointerException
-     * @description Test the case in which the method throws NullPointerException
-     * @expectedResults NullPointerException thrown
+     * @title Test if invocation of add(index,element) with a null parameter throws NullPointerException.
+     * @description Tests if invocation of add(index,element) with a null parameter throws NullPointerException.
+     * @expectedResults The class is expected to throw a NullPointerException.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other method.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void check_AddAllIndex_npe(){
@@ -244,10 +291,13 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test indexOf method
-     * @description Testing IndexOf method looking for an object in an empty list
-     * @expectedResults -1 not found
-     * @preConditions List must be empty
+     * @title Test indexOf(Object o) method
+     * @description Tests invocation of indexOf(Object o) method on an empty ListAdapter.
+     * @expectedResults The object given as a parameter is not found on the list, so the result is -1.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other method.
+     * @preConditions The ListAdapter instance must be a new (and empty) instance of ListAdapter.
+     * @postConditions The ListAdapter instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void test_IndexOf_empty(){
@@ -257,11 +307,14 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test indexOf method
-     * @description Testing IndexOf method looking for an object contained in a list
-     * @expectedResults object found in the list
-     * @dependencies add() method to setup and get() method to check correctness
-     * @preConditions
+     * @title Test indexOf(Object o) method
+     * @description Tests invocation of indexOf(Object o) method on a non empty ListAdapter.
+     * @expectedResults The object given as a parameter is found on the list because it was previously added.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     * @preConditions The ListAdapter instance must be a new (and empty) instance of ListAdapter.
+     * @postConditions The ListAdapter instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void test_IndexOf_found(){
@@ -273,11 +326,15 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test indexOf method
-     * @description Testing IndexOf method looking for the first index of an object contained in a list
-     * @expectedResults first position containing the object found in the list
-     * @dependencies add() method to setup and get() method to check correctness
-     * @preConditions
+     * @title Test indexOf(Object o) method
+     * @description Tests invocation of indexOf(Object o) method on a non empty ListAdapter.
+     * @expectedResults The object given as a parameter is found on the list because it has been added two times,
+     *                  from this method invocation is expected to be returned the first instance.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     * @preConditions The ListAdapter instance must be a new (and empty) instance of ListAdapter.
+     * @postConditions The ListAdapter instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void test_IndexOf_first(){
@@ -293,11 +350,15 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test indexOf method
-     * @description Testing IndexOf method looking for an object not present in a non empty list
-     * @expectedResults The object is not found
-     * @dependencies method add() is used to setup the list and contains() is used to check correctness
-     * @preConditions
+     * @title Test indexOf(Object o) method
+     * @description Tests invocation of indexOf(Object o) method on a non empty ListAdapter.
+     * @expectedResults The object given as a parameter is not found on the list.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     *               Method contains() is used to check correctness.
+     * @preConditions The ListAdapter instance must be a new (and empty) instance of ListAdapter.
+     * @postConditions The ListAdapter instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void test_IndexOf_notFound(){
@@ -314,9 +375,13 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test indexOf throws NullPointerException
-     * @description Test the case in which the method throws NullPointerException
-     * @expectedResults NullPointerException thrown
+     * @title Test if invocation of indexOf(Object o) with null value for o, throws NullPointerException.
+     * @description Tests if invocation of indexOf(Object o) with null value for o, throws NullPointerException.
+     * @expectedResults The class is expected to throw a NullPointerException.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other method.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void check_IndexOf_npe(){
@@ -325,10 +390,13 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test lastIndexOf method
-     * @description Testing lastIndexOf method looking for an object in an empty list
-     * @expectedResults -1 not found
-     * @preConditions List must be empty
+     * @title Test lastIndexOf(Object o) method
+     * @description Tests invocation of lastIndexOf(Object o) method on an empty ListAdapter.
+     * @expectedResults The object given as a parameter is not found on the list, so the result is -1.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other method.
+     * @preConditions The ListAdapter instance must be a new (and empty) instance of ListAdapter.
+     * @postConditions The ListAdapter instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void test_lastIndexOf_empty(){
@@ -338,11 +406,14 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test last IndexOf method
-     * @description Testing lastIndexOf method looking for an object contained in a list
-     * @expectedResults object found in the list
-     * @dependencies add() method to setup and get() method to check correctness
-     * @preConditions
+     * @title Test lastIndexOf(Object o) method
+     * @description Tests invocation of lastIndexOf(Object o) method on a non empty ListAdapter.
+     * @expectedResults The object given as a parameter is found on the list because it was previously added.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     * @preConditions The ListAdapter instance must be a new (and empty) instance of ListAdapter.
+     * @postConditions The ListAdapter instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void test_lastIndexOf_found(){
@@ -354,14 +425,18 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test lastIndexOf method
-     * @description Testing lastIndexOf method looking for the last index of an object contained in a list
-     * @expectedResults last position containing the object found in the list
-     * @dependencies add() method to setup and get() method to check correctness
-     * @preConditions
+     * @title Test lastIndexOf(Object o) method
+     * @description Tests invocation of lastIndexOf(Object o) method on a non empty ListAdapter.
+     * @expectedResults The object given as a parameter is found on the list because it has been added two times,
+     *                  from this method invocation is expected to be returned the last instance.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     * @preConditions The ListAdapter instance must be a new (and empty) instance of ListAdapter.
+     * @postConditions The ListAdapter instance isn't directly modified by the execution of the method tested.
      */
     @Test
-    public void test_lastIndexOf_first(){
+    public void test_lastIndexOf(){
         ListAdapter la = (ListAdapter) itt;
 
         Object toFind = new Object();
@@ -374,11 +449,15 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test lastIndexOf method
-     * @description Testing lastIndexOf method looking for an object not present in a non empty list
-     * @expectedResults The object is not found
-     * @dependencies method add() is used to setup the list and contains() is used to check correctness
-     * @preConditions
+     * @title Test lastIndexOf(Object o) method
+     * @description Tests invocation of lastIndexOf(Object o) method on a non empty ListAdapter.
+     * @expectedResults The object given as a parameter is not found on the list.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     *               Method contains() is used to check correctness.
+     * @preConditions The ListAdapter instance must be a new (and empty) instance of ListAdapter.
+     * @postConditions The ListAdapter instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void test_lastIndexOf_notFound(){
@@ -395,9 +474,13 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test lastIndexOf throws NullPointerException
-     * @description Test the case in which the method throws NullPointerException
-     * @expectedResults NullPointerException thrown
+     * @title Test if invocation of lastIndexOf(Object o) with null value for o, throws NullPointerException.
+     * @description Tests if invocation of lastIndexOf(Object o) with null value for o, throws NullPointerException.
+     * @expectedResults The class is expected to throw a NullPointerException.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other method.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void check_lastIndexOf_npe(){
@@ -412,6 +495,7 @@ public class ListAdapterTester extends CollectionTester{
      * @dependencies uses the add() method
      * @preConditions the object to remove belongs to the collection
      */
+
     @Test
     public void test_RemoveIndex(){
         ListAdapter la = (ListAdapter) itt;
@@ -427,9 +511,13 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test remove method throws IndexOutOfBoundException
-     * @description Test if remove method throws IndexOutOfBoundException
-     * @expectedResults throws IndexOutOfBoundException
+     * @title Test if invocation of remove(index) with an invalid index throws IndexOutOfBoundException.
+     * @description Tests if invocation of remove(index)  with an invalid index throws IndexOutOfBoundException.
+     * @expectedResults The class is expected to throw a IndexOutOfBoundException.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other method.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void check_RemoveIndex_ioobe(){
@@ -444,6 +532,7 @@ public class ListAdapterTester extends CollectionTester{
      * @expectedResults After set method invocation the object saved in position 0 in modified
      * @dependencies uses add() method to setup the invocation, uses size() and get() to check correctness
      */
+
     @Test
     public void test_set(){
         ListAdapter la = (ListAdapter) itt;
@@ -459,10 +548,14 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test set method throws NullPointerException
-     * @description Test if set method throws NullPointerException
-     * @expectedResults throws NullPointerException
-     * @dependencies method add() is used to setup the invocation
+     * @title Test if invocation of set(index,element) with a null parameter throws NullPointerException.
+     * @description Tests if invocation of set(index,element) with a null parameter throws NullPointerException.
+     * @expectedResults The class is expected to throw a NullPointerException.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void check_set_npe(){
@@ -472,9 +565,13 @@ public class ListAdapterTester extends CollectionTester{
     }
 
     /**
-     * @title Test set method throws IndexOutOfBoundException
-     * @description Test if set method throws IndexOutOfBoundException
-     * @expectedResults throws IndexOutOfBoundException
+     * @title Test if invocation of set(index,element) with an invalid index throws IndexOutOfBoundException.
+     * @description Tests if invocation of set(index,element) with an invalid index throws IndexOutOfBoundException.
+     * @expectedResults The class is expected to throw a IndexOutOfBoundException.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other method.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public void check_set_ioobe(){
@@ -483,95 +580,373 @@ public class ListAdapterTester extends CollectionTester{
         assertThrows("Setting position > size()",IndexOutOfBoundsException.class, () -> la.set(1,new Object()));
     }
 
-    /**
-     * TODO: Implement the test of ListIterator and SubList
-     */
-
     //TEST LIST ITERATOR
 
     /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Test ListIterator.nextIndex() method
+     * @description Testing ListIterator.nextIndex() method to check if iterates correctly over the elements.
+     * @expectedResults The iterator iterates correctly over elements of the list.
+     * @actualResult As expected result.
+     * @dependencies This Test has no dependencies on other class methods.
+     * @preConditions The ListAdapter instance must be a new instance of List.
+     * @postConditions The ListAdapter instance should not be modified by the execution of the method.
      */
     @Test
-    public void test_listIterator_nextIndex(){}
+    public void test_listIterator_nextIndex() {
+        ListAdapter la = (ListAdapter) itt;
+        HListIterator it = la.listIterator();
+        assertEquals("Cheking iterator position on empty list",0, it.nextIndex());
+
+        la.add(new Object());
+        it=la.listIterator();
+        it.next();
+        assertFalse("No more elements to iterate",it.hasNext());
+        assertEquals("nextIndex should return size()", itt.size(), it.nextIndex());
+    }
 
     /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Test ListIterator.hasPrevious() method
+     * @description Testing ListIterator.hasPrevious() method to check if iterates correctly over the elements.
+     * @expectedResults The iterator iterates correctly over elements of the list.
+     * @actualResult As expected result.
+     * @dependencies This Test has no dependencies on other class methods.
+     * @preConditions The ListAdapter instance must be a new instance of List.
+     * @postConditions The ListAdapter instance should not be modified by the execution of the method.
      */
     @Test
-    public void test_listIterator_hasPrevious(){}
-    /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
-     */
-    @Test
-    public void test_listIterator_previous(){}
+    public void test_listIterator_hasPrevious(){
+        ListAdapter la = (ListAdapter) itt;
+        HListIterator it = la.listIterator();
+        assertFalse("Cheking iterator on empty list",it.hasPrevious());
+
+        la.add(new Object());
+        it=la.listIterator();
+        it.next();
+        assertTrue("Has 1 element",it.hasPrevious());
+    }
 
     /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Test ListIterator.previous() method
+     * @description Testing ListIterator.previous() method to check if iterates correctly over the elements.
+     * @expectedResults The iterator iterates correctly over elements of the list.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     * @preConditions The ListAdapter instance must be a new instance of List.
+     * @postConditions The ListAdapter instance should not be modified by the execution of the method.
      */
     @Test
-    public void test_listIterator_previousIndex(){}
+    public void test_listIterator_previous(){
+        Object first = new Object();
+        ListAdapter la = (ListAdapter) itt;
+        la.add(first);
+
+        HListIterator it = la.listIterator();
+        it.next();
+
+        assertEquals("Has 1 element, the first inserted",first,it.previous());
+    }
 
     /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Test ListIterator.previous() method
+     * @description This test tests the behaviour of the iterator, it calls HIterator.previous() on an empty list.
+     * @expectedResults The class is expected to throw a NoSuchElementException.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other methods.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
-    public void test_listIterator_add(){}
+    public void test_listIterator_previous_nse(){
+        ListAdapter la = (ListAdapter) itt;
+        HListIterator it = la.listIterator();
+        assertThrows("No element in this collection", NoSuchElementException.class, () -> it.previous());
+    }
 
     /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
+     * @title Test ListIterator.previousIndex() method
+     * @description Testing ListIterator.previousIndex() method to check if iterates correctly over the elements.
+     * @expectedResults The iterator iterates correctly over elements of the list.
+     * @actualResult As expected result.
+     * @dependencies This Test has no dependencies on other class methods.
+     * @preConditions The ListAdapter instance must be a new instance of List.
+     * @postConditions The ListAdapter instance should not be modified by the execution of the method.
      */
     @Test
-    public void test_listIterator_set(){}
+    public void test_listIterator_previousIndex(){
+        ListAdapter la = (ListAdapter) itt;
+        HListIterator it = la.listIterator();
+        assertEquals("Cheking iterator position on empty list",0, it.nextIndex());
+
+        la.add(new Object());
+        it=la.listIterator();
+        it.next();
+        assertTrue("No more elements to iterate",it.hasPrevious());
+        assertEquals(" should return size()", 0, it.previousIndex());
+    }
+
+    /**
+     * @title Test ListIterator.add() method
+     * @description Testing ListIterator.add() method to check if adds correctly the elements.
+     * @expectedResults The iterator should add elements to the main list.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this test depends on the correcntess of method add(), get() and size().
+     * @preConditions The list instance must be a new instance of List.
+     * @postConditions The list instance should be modified by the direct execution of the tested method.
+     */
+    @Test
+    public void test_listIterator_add(){
+        Object obj1 = new Object();
+        itt.add(obj1);
+
+        ListAdapter la = (ListAdapter) itt;
+        HListIterator it = la.listIterator();
+
+        int prev = it.previousIndex(), next = it.nextIndex();
+        Object obj2 = new Object();
+        it.add(obj2);
+        boolean in = (it.nextIndex()==next+1) && (it.previousIndex()==prev+1);
+        assertTrue("Values of nextIndex and previousIndex decremented by 1 after call to add", in);
+        assertEquals("Insert head", obj2, la.get(0));
+        assertEquals("Size increased", 2, la.size());
+
+        it.next();
+        Object obj3 = new Object();
+        it.add(obj3);
+        assertEquals("Insert tail", obj3, la.get(2));
+        assertEquals("Size increased", 3, itt.size());
+    }
+
+    /**
+     * @title Test ListIterator.add() method throws IllegalArgumentException
+     * @description Testing ListIterator.add() method to check if it throws IllegalArgumentException if parameter
+     *              given is null (null is not a valid value in ListAdapter).
+     * @expectedResults The class is expected to throw a IllegalArgumentException.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other methods.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     */
+    @Test
+    public void check_listIterator_add_iae(){
+        assertThrows("ListIterator.add() called passing null parameter", IllegalArgumentException.class, () -> {
+            ListAdapter la = (ListAdapter) itt;
+            HListIterator it = la.listIterator();
+            it.add(null);
+        });
+    }
+
+    /**
+     * @title Test ListIterator.set() method
+     * @description This test tests the behaviour of the ListIterator returned by listIterator() method.
+     * @expectedResults The iterator should modify elements of the list.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this test depends on the correcntess of method add() and get().
+     * @preConditions The list instance must be a new istance of List.
+     * @postConditions The list instance should be modified by the direct execution of the tested method.
+     */
+    @Test
+    public void test_listIterator_set(){
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        Object obj3 = new Object();
+        Object obj4 = new Object();
+
+        itt.add(obj1);
+        itt.add(obj2);
+
+        ListAdapter la = (ListAdapter) itt;
+        HListIterator it = la.listIterator();
+
+        it.next();
+        it.set(obj3);
+        it.next();
+        it.set(obj4);
+        assertEquals("Check change on ListAdapter parent", obj3, la.get(0));
+        assertEquals("Check change on ListAdapter parent", obj4, la.get(1));
+        assertEquals("Check consistency with Iterator", obj4, it.previous());
+        assertEquals("Check consistency with Iterator", obj3, it.previous());
+    }
+
+    /**
+     * @title Test ListIterator.set() method throws IllegalArgumentException
+     * @description Testing ListIterator.set() method to check if it throws IllegalArgumentException if parameter
+     *              given is null (null is not a valid value in ListAdapter).
+     * @expectedResults The class is expected to throw a IllegalArgumentException.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     */
+    @Test
+    public void check_listIterator_set_iae(){
+        assertThrows("ListIterator.add() called passing null parameter", IllegalArgumentException.class, () -> {
+            ListAdapter la = (ListAdapter) itt;
+            la.add(new Object());
+            HListIterator it = la.listIterator();
+            it.set(null);
+        });
+    }
+
+    /**
+     * @title Test ListIterator.set() method throws IllegalStateException
+     * @description Testing ListIterator.set() method to check if it throws IllegalStateException if is invoked
+     *              after a call to ListIterator.remove() or ListIterator.add().
+     *              Throws exception even if is not preceded by a call to ListIterator.next() or
+     *              ListIterator.previous().
+     * @expectedResults The class is expected to throw a IllegalArgumentException.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested collection.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     */
+    @Test
+    public void check_listIterator_set_ise(){
+        assertThrows("next() / previous() not invoked", exception.IllegalStateException.class, () -> {
+            ListAdapter la = (ListAdapter) itt;
+            HListIterator it = la.listIterator();
+            it.set(new Object());
+        });
+        assertThrows("invoked after a call to remove()", exception.IllegalStateException.class, () -> {
+            itt.add(new Object());
+            ListAdapter la = (ListAdapter) itt;
+            HListIterator it = la.listIterator();
+            it.next();
+            it.remove();
+            it.set(new Object());
+        });
+        assertThrows("invoked after a call to add()", exception.IllegalStateException.class, () -> {
+            ListAdapter la = (ListAdapter) itt;
+            HListIterator it = la.listIterator();
+            it.add(new Object());
+            it.set(new Object());
+        });
+    }
+
+    /**
+     * @title Test of ListIterator method
+     * @description This test tests the behaviour of the ListIterator in a full iteration on the list.
+     * @expectedResults The iterator should iterate all the elements of the list, in both travisalò
+     * @actualResult As expected result.
+     * @dependencies The correctness of this test depends on the correctness of methods add() and get().
+     * @preConditions The list instance must be a new instance of List.
+     * @postConditions The list instance should be modified by the direct execution of the tested method.
+     */
+    @Test
+    public void test_ListIterator_iteration() {
+        ListAdapter la = (ListAdapter) itt;
+
+        Object[] test = new Object[4];
+        for(int i=0;i<test.length;i++) test[i]=new Object();
+
+        for(int i=0;i<test.length;i++) la.add(test[i]);
+
+        int i = 0;
+        HListIterator it = la.listIterator();
+        while(it.hasNext()) assertEquals("Next pass", test[i++], it.next());
+        while(it.hasPrevious()) assertEquals("Previous pass", test[--i], it.previous());
+    }
+
+    /**
+     * @title Test of ListIterator method
+     * @description This test tests the behaviour of the ListIterator in a common use scenario.
+     * @expectedResults The iterator should successfully conclude the sequence of operations.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this test depends on the correctness of method add(), get(), size().
+     * @preConditions The list instance must be a new instance of List.
+     * @postConditions The list instance should be modified by the direct execution of the tested method.
+     */
+    @Test
+    public void test_ListIterator_complex() {
+        Object[] tmp = new Object[5];
+        for(int i=0;i<tmp.length;i++) tmp[i]=new Object();
+
+        ListAdapter la = (ListAdapter) itt;
+        for(int i=0;i<tmp.length;i++) la.add(tmp[i]);
+
+        HListIterator it = la.listIterator();
+
+        Object newHead = new Object();
+        it.add(newHead);
+        assertTrue("Head inserted", la.get(0).equals(newHead) && la.get(1).equals(tmp[0]));
+        assertEquals("Increased size", tmp.length+1, itt.size());
+
+        it.next();
+        it.remove();
+        assertEquals("Removing second", tmp[2] , la.get(2));
+
+        it.next();
+        it.next();
+        it.next();
+        it.next();
+        assertFalse("Last element", it.hasNext());
+
+        it.previous();
+        //Removing last element
+        it.remove();
+        assertFalse("End", it.hasNext());
+
+        assertEquals("Check last value", tmp[3], la.get(3));
+        assertEquals("Checking index values", true, it.previousIndex()==3 && it.nextIndex()==itt.size());
+    }
+
+    /**
+     * @title Test ListIterator giving an index as starting point.
+     * @description This test tests the behaviour of ListIterator when is given a starting point.
+     *              The ListIterator starts at specified point of the list,
+     *              this method check correctness with next() and previous() elements.
+     * @expectedResults A ListIterator set using an index should have as first next element the corresponding index element,
+     *                  as previous it should have the element at index (index-1).
+     * @actualResult As expected result.
+     * @dependencies The correctness of this test depends on the correctness of methods add(), size(), get()
+     * @preConditions The list instance must be a new instance of List.
+     * @postConditions The list instance should be modified by the direct execution of the tested method.
+     */
+    @Test
+    public void test_ListIterator_Index() {
+        Object[] tmp = new Object[5];
+        for(int i=0;i<tmp.length;i++) tmp[i]=new Object();
+
+        ListAdapter la = (ListAdapter) itt;
+        for(int i=0;i<tmp.length;i++) la.add(tmp[i]);
+
+        HListIterator it = la.listIterator(1);
+        Object result = it.next();
+        assertEquals("Checking that offset works", tmp[1], result);
+
+        it.previous();
+        result = it.previous();
+        assertEquals("Checking that offset works", tmp[0], result);
+    }
+
+    /**
+     * @title Test ListIterator giving an incorrect value as index, it should throw IndexOutOfBoundException.
+     * @description Tests if invocation of method with an invalid index throws IndexOutOfBoundException.
+     * @expectedResults The class is expected to throw a IndexOutOfBoundException.
+     * @actualResult As expected result.
+     * @dependencies This test does not depend by correctness of other method.
+     * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
+     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     */
+    @Test
+    public void testParametricListIterator_exceptions() {
+        assertThrows("Index < 0", IndexOutOfBoundsException.class, () -> {
+            ListAdapter la = (ListAdapter) itt;
+            HListIterator it = la.listIterator(-1);
+        });
+        assertThrows("index is > size", IndexOutOfBoundsException.class, () -> {
+            ListAdapter la = (ListAdapter) itt;
+            HListIterator it = la.listIterator(la.size()+1);
+        });
+    }
 
     //TEST SUBLIST
 
-    /**
-     * @title
-     * @description
-     * @expectedResults
-     * @actualResult
-     * @dependencies
-     * @preConditions
-     * @postConditions
-     */
     @Test
-    public void testSubList(){}
+    public void testSubList(){
+
+    }
 
 }

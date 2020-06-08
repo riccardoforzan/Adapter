@@ -1,5 +1,7 @@
 package interfaces;
 
+import java.util.NoSuchElementException;
+
 public interface HListIterator extends HIterator {
 
     /**
