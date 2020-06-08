@@ -802,12 +802,12 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void check_listIterator_set_ise(){
-        assertThrows("next() / previous() not invoked", exception.IllegalStateException.class, () -> {
+        assertThrows("next() / previous() not invoked", exceptions.IllegalStateException.class, () -> {
             HList la = (HList) itt;
             HListIterator it = la.listIterator();
             it.set(new Object());
         });
-        assertThrows("invoked after a call to remove()", exception.IllegalStateException.class, () -> {
+        assertThrows("invoked after a call to remove()", exceptions.IllegalStateException.class, () -> {
             itt.add(new Object());
             HList la = (HList) itt;
             HListIterator it = la.listIterator();
@@ -815,7 +815,7 @@ public class ListAdapterTester extends CollectionTester {
             it.remove();
             it.set(new Object());
         });
-        assertThrows("invoked after a call to add()", exception.IllegalStateException.class, () -> {
+        assertThrows("invoked after a call to add()", exceptions.IllegalStateException.class, () -> {
             HList la = (HList) itt;
             HListIterator it = la.listIterator();
             it.add(new Object());

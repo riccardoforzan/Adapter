@@ -298,7 +298,7 @@ public class SetAdapter implements HSet {
         if (!(o.getClass().equals(this.getClass()))) {
             return false;
         }
-        HSet other = (SetAdapter) o;
+        HSet other = (HSet) o;
         if (other.size() != this.size()) return false;
         HIterator it = iterator();
         while(it.hasNext()){
@@ -392,7 +392,7 @@ public class SetAdapter implements HSet {
          */
         @Override
         public void remove() {
-            if(current==null) throw new exception.IllegalStateException();
+            if(current==null) throw new exceptions.IllegalStateException();
             ht.remove(current);
             current=null;
         }

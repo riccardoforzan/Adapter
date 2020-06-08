@@ -29,7 +29,7 @@ public class MapAdapterTester {
     public void testGet(){
         Object value = new Object();
         Integer key = value.hashCode();
-        assertNotEquals("Cerco una chiave NON presente",null,ma.get(key));
+        assertEquals("Cerco una chiave NON presente",null,ma.get(key));
 
         ma.put(key,value);
         assertEquals("Cerco una chiave presente",value,ma.get(key));

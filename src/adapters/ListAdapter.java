@@ -558,7 +558,7 @@ public class ListAdapter implements HList {
 
         @Override
         public void remove() {
-            if(actual==-1) throw new exception.IllegalStateException();
+            if(actual==-1) throw new exceptions.IllegalStateException();
             ve.remove(actual);
             if(actual != cursor) cursor --;
             upperLimit--;
@@ -568,7 +568,7 @@ public class ListAdapter implements HList {
         @Override
         public void set(Object o) {
             if(o==null) throw new IllegalArgumentException("A null for Object o is not allowed");
-            if(actual==-1) throw new exception.IllegalStateException();
+            if(actual==-1) throw new exceptions.IllegalStateException();
             ve.set(actual,o);
 
         }

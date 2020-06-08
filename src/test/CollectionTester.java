@@ -799,7 +799,7 @@ public abstract class CollectionTester implements IteratorTester {
      */
     @Test
     public void check_Iterator_remove_nse(){
-        assertThrows("Method remove can not be called if not preceded by a call to next()", exception.IllegalStateException.class, () -> {
+        assertThrows("Method remove can not be called if not preceded by a call to next()", exceptions.IllegalStateException.class, () -> {
             HIterator it = itt.iterator();
             it.remove();
         });
@@ -818,7 +818,7 @@ public abstract class CollectionTester implements IteratorTester {
      */
     @Test
     public void check_Iterator_remove_tt(){
-        assertThrows("remove() can not be called two times in a row", exception.IllegalStateException.class, () -> {
+        assertThrows("remove() can not be called two times in a row", exceptions.IllegalStateException.class, () -> {
             itt.add(new Object());
             itt.add(new Object());
             HIterator it = itt.iterator();
