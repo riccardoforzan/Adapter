@@ -2,7 +2,6 @@ package test;
 
 import adapters.ListAdapter;
 import interfaces.HCollection;
-import interfaces.HIterator;
 import interfaces.HList;
 import interfaces.HListIterator;
 import org.junit.Before;
@@ -96,7 +95,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Override
     public void test_toArrayGivenType_notEmpty() {
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         Object[] expected = new Object[] {new Object(), new Object()};
         la.add(expected[0]);
         la.add(expected[1]);
@@ -119,7 +118,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Override
     public void test_toArrayGivenType_small() {
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         Object[] expected = new Object[] {new Object(), new Object()};
         la.add(expected[0]);
         la.add(expected[1]);
@@ -141,7 +140,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Override
     public void test_toArrayGivenType_large() {
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         Object[] expected = new Object[] {new Object(), new Object()};
         la.add(expected[0]);
         la.add(expected[1]);
@@ -175,7 +174,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_AddIndex(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
 
         Object toAdd = new Object();
         la.add(0,toAdd);
@@ -197,7 +196,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void check_AddIndex_ioobe(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         assertThrows("Inserting in position >= size())",IndexOutOfBoundsException.class, () -> la.add(5,new Object()));
         assertThrows("Inserting in position <0",IndexOutOfBoundsException.class, () -> la.add(-1,new Object()));
     }
@@ -213,7 +212,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void check_AddIndex_npe(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         assertThrows("Inserting a null value",NullPointerException.class, () -> la.add(0,null));
     }
 
@@ -229,12 +228,12 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_AddAllIndex(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
 
         Object alreadyInside = new Object();
         la.add(alreadyInside);
 
-        ListAdapter given = (ListAdapter) createNotEmptyCollection();
+        HList given = (HList) createNotEmptyCollection();
 
         assertTrue("Adding elements on head of collection",la.addAll(1,given));
         assertEquals("Checking size",3,la.size());
@@ -255,7 +254,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_AddAllIndex_void(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         HCollection given = createEmptyCollection();
         assertFalse("Collection is not changed",la.addAll(given));
     }
@@ -271,7 +270,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void check_AddAllIndex_ioobe(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         assertThrows("Inserting in position >= size())",IndexOutOfBoundsException.class, () -> la.add(5,new Object()));
         assertThrows("Inserting in position <0",IndexOutOfBoundsException.class, () -> la.add(-1,new Object()));
     }
@@ -287,7 +286,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void check_AddAllIndex_npe(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         assertThrows("Inserting a null value",NullPointerException.class, () -> la.add(0,null));
     }
 
@@ -302,7 +301,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_IndexOf_empty(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         Object toFind = new Object();
         assertEquals("Looking for an object in an empty collection",-1,la.indexOf(toFind));
     }
@@ -319,7 +318,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_IndexOf_found(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         Object toFind = new Object();
         la.add(toFind);
         int indexResult = la.indexOf(toFind);
@@ -339,7 +338,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_IndexOf_first(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
 
         Object toFind = new Object();
         la.add(toFind);
@@ -363,7 +362,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_IndexOf_notFound(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
 
         Object toFind = new Object();
         la.add(toFind);
@@ -386,7 +385,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void check_IndexOf_npe(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         assertThrows("Testing if NullPointerException is thrown",NullPointerException.class, () -> la.indexOf(null));
     }
 
@@ -401,7 +400,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_lastIndexOf_empty(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         Object toFind = new Object();
         assertEquals("Looking for an object in an empty collection",-1,la.lastIndexOf(toFind));
     }
@@ -418,7 +417,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_lastIndexOf_found(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         Object toFind = new Object();
         la.add(toFind);
         int indexResult = la.lastIndexOf(toFind);
@@ -438,7 +437,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_lastIndexOf(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
 
         Object toFind = new Object();
         la.add(toFind);
@@ -462,7 +461,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_lastIndexOf_notFound(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
 
         Object toFind = new Object();
         la.add(toFind);
@@ -485,7 +484,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void check_lastIndexOf_npe(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         assertThrows("Testing if NullPointerException is thrown",NullPointerException.class, () -> la.lastIndexOf(null));
     }
 
@@ -498,7 +497,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_RemoveIndex(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
 
         la.add(new Object());
 
@@ -521,7 +520,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void check_RemoveIndex_ioobe(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         assertThrows("Removing position < 0",IndexOutOfBoundsException.class, () -> la.remove(-1));
         assertThrows("Removing position > size()",IndexOutOfBoundsException.class, () -> la.remove(1));
     }
@@ -534,7 +533,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_set(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         Object obj1 = new Object();
         la.add(obj1);
 
@@ -558,7 +557,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void check_set_npe(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         la.add(new Object());
         assertThrows("Setting position with null",NullPointerException.class, () -> la.set(1,null));
     }
@@ -574,7 +573,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void check_set_ioobe(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         assertThrows("Setting position < 0",IndexOutOfBoundsException.class, () -> la.set(-1,new Object()));
         assertThrows("Setting position > size()",IndexOutOfBoundsException.class, () -> la.set(1,new Object()));
     }
@@ -592,7 +591,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_listIterator_nextIndex() {
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         HListIterator it = la.listIterator();
         assertEquals("Cheking iterator position on empty list",0, it.nextIndex());
 
@@ -614,7 +613,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_listIterator_hasPrevious(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         HListIterator it = la.listIterator();
         assertFalse("Cheking iterator on empty list",it.hasPrevious());
 
@@ -637,7 +636,7 @@ public class ListAdapterTester extends CollectionTester {
     @Test
     public void test_listIterator_previous(){
         Object first = new Object();
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         la.add(first);
 
         HListIterator it = la.listIterator();
@@ -657,7 +656,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_listIterator_previous_nse(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         HListIterator it = la.listIterator();
         assertThrows("No element in this collection", NoSuchElementException.class, () -> it.previous());
     }
@@ -673,7 +672,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_listIterator_previousIndex(){
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         HListIterator it = la.listIterator();
         assertEquals("Cheking iterator position on empty list",0, it.nextIndex());
 
@@ -698,7 +697,7 @@ public class ListAdapterTester extends CollectionTester {
         Object obj1 = new Object();
         itt.add(obj1);
 
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         HListIterator it = la.listIterator();
 
         int prev = it.previousIndex(), next = it.nextIndex();
@@ -729,7 +728,7 @@ public class ListAdapterTester extends CollectionTester {
     @Test
     public void check_listIterator_add_iae(){
         assertThrows("ListIterator.add() called passing null parameter", IllegalArgumentException.class, () -> {
-            ListAdapter la = (ListAdapter) itt;
+            HList la = (HList) itt;
             HListIterator it = la.listIterator();
             it.add(null);
         });
@@ -754,7 +753,7 @@ public class ListAdapterTester extends CollectionTester {
         itt.add(obj1);
         itt.add(obj2);
 
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         HListIterator it = la.listIterator();
 
         it.next();
@@ -781,7 +780,7 @@ public class ListAdapterTester extends CollectionTester {
     @Test
     public void check_listIterator_set_iae(){
         assertThrows("ListIterator.add() called passing null parameter", IllegalArgumentException.class, () -> {
-            ListAdapter la = (ListAdapter) itt;
+            HList la = (HList) itt;
             la.add(new Object());
             HListIterator it = la.listIterator();
             it.set(null);
@@ -804,20 +803,20 @@ public class ListAdapterTester extends CollectionTester {
     @Test
     public void check_listIterator_set_ise(){
         assertThrows("next() / previous() not invoked", exception.IllegalStateException.class, () -> {
-            ListAdapter la = (ListAdapter) itt;
+            HList la = (HList) itt;
             HListIterator it = la.listIterator();
             it.set(new Object());
         });
         assertThrows("invoked after a call to remove()", exception.IllegalStateException.class, () -> {
             itt.add(new Object());
-            ListAdapter la = (ListAdapter) itt;
+            HList la = (HList) itt;
             HListIterator it = la.listIterator();
             it.next();
             it.remove();
             it.set(new Object());
         });
         assertThrows("invoked after a call to add()", exception.IllegalStateException.class, () -> {
-            ListAdapter la = (ListAdapter) itt;
+            HList la = (HList) itt;
             HListIterator it = la.listIterator();
             it.add(new Object());
             it.set(new Object());
@@ -835,7 +834,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_ListIterator_iteration() {
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
 
         Object[] test = new Object[4];
         for(int i=0;i<test.length;i++) test[i]=new Object();
@@ -862,7 +861,7 @@ public class ListAdapterTester extends CollectionTester {
         Object[] tmp = new Object[5];
         for(int i=0;i<tmp.length;i++) tmp[i]=new Object();
 
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         for(int i=0;i<tmp.length;i++) la.add(tmp[i]);
 
         HListIterator it = la.listIterator();
@@ -908,7 +907,7 @@ public class ListAdapterTester extends CollectionTester {
         Object[] tmp = new Object[5];
         for(int i=0;i<tmp.length;i++) tmp[i]=new Object();
 
-        ListAdapter la = (ListAdapter) itt;
+        HList la = (HList) itt;
         for(int i=0;i<tmp.length;i++) la.add(tmp[i]);
 
         HListIterator it = la.listIterator(1);
@@ -932,11 +931,11 @@ public class ListAdapterTester extends CollectionTester {
     @Test
     public void testParametricListIterator_exceptions() {
         assertThrows("Index < 0", IndexOutOfBoundsException.class, () -> {
-            ListAdapter la = (ListAdapter) itt;
+            HList la = (HList) itt;
             HListIterator it = la.listIterator(-1);
         });
         assertThrows("index is > size", IndexOutOfBoundsException.class, () -> {
-            ListAdapter la = (ListAdapter) itt;
+            HList la = (HList) itt;
             HListIterator it = la.listIterator(la.size()+1);
         });
     }
@@ -956,7 +955,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_SubList_void() {
-        ListAdapter ls = (ListAdapter) itt;
+        HList ls = (HList) itt;
         HList sub = ls.subList(0, 0);
         assertTrue("Empty sublist", sub.isEmpty());
 
@@ -984,7 +983,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_SubList_part() {
-        ListAdapter ls = (ListAdapter) itt;
+        HList ls = (HList) itt;
 
         Object obj1 = new Object();
         Object obj2 = new Object();
@@ -1024,7 +1023,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_SubList_set() {
-        ListAdapter ls = (ListAdapter) itt;
+        HList ls = (HList) itt;
         for(int i=0;i<5;i++) ls.add(new Object());
         Object toSub = new Object();
         ls.add(toSub);
@@ -1054,7 +1053,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_SubList_full() {
-        ListAdapter ls = (ListAdapter) itt;
+        HList ls = (HList) itt;
         ls.add(new Object());
         HList sub = ls.subList(0, ls.size());
 
@@ -1083,7 +1082,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_SubList_IndexMethods() {
-        ListAdapter ls = (ListAdapter) itt;
+        HList ls = (HList) itt;
 
         Object target = new Object();
         ls.add(new Object());
@@ -1112,7 +1111,7 @@ public class ListAdapterTester extends CollectionTester {
      */
     @Test
     public void test_SubList_clear() {
-        ListAdapter ls = (ListAdapter) itt;
+        HList ls = (HList) itt;
         Object saved = new Object();
         ls.add(new Object());
         ls.add(new Object());
