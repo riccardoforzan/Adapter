@@ -49,7 +49,12 @@ public class SetAdapterTester extends CollectionTester {
      * @title Test of add(object) method
      * @description Test adding an object already contained in the collection
      * @expectedResults false, the object is already part of the collection
-     * @preConditions the object to add must be already added
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested set.
+     * @preConditions The test instance must be a new (and empty) instance of HSet.
+     * @postConditions The test instance is directly modified by the execution of the method tested.
+     *                 The test adds 1 element to the set.
      */
     @Test
     public void test_addDuplicate() {
@@ -61,7 +66,13 @@ public class SetAdapterTester extends CollectionTester {
     /**
      * @title Test of toArray() method
      * @description Test toArray() method , the behavior depends:
-     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
+     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested set.
+     * @preConditions The test instance must be a new (and empty) instance of HSet.
+     * @postConditions The test instance is directly modified by the execution of the method tested.
+     *                 The test adds 2 element to the set.
      */
     @Override
     public void test_toArray_notEmpty() {
@@ -83,10 +94,15 @@ public class SetAdapterTester extends CollectionTester {
 
     /**
      * @title Test of toArray(Object[] a) method
-     * @description Test toArray(Object[] a) method giving as parameter an array that array.length == collection.size(), the behavior depends:
-     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
-     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
-     * @expectedResults in both cases it uses to return the array given as parameter
+     * @description Test toArray(Object[] a) method giving as parameter an array that array.length == collection.size()
+     * @expectedResults In SetAdapter the order is not defined, so the returned array has an undefined order.
+     *                  It uses to return the array given as parameter.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested set.
+     * @preConditions The test instance must be a new (and empty) instance of HSet.
+     * @postConditions The test instance is directly modified by the execution of the method tested.
+     *                 The test adds 2 element to the set.
      */
     @Override
     public void test_toArrayGivenType_notEmpty() {
@@ -110,9 +126,14 @@ public class SetAdapterTester extends CollectionTester {
     /**
      * @title Test of toArray(Object[] a) method
      * @description Test toArray(Object[] a) method giving an array smaller than the collection's size, the behavior depends:
-     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
-     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
-     * @expectedResults in both cases it allocates a NEW array of the same length as the size of the collection
+     * @expectedResults In SetAdapter the order is not defined, so the returned array has an undefined order.
+     *                  It uses to return a new array and not the one given as parameter, as it is too small.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested set.
+     * @preConditions The test instance must be a new (and empty) instance of HSet.
+     * @postConditions The test instance is directly modified by the execution of the method tested.
+     *                 The test adds 2 element to the set.
      */
     @Override
     public void test_toArrayGivenType_small() {
@@ -134,9 +155,15 @@ public class SetAdapterTester extends CollectionTester {
     /**
      * @title Test of toArray(Object[] a) method
      * @description Test toArray(Object[] a) method giving an array larger than the collection's size, the behavior depends:
-     * @expectedResults for ListAdapter the order is defined, so the returned array must have the same order of the list
-     * @expectedResults for SetAdapter the order is not defined, so the returned array has an undefined order
-     * @expectedResults in both cases it uses to return the array given as a parameter, with the empty positions set at null
+     * @expectedResults In SetAdapter the order is not defined, so the returned array has an undefined order.
+     *                  It uses to return the array given as a parameter, setting the cells with index < size() with
+     *                  values on the set, and the following ones with null.
+     * @actualResult As expected result.
+     * @dependencies This test correctness depends on the correctness of
+     *               the implementation of add() method in the tested set.
+     * @preConditions The test instance must be a new (and empty) instance of HSet.
+     * @postConditions The test instance is directly modified by the execution of the method tested.
+     *                 The test adds 2 element to the set.
      */
     @Override
     public void test_toArrayGivenType_large(){

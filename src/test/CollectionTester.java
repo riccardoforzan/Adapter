@@ -74,7 +74,7 @@ public abstract class CollectionTester implements IteratorTester {
      * @actualResult As expected result.
      * @dependencies This test does not depend by correctness of other methods.
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
-     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     * @postConditions The collection instance is directly modified by the execution of the method tested, adds an element
      */
     @Test
     public void test_add() {
@@ -92,7 +92,6 @@ public abstract class CollectionTester implements IteratorTester {
      *                  Instead, if the collection does not allow replicated object insertion, the collection should not
      *                  be modified.
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
-     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
      */
     @Test
     public abstract void test_addDuplicate();
@@ -140,7 +139,8 @@ public abstract class CollectionTester implements IteratorTester {
      * @dependencies This test correctness depends on the correctness of
      *               the implementation of isEmpty() method in the tested collection.
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
-     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     * @postConditions The collection instance is directly modified by the execution of the method tested.
+     *                 The test adds one element and than removes all element inserted.
      */
     @Test
     public void test_clear() {
@@ -158,7 +158,8 @@ public abstract class CollectionTester implements IteratorTester {
      * @dependencies This test correctness depends on the correctness of
      *               the implementation of add() method in the tested collection.
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
-     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     * @postConditions The collection instance is directly modified by the execution of the method tested.
+     *                 The test adds one element.
      */
     @Test
     public void test_contains() {
@@ -205,6 +206,7 @@ public abstract class CollectionTester implements IteratorTester {
      *               the implementation of add() method in the tested collection.
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
      * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     *                 The test adds one element and then removes it
      */
     @Test
     public void test_remove() {
@@ -253,6 +255,7 @@ public abstract class CollectionTester implements IteratorTester {
      *               isEmpty() methods in the tested collection.
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
      * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     *                 The test adds and removes one element.
      */
     @Test
     public void  check_ARC(){
@@ -391,7 +394,8 @@ public abstract class CollectionTester implements IteratorTester {
      * @actualResult As expected result.
      * @dependencies This test correctness depends on the private method createNotEmptyCollection().
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
-     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     * @postConditions The collection instance is directly modified by the execution of the method tested.
+     *                 The test adds all element from a given collection element.
      */
     @Test
     public void test_addAll_NotEmpty(){
@@ -443,7 +447,8 @@ public abstract class CollectionTester implements IteratorTester {
      *               the implementation of addAll() method in the tested collection.
      *               It also depends by the private method createNotEmptyCollection().
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
-     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     * @postConditions The collection instance is directly modified by the execution of the method tested.
+     *                 The test adds all element from a given collection element.
      */
     @Test
     public void test_containsAll_NotEmpty(){
@@ -462,7 +467,8 @@ public abstract class CollectionTester implements IteratorTester {
      *               the implementation of add(), addAll() methods in the tested collection.
      *               It also depends by the private method createNotEmptyCollection().
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
-     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     * @postConditions The collection instance is directly modified by the execution of the method tested.
+     *                 The test adds all element from a given collection element.
      */
     @Test
     public void test_containsAll_Part(){
@@ -517,7 +523,8 @@ public abstract class CollectionTester implements IteratorTester {
      *               the implementation of addAll() and isEmpty() methods in the tested collection.
      *               It also depends by the private method createNotEmptyCollection().
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
-     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     * @postConditions The collection instance is directly modified by the execution of the method tested.
+     *                 The test adds all element from a given collection element.
      */
     @Test
     public void test_removeAll_NotEmpty(){
@@ -538,7 +545,8 @@ public abstract class CollectionTester implements IteratorTester {
      *               the implementation of add(), addAll(), size() and contains() methods in the tested collection.
      *               It also depends by the private method createNotEmptyCollection().
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
-     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     * @postConditions The collection instance is directly modified by the execution of the method tested.
+     *                 The test adds all element from a given collection element.
      */
     @Test
     public void test_removeAll_Part(){
@@ -597,7 +605,8 @@ public abstract class CollectionTester implements IteratorTester {
      *               the implementation of addAll() method in the tested collection.
      *               It also depends by the private method createNotEmptyCollection().
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
-     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     * @postConditions The collection instance is directly modified by the execution of the method tested.
+     *                 The test adds all element from a given collection element.
      */
     @Test
     public void test_retainAll_NotEmpty(){
@@ -616,7 +625,8 @@ public abstract class CollectionTester implements IteratorTester {
      *               the implementation of add(), addAll(), clear(), size() and contains() methods in the tested collection.
      *               It also depends by the private method createNotEmptyCollection().
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
-     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     * @postConditions The collection instance is directly modified by the execution of the method tested.
+     *                 The test adds all element from a given collection element and then removes all.
      */
     @Test
     public void test_retainAll_Part(){
@@ -658,7 +668,8 @@ public abstract class CollectionTester implements IteratorTester {
      *               isEmpty() methods in the tested collection.
      *               It also depends by the private method createNotEmptyCollection().
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
-     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     * @postConditions The collection instance is directly modified by the execution of the method tested.
+     *                 The test adds all element from a given collection element.
      */
     @Test
     public void  check_ARC_All(){
@@ -696,7 +707,8 @@ public abstract class CollectionTester implements IteratorTester {
      * @dependencies This test correctness depends on the correctness of
      *               the implementation of add() method in the tested collection.
      * @preConditions The HCollection instance must be a new (and empty) instance of Collection.
-     * @postConditions The collection instance isn't directly modified by the execution of the method tested.
+     * @postConditions The collection instance is directly modified by the execution of the method tested.
+     *                 The test adds an element to the collection.
      */
     @Test
     public void test_Iterator_hasNext_NotEmptyCollection() {
@@ -732,6 +744,7 @@ public abstract class CollectionTester implements IteratorTester {
      *               the implementation of add() method in the tested collection.
      * @preConditions The HCollection instance must be a new instance of Collection.
      * @postConditions The HCollection instance should not be modified by the execution of the method.
+     *                 The test adds 3 elements to the collection.
      */
     @Test
     public void test_Iterator_next() {
@@ -776,6 +789,7 @@ public abstract class CollectionTester implements IteratorTester {
      *               the implementation of add(), size(), and contains() methods in the tested collection.
      * @preConditions The HCollection instance must be a new instance of Collection.
      * @postConditions The HCollection instance should be modified by the execution of the method.
+     *                 The test adds 2 elements to the collection and then removes 1.
      */
     @Test
     public void test_Iterator_remove() {
@@ -846,6 +860,7 @@ public abstract class CollectionTester implements IteratorTester {
      *               the implementation of add() method in the tested collection.
      * @preConditions The HCollection instance must be a new instance of Collection.
      * @postConditions The HCollection instance should be modified by the execution of the method.
+     *                 The test adds 6 elements to the collection and then removes 4 of them.
      */
     @Test
     public void testIterator_removenext() {
