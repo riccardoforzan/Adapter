@@ -66,14 +66,15 @@ public class MapAdapterTester {
         assertEquals("Controllo non ci fosse nessun altro valore associato",null,ma.put(key,toInsert));
         assertEquals("Controllo sia aumentata la dimensione",1,ma.size());
         assertEquals("Controllo la coerenza con il metodo containsKey",true,ma.containsKey(key));
-        assertEquals("Controllo la coerenza con il metodo containsValue",true,ma.containsKey(toInsert));
+
+        assertEquals("Controllo la coerenza con il metodo containsValue",true,ma.containsValue(toInsert));
         assertEquals("Controllo la coerenza con il metodo get",toInsert,ma.get(key));
 
         Object substitute = new Object();
         assertEquals("Controllo ci fosse il precedente valore associato",toInsert,ma.put(key,substitute));
         assertEquals("Controllo non sia cambiata la dimensione",1,ma.size());
         assertEquals("Controllo la coerenza con il metodo containsKey",true,ma.containsKey(key));
-        assertEquals("Controllo la coerenza con il metodo containsValue",true,ma.containsKey(substitute));
+        assertEquals("Controllo la coerenza con il metodo containsValue",true,ma.containsValue(substitute));
         assertNotEquals("Controllo non sia più presente il valore precedente",true,ma.containsKey(toInsert));
         assertEquals("Controllo la coerenza con il metodo get",substitute,ma.get(key));
 
@@ -83,6 +84,7 @@ public class MapAdapterTester {
         assertThrows("Non è permesso l'inserimento di valori nulli",NullPointerException.class,()->{
             ma.put(new Object().hashCode(),null);
         });
+
     }
 
     @Test
@@ -100,7 +102,7 @@ public class MapAdapterTester {
         ma.putAll(oldMap);
         assertEquals("Controllo sia aumentata la dimensione",2,ma.size());
         assertEquals("Controllo la coerenza con il metodo containsKey",true,ma.containsKey(obj1.hashCode()) && ma.containsKey(obj2.hashCode()));
-        assertEquals("Controllo la coerenza con il metodo containsValue",true,ma.containsKey(obj1) && ma.containsKey(obj2));
+        assertEquals("Controllo la coerenza con il metodo containsValue",true,ma.containsValue(obj1) && ma.containsValue(obj2));
 
         assertThrows("Non è permesso fornire un parametro mappa nullo",NullPointerException.class,()->{
             ma.putAll(null);
@@ -177,7 +179,7 @@ public class MapAdapterTester {
     public void testIsEmpty(){
         assertEquals(true, ma.isEmpty());
         ma.put(new Object().hashCode(),new Object());
-        assertNotEquals(false,ma.isEmpty());
+        assertEquals(false,ma.isEmpty());
     }
 
     /**
@@ -203,14 +205,17 @@ public class MapAdapterTester {
 
         Object key = new Object().hashCode();
         Object value = new Object();
+
         ma.put(key,value);
         ma2.put(key,value);
-
-        assertEquals("Controllo che le mappe con lo stesso elemento abbiano lo stesso hashcode",true,ma.hashCode() == ma2.hashCode());
+        System.out.println(ma.hashCode());
+        System.out.println(ma2.hashCode());
+        assertEquals("Controllo che le mappe con lo stesso elemento abbiano lo stesso hashcode", ma.hashCode() , ma2.hashCode());
 
         Object tp = new Object();
         ma2.put(tp.hashCode(),tp);
-        assertNotEquals("Controllo che le mappe che non contengono lo stesso elemento non abbiano lo stesso hashcode",true,ma.hashCode() == ma2.hashCode());
+        System.out.println(ma2.hashCode());
+        assertNotEquals("Controllo che le mappe che non contengono lo stesso elemento non abbiano lo stesso hashcode",ma.hashCode() , ma2.hashCode());
     }
 
     /**
