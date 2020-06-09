@@ -7,7 +7,6 @@ import interfaces.HSet;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -125,7 +124,7 @@ public class MapAdapter implements HMap {
          * @return the hash code value for this map entry
          */
         public int hashCode(){
-            return this.key.hashCode() ^ this.key.hashCode();
+            return key.hashCode() ^ value.hashCode();
         }
     }
 
@@ -371,7 +370,7 @@ public class MapAdapter implements HMap {
         public boolean contains(Object o){
             if(o==null) throw new NullPointerException();
             if(! (o instanceof MapAdapter.Entry)) throw new IllegalArgumentException();
-            Map.Entry entry = (Map.Entry) o;
+            HMap.Entry entry = (HMap.Entry) o;
             //Key To Test
             Object ktt = entry.getKey();
             Object vtt = entry.getValue();
@@ -408,7 +407,7 @@ public class MapAdapter implements HMap {
         public boolean remove(Object o) {
             if(o==null) throw new NullPointerException();
             if(! (o instanceof MapAdapter.Entry)) throw new IllegalArgumentException();
-            Map.Entry entry = (Map.Entry) o;
+            HMap.Entry entry = (HMap.Entry) o;
             return ht.remove(entry.getKey()) == null;
         }
 
@@ -472,7 +471,8 @@ public class MapAdapter implements HMap {
             int hash = 0;
             HIterator it = iterator();
             while(it.hasNext()) {
-                hash += it.next().hashCode();
+                Object tmp = it.next();
+                hash += tmp.hashCode();
             }
             return hash;
         }
@@ -483,6 +483,7 @@ public class MapAdapter implements HMap {
         }
 
         private class EntrySetIterator implements HIterator{
+
             private HMap.Entry current;
             private Enumeration keys;
 
@@ -685,7 +686,7 @@ public class MapAdapter implements HMap {
 
             @Override
             public Object next() {
-                Map.Entry o = (Map.Entry) it.next();
+                HMap.Entry o = (HMap.Entry) it.next();
                 return o.getValue();
             }
 
@@ -727,7 +728,7 @@ public class MapAdapter implements HMap {
 
             @Override
             public Object next() {
-                Map.Entry o = (Map.Entry) it.next();
+                HMap.Entry o = (HMap.Entry) it.next();
                 return o.getKey();
             }
 
