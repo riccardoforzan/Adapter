@@ -74,7 +74,6 @@ public interface HListIterator extends HIterator {
      */
     int previousIndex();
 
-
     /**
      * Removes from the list the last element that was returned by
      * next() or previous() (optional operation).  This call can

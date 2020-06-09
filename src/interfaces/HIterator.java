@@ -1,6 +1,5 @@
 package interfaces;
 
-
 import java.util.NoSuchElementException;
 import exceptions.IllegalStateException;
 

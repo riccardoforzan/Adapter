@@ -97,7 +97,6 @@ public interface HList extends HCollection{
      */
     Object[] toArray(Object[] a);
 
-
     /**
      * Appends the specified element to the end of this list (optional
      * operation).
@@ -142,9 +141,6 @@ public interface HList extends HCollection{
      *         is not supported by this list
      */
     boolean remove(Object o);
-
-
-    // Bulk Modification Operations
 
     /**
      * Returns <tt>true</tt> if this list contains all of the elements of the
@@ -289,9 +285,6 @@ public interface HList extends HCollection{
      */
     int hashCode();
 
-
-    // Positional Access Operations
-
     /**
      * Returns the element at the specified position in this list.
      *
@@ -392,9 +385,6 @@ public interface HList extends HCollection{
      */
     int lastIndexOf(Object o);
 
-
-    // List Iterators
-
     /**
      * Returns a list iterator over the elements in this list (in proper
      * sequence).
@@ -456,4 +446,5 @@ public interface HList extends HCollection{
      *         fromIndex &gt; toIndex</tt>)
      */
     HList subList(int fromIndex, int toIndex);
+
 }

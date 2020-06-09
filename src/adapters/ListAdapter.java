@@ -26,14 +26,14 @@ public class ListAdapter implements HList {
      * @return return true if the collection is valid, false otherwise
      */
     private static boolean isCollectionValid(HCollection tt){
-        if(tt==null) return false;
+        if(tt==null) return true;
         boolean containsNull;
         try{
             containsNull = tt.contains(null);
         }catch (NullPointerException npe){
             containsNull = false;
         }
-        return !containsNull;
+        return containsNull;
     }
 
     /**
@@ -177,7 +177,7 @@ public class ListAdapter implements HList {
      */
     @Override
     public boolean containsAll(HCollection c) {
-        if(!ListAdapter.isCollectionValid(c)) throw new NullPointerException();
+        if(ListAdapter.isCollectionValid(c)) throw new NullPointerException();
         HIterator itc = c.iterator();
         while(itc.hasNext()){
             Object tmp = itc.next();
@@ -229,7 +229,7 @@ public class ListAdapter implements HList {
     @Override
     public boolean addAll(int index, HCollection c) {
         if(index<0 || index>size()) throw new IndexOutOfBoundsException();
-        if(!ListAdapter.isCollectionValid(c)) throw new NullPointerException();
+        if(ListAdapter.isCollectionValid(c)) throw new NullPointerException();
 
         HIterator itc = c.iterator();
         boolean isChanged = false;
@@ -254,8 +254,7 @@ public class ListAdapter implements HList {
      */
     @Override
     public boolean removeAll(HCollection c) {
-        if(!ListAdapter.isCollectionValid(c)) throw new NullPointerException();
-
+        if(ListAdapter.isCollectionValid(c)) throw new NullPointerException();
         boolean isChanged = false;
         int i=0;
         while(i<this.size()){
@@ -283,7 +282,7 @@ public class ListAdapter implements HList {
      */
     @Override
     public boolean retainAll(HCollection c) {
-        if(!ListAdapter.isCollectionValid(c)) throw new NullPointerException();
+        if(ListAdapter.isCollectionValid(c)) throw new NullPointerException();
 
         ListAdapter toRemove = new ListAdapter();
         for(int i=0;i<this.size();i++){
@@ -703,7 +702,7 @@ public class ListAdapter implements HList {
 
         @Override
         public boolean containsAll(HCollection c) {
-            if(!ListAdapter.isCollectionValid(c)) throw new NullPointerException();
+            if(ListAdapter.isCollectionValid(c)) throw new NullPointerException();
             HIterator itc = c.iterator();
             while (itc.hasNext()) {
                 Object tmp = itc.next();
@@ -731,7 +730,7 @@ public class ListAdapter implements HList {
 
         @Override
         public boolean removeAll(HCollection c) {
-            if(!ListAdapter.isCollectionValid(c)) throw new NullPointerException();
+            if(ListAdapter.isCollectionValid(c)) throw new NullPointerException();
             boolean isChanged = false;
             int i = 0;
             while (i < this.size()) {
@@ -748,7 +747,7 @@ public class ListAdapter implements HList {
 
         @Override
         public boolean retainAll(HCollection c) {
-            if(!ListAdapter.isCollectionValid(c)) throw new NullPointerException();
+            if(ListAdapter.isCollectionValid(c)) throw new NullPointerException();
             ListAdapter toRemove = new ListAdapter();
             for (int i = 0; i < this.size(); i++) {
                 Object tmp = this.get(i);
@@ -822,7 +821,7 @@ public class ListAdapter implements HList {
         @Override
         public boolean equals(Object o) {
             if (o == this) return true;
-            if (o == null || !(o instanceof HList)) return false;
+            if (!(o instanceof HList)) return false;
             HList other = (HList) o;
             if (other.size() != this.size()) return false;
 

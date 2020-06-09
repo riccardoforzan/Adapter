@@ -134,9 +134,6 @@ public interface HMap{
      */
     Object remove(Object key);
 
-
-    // Bulk Operations
-
     /**
      * Copies all of the mappings from the specified map to this map
      * (optional operation).  The effect of this call is equivalent to that
@@ -166,9 +163,6 @@ public interface HMap{
      *         is not supported by this map
      */
     void clear();
-
-
-    // Views
 
     /**
      * Returns a Set view of the keys contained in this map.
@@ -312,8 +306,6 @@ public interface HMap{
          */
         int hashCode();
     }
-
-    // Comparison and hashing
 
     /**
      * Compares the specified object with this map for equality.  Returns

@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 
 public class SetAdapterTester extends CollectionTester {
 
-    @Before
+    @Override
     public void setup(){
         itt = new SetAdapter();
     }

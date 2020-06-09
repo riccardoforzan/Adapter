@@ -271,4 +271,5 @@ public interface HSet extends HCollection {
      * @return the hash code value for this set
      */
     int hashCode();
+
 }

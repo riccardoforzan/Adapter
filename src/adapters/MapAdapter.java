@@ -20,7 +20,7 @@ public class MapAdapter implements HMap {
         ht = new Hashtable();
     }
 
-    public class Entry implements HMap.Entry{
+    public static class Entry implements HMap.Entry{
 
         private final Object key;
         private Object value;
@@ -80,9 +80,8 @@ public class MapAdapter implements HMap {
          */
         @Override
         public Object setValue(Object value) {
-            Object rv = value;
             this.value = value;
-            return rv;
+            return value;
         }
 
         /**
@@ -105,7 +104,7 @@ public class MapAdapter implements HMap {
          */
         public boolean equals(Object o){
             if(this==o) return true;
-            if(o==null || !(o instanceof HMap.Entry)) return false;
+            if(!(o instanceof HMap.Entry)) return false;
             HMap.Entry other = (HMap.Entry) o;
             return this.key.equals(other.getKey()) && this.value.equals(other.getValue());
         }
@@ -136,9 +135,9 @@ public class MapAdapter implements HMap {
      */
     private static boolean isMapValid(HMap tt){
         if(tt==null) return false;
-        boolean containsNull = false;
+        boolean containsNull;
         try{
-            containsNull |= tt.containsKey(null);
+            containsNull = tt.containsKey(null);
         }catch (NullPointerException npe){
             containsNull = false;
         }
@@ -290,7 +289,7 @@ public class MapAdapter implements HMap {
      */
     public boolean equals(Object o){
         if(this==o) return true;
-        if(o==null || !(o instanceof HMap)) return false;
+        if(!(o instanceof HMap)) return false;
         HMap other = (HMap) o;
         return this.entrySet().equals(other.entrySet());
     }
@@ -323,7 +322,7 @@ public class MapAdapter implements HMap {
      */
     @Override
     public void putAll(HMap t){
-        if(!this.isMapValid(t)) throw new NullPointerException();
+        if(!isMapValid(t)) throw new NullPointerException();
         HIterator it = t.entrySet().iterator();
         while(it.hasNext()) {
             MapAdapter.Entry entry = (MapAdapter.Entry) it.next();
@@ -455,7 +454,7 @@ public class MapAdapter implements HMap {
         @Override
         public boolean equals(Object o) {
             if (o == this) return true;
-            if (!(o instanceof MapAdapter.EntrySet)) {
+            if (!(o instanceof EntrySet)) {
                 return false;
             }
             EntrySet other = (EntrySet) o;
@@ -485,7 +484,7 @@ public class MapAdapter implements HMap {
         private class EntrySetIterator implements HIterator{
 
             private HMap.Entry current;
-            private Enumeration keys;
+            private final Enumeration keys;
 
             public EntrySetIterator() {
                 current = null;
@@ -501,7 +500,8 @@ public class MapAdapter implements HMap {
             public Object next() {
                 if(!hasNext()) throw new NoSuchElementException();
                 Object key = keys.nextElement();
-                return new MapAdapter.Entry(key, ht.get(key));
+                current = new Entry(key, ht.get(key));
+                return current;
             }
 
             @Override
@@ -641,6 +641,16 @@ public class MapAdapter implements HMap {
             ht.clear();
         }
 
+        public int hashCode(){
+            int hashCode = 0;
+            HIterator i = iterator();
+            while (i.hasNext()) {
+                Object tmp = i.next();
+                hashCode += tmp.hashCode();
+            }
+            return hashCode;
+        }
+
         abstract class ASetIterator implements HIterator{
             protected HIterator it;
 
@@ -678,6 +688,17 @@ public class MapAdapter implements HMap {
             return new KeySetIterator();
         }
 
+        public boolean equals(Object o){
+            if(this==o) return true;
+            if(!(o instanceof KeySet)) return false;
+            MapAdapter.KeySet other = (MapAdapter.KeySet) o;
+
+            HIterator it = iterator();
+            while(it.hasNext())
+                if(!other.contains(it.next())) return false;
+            return true;
+        }
+
         class KeySetIterator extends ASetIterator{
 
             public KeySetIterator(){
@@ -687,7 +708,7 @@ public class MapAdapter implements HMap {
             @Override
             public Object next() {
                 HMap.Entry o = (HMap.Entry) it.next();
-                return o.getValue();
+                return o.getKey();
             }
 
         }
@@ -703,7 +724,7 @@ public class MapAdapter implements HMap {
 
         @Override
         public HIterator iterator() {
-            return null;
+            return new ValueSetIterator();
         }
 
         @Override
@@ -720,6 +741,17 @@ public class MapAdapter implements HMap {
             return false;
         }
 
+        public boolean equals(Object o){
+            if(this==o) return true;
+            if(!(o instanceof ValueSet)) return false;
+            MapAdapter.ValueSet other = (MapAdapter.ValueSet) o;
+
+            HIterator it = iterator();
+            while(it.hasNext())
+                if(!other.contains(it.next())) return false;
+            return true;
+        }
+
         class ValueSetIterator extends ASetIterator{
 
             public ValueSetIterator(){
@@ -729,7 +761,7 @@ public class MapAdapter implements HMap {
             @Override
             public Object next() {
                 HMap.Entry o = (HMap.Entry) it.next();
-                return o.getKey();
+                return o.getValue();
             }
 
         }

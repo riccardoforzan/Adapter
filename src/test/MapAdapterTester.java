@@ -1,12 +1,14 @@
 package test;
 
+import adapters.ListAdapter;
+import interfaces.HCollection;
+import interfaces.HIterator;
 import interfaces.HMap;
 import interfaces.HSet;
 
 import adapters.MapAdapter;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -609,7 +611,7 @@ public class MapAdapterTester {
      * @expectedResults The result hash is expected to be 0.
      * @actualResult As expected result.
      * @dependencies The correctness of this method does not depends on the correctness of other methods of the class Map.
-     * @preConditions The map instance must be a new istance of Map.
+     * @preConditions The map instance must be a new instance of Map.
      * @postConditions The map instance doesn't have to be modified by the execution of the method tested.
      */
     @Test
@@ -687,7 +689,7 @@ public class MapAdapterTester {
         HMap other = new MapAdapter();
         other.put("Cc", "Cc");
         boolean result = itt.equals(other);
-        assertEquals("Expected to be different", false, result);
+        assertFalse("Expected to be different", result);
     }
 
     /**
@@ -772,43 +774,668 @@ public class MapAdapterTester {
         Object value2 = new Object();
         itt.put(key2,value2);
 
-        assertFalse("Different elements",itt.equals(ma2));
+        assertNotEquals("Different elements", itt, ma2);
         assertNotEquals("Different hashcodes",itt.hashCode(), ma2.hashCode());
     }
 
+    //TEST ENTRYSET
 
     /**
-     * TODO: Still to implement test of those 3
+     * @title Test of entrySet() method
+     * @description This test tests the behaviour of entrySet() method when called on an empty map.
+     * @expectedResults The set is expected to be empty.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method isEmpty.
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method.
      */
-
     @Test
-    @Ignore
-    public void test_EntrySet(){
-        fail();
+    public void test_Entry_empty() {
+        HSet entries = itt.entrySet();
+        assertTrue("The map is empty", entries.isEmpty());
     }
 
+    /**
+     * @title Test of entrySet() method
+     * @description This test tests the behaviour of entrySet() method when called on a not-empty map.
+     * @expectedResults The set size is expected to be equals to the number of entries in the map.
+     *                  The set is expected to contain all the entries contained in the map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of methods put, isEmpty and contains.
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method.
+     */
     @Test
-    @Ignore
-    public void test_KeySet(){
-        assertTrue("Una mappa vuota non ha chiavi", itt.keySet().isEmpty());
+    public void test_Entry_notEmpty() {
+        Object obj1 = new Object();
+        Object obj2 = new Object();
 
-        Object value = new Object();
-        Integer key = value.hashCode();
-        Object value2 = new Object();
-        Integer key2 = value2.hashCode();
-        itt.put(key,value);
-        itt.put(key2,value2);
-
-        HSet keySet = itt.keySet();
-        assertTrue("Controllo siano presenti le due chiavi", keySet.contains(key) && keySet.contains(key2));
-
-        fail();
+        itt.put(obj1, obj1);
+        itt.put(obj2, obj2);
+        HSet entries = itt.entrySet();
+        assertEquals("Check size", 2, entries.size());
+        assertTrue("Check items", entries.contains(new MapAdapter.Entry(obj1, obj1)));
+        assertTrue("Check items", entries.contains(new MapAdapter.Entry(obj2, obj2)));
     }
 
+    /**
+     * @title Test of entrySet() method
+     * @description This test tests the behaviour of entrySet() method called on a non empty map
+     *              that contains duplicate values.
+     * @expectedResults The set size is expected to equals to the number of entries inserted.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of methods size and put.
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method.
+     */
     @Test
-    @Ignore
-    public void test_Values() {
-        fail();
+    public void test_Entry_duplicates() {
+        itt.put("Aa", "Aa");
+        itt.put("Bb", "Aa");
+        itt.put("Cc", "Aa");
+        HSet entries = itt.entrySet();
+        assertEquals("Check size", 3, entries.size());
+    }
+
+    /**
+     * @title Test of entrySet() method
+     * @description This test tests the behaviour of entrySet() method.
+     *              This test that the new set returned is backed to the map so,
+     *              structural modification are performed in set are reflected in the parent map.
+     * @expectedResults The modifications to the returned set must be reflected to the parent map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method size(), isEmpty(),
+     *               containsValue() and put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should be modified by the execution of the method.
+     */
+    @Test
+    public void test_Entry_backed() {
+        itt.put("Aa", "Aa");
+        itt.put("Bb", "Bb");
+        itt.put("Cc", "Cc");
+        itt.put("Zz","Zz");
+        HSet entries = itt.entrySet();
+
+        entries.remove(new MapAdapter.Entry("Aa", "Aa"));
+
+        assertEquals("Size changed", 3, entries.size());
+        assertEquals("Modification on parent", 3, itt.size());
+        assertFalse("Check if is contained", itt.containsKey("Aa") && itt.containsValue("Aa"));
+
+        HCollection toRemove = new ListAdapter();
+        toRemove.add(new MapAdapter.Entry("Bb", "Bb"));
+        toRemove.add(new MapAdapter.Entry("Cc", "Cc"));
+
+        entries.removeAll(toRemove);
+
+        assertEquals("Modification on parent", 1, entries.size());
+        assertEquals("Remove on parent", 1, itt.size());
+        assertFalse("Check remove", itt.containsKey("Bb") && itt.containsValue("Bb"));
+        assertFalse("Check remove", itt.containsKey("Cc") && itt.containsValue("Cc"));
+        assertTrue("Check survived", itt.containsKey("Zz") && itt.containsValue("Zz"));
+
+        HCollection toRetain = new ListAdapter();
+        entries.retainAll(toRetain);
+
+        assertTrue("Set is now void", entries.isEmpty());
+        assertTrue("Remove on parent", itt.isEmpty());
+    }
+
+    /**
+     * @title Test of entrySet() method
+     * @description This test tests the behaviour of entrySet() method.
+     *              This test tests the iterator of the set of entries returned.
+     * @expectedResults The iterator must be capable of iterating all map entries and
+     *                  Modifications performed by the iterator should be reflected to the parent map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method size(), containsValue() and put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should be modified by the execution of the method.
+     */
+    @Test
+    public void test_Entry_iterator() {
+        HIterator it = itt.entrySet().iterator();
+        assertFalse("Iterator on empty map", it.hasNext());
+
+        itt.put("Aa", "Aa");
+        itt.put("Bb", "Bb");
+        itt.put("Cc", "Cc");
+        it = itt.entrySet().iterator();
+
+        int i = 0;
+        Object second = null;
+        while(it.hasNext()){
+            HMap.Entry tmp = (HMap.Entry) it.next();
+            if(i==1) second = tmp;
+            assertTrue("Is in the map", itt.containsKey(tmp.getKey()) && itt.containsValue(tmp.getValue()));
+            i++;
+        }
+
+        it = itt.entrySet().iterator();
+        HMap.Entry removed = (HMap.Entry) it.next();
+        it.remove();
+        assertEquals("Remove reflected on parent", 2, itt.size());
+        assertFalse("Element is removed", itt.containsKey(removed.getKey()));
+        assertEquals("Second becomes first", second, it.next());
+    }
+
+    /**
+     * @title Test of entrySet() method
+     * @description This test tests the behaviour of entrySet() method.
+     *              Tests hashCode and equals method of the returned set of entries.
+     * @expectedResults Two entry set should be equals when both contains the same elements, check if
+     *                  hashcode and equals are consistent.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method put.
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method tested.
+     */
+    @Test
+    public void test_Entry_equalsHash() {
+        itt.put("Aa", "Az");
+        itt.put("Bb", "Bz");
+        HMap other = new MapAdapter();
+        other.put("Aa", "Az");
+        other.put("Bb", "Bz");
+        assertEquals("Should be equals", itt.entrySet(), other.entrySet());
+        assertEquals("So, if equals -> same hash", itt.entrySet().hashCode(), other.entrySet().hashCode());
+
+        itt.put("Xx", "Xz");
+        assertNotEquals("Should not be equals", itt.entrySet(), other.entrySet());
+        assertNotEquals("Should not (but could be) have same hash", itt.entrySet().hashCode(), other.entrySet().hashCode());
+    }
+
+    /**
+     * @title Test of entrySet() method
+     * @description This test tests the behaviour of entrySet() method.
+     *              It tests clear method of the returned set.
+     * @expectedResults The clear method should delete all the entries of the map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should be modified by the execution of the method tested.
+     */
+    @Test
+    public void test_Entry_clear() {
+        itt.put("Aa", "Aa");
+        itt.put("Bb", "Bb");
+        itt.put("Cc", "Cc");
+        HSet entries = itt.entrySet();
+        entries.clear();
+        assertTrue("Map should be empty", itt.isEmpty());
+        assertTrue("Collection should be empty", entries.isEmpty());
+    }
+
+    /**
+     * @title Test of entrySet() method
+     * @description This test tests the behaviour of entrySet() method.
+     *              It tests containsAll() method of the returned set.
+     * @expectedResults The method should correctly verify if a collection of entries is contained or not in the map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method tested.
+     */
+    @Test
+    public void test_Entry_containsAll() {
+        itt.put("Aa", "Aa");
+        itt.put("Bb", "Bb");
+        itt.put("Cc", "Cc");
+        HCollection param = new ListAdapter();
+        param.add(new MapAdapter.Entry("Aa", "Aa"));
+        param.add(new MapAdapter.Entry("Bb", "Bb"));
+        HSet entries = itt.entrySet();
+        assertTrue("All entries contained", entries.containsAll(param));
+        param.add(new MapAdapter.Entry("Jj", "Jj"));
+        assertFalse("Not all entries contained", entries.containsAll(param));
+    }
+
+    //TEST KEYSET
+
+    /**
+     * @title Test of keySet() method
+     * @description This test tests the behaviour of keySet() method when called on an empty map.
+     * @expectedResults The set is expected to be empty.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method isEmpty.
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method.
+     */
+    @Test
+    public void test_KeySet_empty() {
+        HSet entries = itt.keySet();
+        assertTrue("The map is empty", entries.isEmpty());
+    }
+
+    /**
+     * @title Test of keySet() method
+     * @description This test tests the behaviour of keySet() method when called on a not-empty map.
+     * @expectedResults The set size is expected to be equals to the number of keys in the map.
+     *                  The set is expected to contain all the keys contained in the map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of methods put, isEmpty and contains.
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method.
+     */
+    @Test
+    public void test_KeySet_notEmpty() {
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+
+        itt.put(obj1, obj1);
+        itt.put(obj2, obj2);
+        HSet entries = itt.keySet();
+        assertEquals("Check size", 2, entries.size());
+        assertTrue("Check items", entries.contains(obj1));
+        assertTrue("Check items", entries.contains(obj2));
+    }
+
+    /**
+     * @title Test of keySet() method
+     * @description This test tests the behaviour of keySet() method called on a non empty map.
+     *              This method tries inserting two times the same key.
+     * @expectedResults The set size is expected to equals to 1.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of methods size and put.
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method.
+     */
+    @Test
+    public void test_KeySet_duplicates() {
+        assertNull("First insertion", itt.put("Aa", "Aa"));
+        assertEquals("Second insertion","Aa",itt.put("Aa", "Bb"));
+        HSet entries = itt.keySet();
+        assertEquals("Check size", 1, entries.size());
+    }
+
+    /**
+     * @title Test of keySet() method
+     * @description This test tests the behaviour of keySet() method.
+     *              This test that the new set returned is backed to the map so,
+     *              structural modification are performed in set are reflected in the parent map.
+     * @expectedResults The modifications to the returned set must be reflected to the parent map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method size(), isEmpty(),
+     *               containsValue() and put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should be modified by the execution of the method.
+     */
+    @Test
+    public void test_KeySet_backed() {
+        itt.put("Aa", "Aa");
+        itt.put("Bb", "Bb");
+        itt.put("Cc", "Cc");
+        itt.put("Zz","Zz");
+        HSet entries = itt.keySet();
+
+        entries.remove("Aa");
+
+        assertEquals("Size changed", 3, entries.size());
+        assertEquals("Modification on parent", 3, itt.size());
+        assertFalse("Check if is contained", itt.containsKey("Aa") && itt.containsValue("Aa"));
+
+        HCollection toRemove = new ListAdapter();
+        toRemove.add("Bb");
+        toRemove.add("Cc");
+
+        entries.removeAll(toRemove);
+
+        assertEquals("Modification on parent", 1, entries.size());
+        assertEquals("Remove on parent", 1, itt.size());
+        assertFalse("Check remove", itt.containsKey("Bb") && itt.containsValue("Bb"));
+        assertFalse("Check remove", itt.containsKey("Cc") && itt.containsValue("Cc"));
+        assertTrue("Check survived", itt.containsKey("Zz") && itt.containsValue("Zz"));
+
+        HCollection toRetain = new ListAdapter();
+        entries.retainAll(toRetain);
+
+        assertTrue("Set is now void", entries.isEmpty());
+        assertTrue("Remove on parent", itt.isEmpty());
+    }
+
+    /**
+     * @title Test of keySet() method
+     * @description This test tests the behaviour of keySet() method.
+     *              This test tests the iterator of the set of entries returned.
+     * @expectedResults The iterator must be capable of iterating all map entries and
+     *                  modifications performed by the iterator should be reflected to the parent map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method size(), containsValue() and put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should be modified by the execution of the method.
+     */
+    @Test
+    public void test_KeySet_iterator() {
+        HIterator it;
+        it = itt.keySet().iterator();
+        assertFalse("Iterator on empty map", it.hasNext());
+
+        itt.put("Aa", "Aa");
+        itt.put("Bb", "Bb");
+        itt.put("Cc", "Cc");
+        it = itt.keySet().iterator();
+
+        int i = 0;
+        Object second = null;
+        while(it.hasNext()){
+            Object tmp = it.next();
+            if(i==1) second = tmp;
+            assertTrue("Is in the map", itt.containsKey(tmp));
+            i++;
+        }
+
+        it = itt.keySet().iterator();
+        Object removed = it.next();
+        it.remove();
+        assertEquals("Remove reflected on parent", 2, itt.size());
+        assertFalse("Element is removed", itt.containsKey(removed));
+        assertEquals("Second becomes first", second, it.next());
+    }
+
+    /**
+     * @title Test of entrySet() method
+     * @description This test tests the behaviour of entrySet() method.
+     *              Tests hashCode and equals method of the returned set of entries.
+     * @expectedResults Two entry set should be equals when both contains the same elements, check if
+     *                  hashcode and equals are consistent.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method put.
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method tested.
+     */
+    @Test
+    public void test_KeySet_equalsHash() {
+        itt.put("Aa", "Az");
+        itt.put("Bb", "Bz");
+        HMap other = new MapAdapter();
+        other.put("Aa", "Az");
+        other.put("Bb", "Bz");
+
+        assertEquals("Should be equals", itt.keySet(), other.keySet());
+        assertEquals("So, if equals -> same hash", itt.keySet().hashCode(), other.keySet().hashCode());
+
+        itt.put("Xx", "Xz");
+        assertNotEquals("Should not be equals", itt.keySet(), other.keySet());
+        assertNotEquals("Should not (but could be) have same hash", itt.keySet().hashCode(), other.keySet().hashCode());
+    }
+
+    /**
+     * @title Test of keySet() method
+     * @description This test tests the behaviour of keySet() method.
+     *              It tests clear method of the returned set.
+     * @expectedResults The clear method should delete all the entries of the map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should be modified by the execution of the method tested.
+     */
+    @Test
+    public void test_KeySet_clear() {
+        itt.put("Aa", "Aa");
+        itt.put("Bb", "Bb");
+        itt.put("Cc", "Cc");
+        HSet entries = itt.keySet();
+        entries.clear();
+        assertTrue("Map should be empty", itt.isEmpty());
+        assertTrue("keySet should be empty", entries.isEmpty());
+    }
+
+    /**
+     * @title Test of keySet() method
+     * @description This test tests the behaviour of keySet() method.
+     *              It tests containsAll() method of the returned set.
+     * @expectedResults The method should correctly verify if a collection of entries is contained or not in the map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method tested.
+     */
+    @Test
+    public void test_KeySet_containsAll() {
+        itt.put("Aa", "Aa");
+        itt.put("Bb", "Bb");
+        itt.put("Cc", "Cc");
+        HCollection param = new ListAdapter();
+        param.add("Aa");
+        param.add("Bb");
+        HSet entries = itt.keySet();
+        assertTrue("All entries contained", entries.containsAll(param));
+        param.add("Jj");
+        assertFalse("Not all entries contained", entries.containsAll(param));
+    }
+
+    //TEST VALUES
+
+    /**
+     * @title Test of values() method
+     * @description This test tests the behaviour of values() method when called on an empty map.
+     * @expectedResults The collection is expected to be empty.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method isEmpty.
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method.
+     */
+    @Test
+    public void test_Values_empty() {
+        HCollection entries = itt.values();
+        assertTrue("The collection is empty", entries.isEmpty());
+    }
+
+    /**
+     * @title Test of values() method
+     * @description This test tests the behaviour of values() method when called on a not-empty map.
+     * @expectedResults The collection size is expected to be equals to the number of keys in the map.
+     *                  The collection is expected to contain all the keys contained in the map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of methods put(), isEmpty() and contains().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method.
+     */
+    @Test
+    public void test_Values_notEmpty() {
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+
+        itt.put(obj1, obj1);
+        itt.put(obj2, obj2);
+        HCollection entries = itt.values();
+        assertEquals("Check size", 2, entries.size());
+        assertTrue("Check items", entries.contains(obj1));
+        assertTrue("Check items", entries.contains(obj2));
+    }
+
+    /**
+     * @title Test of values() method
+     * @description This test tests the behaviour of values() method called on a non empty map.
+     *              This method tries inserting two times the same value with same key.
+     * @expectedResults The collection size is expected to equals to 1.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of methods size() and put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method.
+     */
+    @Test
+    public void test_Values_duplicates_sk() {
+        assertNull("First insertion", itt.put("Aa", "Bb"));
+        assertEquals("Second insertion","Bb",itt.put("Aa", "Bb"));
+        HCollection entries = itt.values();
+        assertEquals("Check size", 1, entries.size());
+    }
+
+    /**
+     * @title Test of values() method
+     * @description This test tests the behaviour of values() method called on a non empty map.
+     *              This method tries inserting two times the same value with different key.
+     * @expectedResults The collection size is expected to equals to 2.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of methods size() and put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method.
+     */
+    @Test
+    public void test_Values_duplicates_dk() {
+        assertNull("First insertion", itt.put("Aa", "Aa"));
+        assertNull("Second insertion",itt.put("Bb", "Aa"));
+        HCollection entries = itt.values();
+        assertEquals("Check size", 2, entries.size());
+    }
+
+    /**
+     * @title Test of values() method
+     * @description This test tests the behaviour of values() method.
+     *              This test that the new collection returned is backed to the map so,
+     *              structural modification are performed in collection are reflected in the parent map.
+     * @expectedResults The modifications to the returned set must be reflected to the parent map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method size(), isEmpty(),
+     *               containsValue() and put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should be modified by the execution of the method.
+     */
+    @Test
+    public void test_Values_backed() {
+        itt.put("Aa", "Aa");
+        itt.put("Bb", "Bb");
+        itt.put("Cc", "Cc");
+        itt.put("Zz","Zz");
+        HCollection entries = itt.values();
+
+        entries.remove("Aa");
+
+        assertEquals("Size changed", 3, entries.size());
+        assertEquals("Modification on parent", 3, itt.size());
+        assertFalse("Check if is contained", itt.containsValue("Aa"));
+
+        HCollection toRemove = new ListAdapter();
+        toRemove.add("Bb");
+        toRemove.add("Cc");
+
+        entries.removeAll(toRemove);
+
+        assertEquals("Modification on parent", 1, entries.size());
+        assertEquals("Remove on parent", 1, itt.size());
+        assertFalse("Check remove", itt.containsValue("Bb"));
+        assertFalse("Check remove", itt.containsValue("Cc"));
+        assertTrue("Check survived", itt.containsValue("Zz"));
+
+        HCollection toRetain = new ListAdapter();
+        entries.retainAll(toRetain);
+
+        assertTrue("Set is now void", entries.isEmpty());
+        assertTrue("Remove on parent", itt.isEmpty());
+    }
+
+    /**
+     * @title Test of values() method
+     * @description This test tests the behaviour of values() method.
+     *              This test tests the iterator of the set of entries returned.
+     * @expectedResults The iterator must be capable of iterating all map entries and
+     *                  modifications performed by the iterator should be reflected to the parent map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method size(), containsValue() and put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should be modified by the execution of the method.
+     */
+    @Test
+    public void test_Values_iterator() {
+        HIterator it;
+        it = itt.values().iterator();
+        assertFalse("Iterator on empty map", it.hasNext());
+
+        itt.put("Aa", "Aa");
+        itt.put("Bb", "Bb");
+        itt.put("Cc", "Cc");
+        it = itt.values().iterator();
+
+        int i = 0;
+        Object second = null;
+        while(it.hasNext()){
+            Object tmp = it.next();
+            if(i==1) second = tmp;
+            assertTrue("Is in the map", itt.containsValue(tmp));
+            i++;
+        }
+
+        it = itt.keySet().iterator();
+        Object removed = it.next();
+        it.remove();
+        assertEquals("Remove reflected on parent", 2, itt.size());
+        assertFalse("Element is removed", itt.containsValue(removed));
+        assertEquals("Second becomes first", second, it.next());
+    }
+
+    /**
+     * @title Test of values() method
+     * @description This test tests the behaviour of values() method.
+     *              Tests hashCode and equals method of the returned collection.
+     * @expectedResults Two entry set should be equals when both contains the same elements, check if
+     *                  hashcode and equals are consistent.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method tested.
+     */
+    @Test
+    public void test_Values_equalsHash() {
+        itt.put("Aa", "Az");
+        itt.put("Bb", "Bz");
+
+        HMap other = new MapAdapter();
+        other.put("Aa", "Az");
+        other.put("Bb", "Bz");
+
+        assertEquals("Should be equals", itt.values(), other.values());
+        assertEquals("So, if equals -> same hash", itt.values().hashCode(), other.values().hashCode());
+
+        itt.put("Xx", "Xz");
+        assertNotEquals("Should not be equals", itt.values(), other.values());
+        assertNotEquals("Should not (but could be) have same hash", itt.values().hashCode(), other.values().hashCode());
+    }
+
+    /**
+     * @title Test of values() method
+     * @description This test tests the behaviour of values() method.
+     *              It tests clear method of the returned collection.
+     * @expectedResults The clear method should delete all the entries of the map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should be modified by the execution of the method tested.
+     */
+    @Test
+    public void test_Values_clear() {
+        itt.put("Aa", "Aa");
+        itt.put("Bb", "Bb");
+        itt.put("Cc", "Cc");
+        HCollection entries = itt.values();
+        entries.clear();
+        assertTrue("Map should be empty", itt.isEmpty());
+        assertTrue("keySet should be empty", entries.isEmpty());
+    }
+
+    /**
+     * @title Test of values() method
+     * @description This test tests the behaviour of values() method.
+     *              It tests containsAll() method of the returned collection.
+     * @expectedResults The method should correctly verify if a collection of entries is contained or not in the map.
+     * @actualResult As expected result.
+     * @dependencies The correctness of this method depends on the correctness of method put().
+     * @preConditions The map instance must be a new instance of Map.
+     * @postConditions The map instance should not be modified by the execution of the method tested.
+     */
+    @Test
+    public void test_Values_containsAll() {
+        itt.put("Aa", "Aa");
+        itt.put("Bb", "Bb");
+        itt.put("Cc", "Cc");
+        HCollection param = new ListAdapter();
+        param.add("Aa");
+        param.add("Bb");
+        HCollection entries = itt.values();
+        assertTrue("All entries contained", entries.containsAll(param));
+        param.add("Jj");
+        assertFalse("Not all entries contained", entries.containsAll(param));
     }
 
 }

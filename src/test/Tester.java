@@ -8,6 +8,8 @@ public class Tester {
 
     public static void main(String[] args) {
 
+        boolean allPassed = true;
+
         Vector tt = new Vector();
         tt.add(ListAdapterTester.class);
         tt.add(SubListTester.class);
@@ -25,9 +27,13 @@ public class Tester {
 
             System.out.println("TEST DONE: " + result.getRunCount());
             System.out.println("TEST PASSED:" + (result.getRunCount() - result.getFailures().size()) );
-            System.out.println("TEST SUCCESSFUL == " + result.wasSuccessful());
+            boolean testRes = result.wasSuccessful();
+            allPassed &= testRes;
+            System.out.println("TEST SUCCESSFUL == " + testRes);
             System.out.println();
         }
+
+        System.out.println("ALL TEST PASSED == " + allPassed);
 
     }
 
