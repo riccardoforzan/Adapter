@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 
 public class ListAdapterTester extends ListTester {
 
-    @Before
+    @Override
     public void setup(){
         super.itt = new ListAdapter();
     }

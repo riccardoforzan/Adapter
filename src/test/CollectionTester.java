@@ -2,6 +2,7 @@ package test;
 
 import interfaces.HCollection;
 import interfaces.HIterator;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.NoSuchElementException;
@@ -15,6 +16,12 @@ public abstract class CollectionTester implements IteratorTester {
 
     //HCollection instance to test
     protected HCollection itt;
+
+    /**
+     * Method used to set a value to itt attribute on this class.
+     */
+    @Before
+    public abstract void setup();
 
     //METHOD THAT MUST BE OVERRIDE TO TEST *ALL METHOD
 
@@ -788,7 +795,7 @@ public abstract class CollectionTester implements IteratorTester {
     }
 
     /**
-     * @title Test invocation of HIterator.remove() two times in a row on the iterator
+     * @title Test invocation of HIterator.remove() without a previous call to HIterator.next().
      * @description This test tests the behaviour of the iterator returned by iterator() method,
      *              this test performs a calls of remove() without calling next() previously.
      * @expectedResults The class is expected to throw a IllegalStateException.

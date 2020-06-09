@@ -7,7 +7,7 @@ import org.junit.Before;
 
 public class SubListTester extends ListTester {
 
-    @Before
+    @Override
     public void setup(){
         ListAdapter la = new ListAdapter();
         la.add(new Object());
