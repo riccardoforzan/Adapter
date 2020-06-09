@@ -716,8 +716,8 @@ public abstract class ListTester extends CollectionTester {
      * @description This test tests the behaviour of the ListIterator returned by listIterator() method.
      * @expectedResults The iterator should modify elements of the list.
      * @actualResult As expected result.
-     * @dependencies The correctness of this test depends on the correcntess of method add() and get().
-     * @preConditions The list instance must be a new istance of List.
+     * @dependencies The correctness of this test depends on the correctness of method add() and get().
+     * @preConditions The list instance must be a new instance of List.
      * @postConditions The list instance should be modified by the direct execution of the tested method.
      */
     @Test
