@@ -802,7 +802,7 @@ public abstract class ListTester extends CollectionTester {
     /**
      * @title Test of ListIterator method
      * @description This test tests the behaviour of the ListIterator in a full iteration on the list.
-     * @expectedResults The iterator should iterate all the elements of the list, in both travisalò
+     * @expectedResults The iterator should iterate all the elements of the list, in both traversal
      * @actualResult As expected result.
      * @dependencies The correctness of this test depends on the correctness of methods add() and get().
      * @preConditions The list instance must be a new instance of List.

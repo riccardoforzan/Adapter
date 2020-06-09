@@ -927,7 +927,7 @@ public class MapAdapterTester {
      * @expectedResults Two entry set should be equals when both contains the same elements, check if
      *                  hashcode and equals are consistent.
      * @actualResult As expected result.
-     * @dependencies The correctness of this method depends on the correctness of method put.
+     * @dependencies The correctness of this method depends on the correctness of method put().
      * @preConditions The map instance must be a new instance of Map.
      * @postConditions The map instance should not be modified by the execution of the method tested.
      */
@@ -998,7 +998,7 @@ public class MapAdapterTester {
      * @description This test tests the behaviour of keySet() method when called on an empty map.
      * @expectedResults The set is expected to be empty.
      * @actualResult As expected result.
-     * @dependencies The correctness of this method depends on the correctness of method isEmpty.
+     * @dependencies The correctness of this method depends on the correctness of method isEmpty().
      * @preConditions The map instance must be a new instance of Map.
      * @postConditions The map instance should not be modified by the execution of the method.
      */
@@ -1014,7 +1014,7 @@ public class MapAdapterTester {
      * @expectedResults The set size is expected to be equals to the number of keys in the map.
      *                  The set is expected to contain all the keys contained in the map.
      * @actualResult As expected result.
-     * @dependencies The correctness of this method depends on the correctness of methods put, isEmpty and contains.
+     * @dependencies The correctness of this method depends on the correctness of methods put(), isEmpty() and contains().
      * @preConditions The map instance must be a new instance of Map.
      * @postConditions The map instance should not be modified by the execution of the method.
      */
@@ -1037,7 +1037,7 @@ public class MapAdapterTester {
      *              This method tries inserting two times the same key.
      * @expectedResults The set size is expected to equals to 1.
      * @actualResult As expected result.
-     * @dependencies The correctness of this method depends on the correctness of methods size and put.
+     * @dependencies The correctness of this method depends on the correctness of methods size() and put().
      * @preConditions The map instance must be a new instance of Map.
      * @postConditions The map instance should not be modified by the execution of the method.
      */
@@ -1140,7 +1140,7 @@ public class MapAdapterTester {
      * @expectedResults Two entry set should be equals when both contains the same elements, check if
      *                  hashcode and equals are consistent.
      * @actualResult As expected result.
-     * @dependencies The correctness of this method depends on the correctness of method put.
+     * @dependencies The correctness of this method depends on the correctness of method put().
      * @preConditions The map instance must be a new instance of Map.
      * @postConditions The map instance should not be modified by the execution of the method tested.
      */
@@ -1212,7 +1212,7 @@ public class MapAdapterTester {
      * @description This test tests the behaviour of values() method when called on an empty map.
      * @expectedResults The collection is expected to be empty.
      * @actualResult As expected result.
-     * @dependencies The correctness of this method depends on the correctness of method isEmpty.
+     * @dependencies The correctness of this method depends on the correctness of method isEmpty().
      * @preConditions The map instance must be a new instance of Map.
      * @postConditions The map instance should not be modified by the execution of the method.
      */
