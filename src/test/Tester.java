@@ -10,6 +10,7 @@ public class Tester {
 
         Vector tt = new Vector();
         tt.add(ListAdapterTester.class);
+        tt.add(SubListTester.class);
         tt.add(SetAdapterTester.class);
         tt.add(MapAdapterTester.class);
 

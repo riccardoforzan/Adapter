@@ -623,14 +623,14 @@ public class ListAdapter implements HList {
         return new SubList(fromIndex, toIndex);
     }
 
-    private class SubList implements HList {
+    class SubList implements HList {
 
+        private final SubList parent;
         private final int fromIndex;
         private int toIndex;
-        private final SubList parent;
 
         public SubList(int fromIndex, int toIndex) {
-            this.parent = null;
+            parent = null;
             this.fromIndex = fromIndex;
             this.toIndex = toIndex;
         }
@@ -653,7 +653,7 @@ public class ListAdapter implements HList {
 
         @Override
         public boolean contains(Object o) {
-            return this.indexOf(o) != -1;
+            return indexOf(o) != -1;
         }
 
         @Override
@@ -663,27 +663,26 @@ public class ListAdapter implements HList {
 
         @Override
         public Object[] toArray() {
-            int size = this.size();
-            Object[] rv = new Object[size];
-            for (int i = 0; i < size; i++) rv[i] = this.get(i);
-            return rv;
+            Object[] arr = new Object[size()];
+            for (int i = 0; i < size(); i++) arr[i] = get(i);
+            return arr;
         }
 
         @Override
         public Object[] toArray(Object[] a) {
-            int size = this.size();
-            //If a == null throws NullPointerException
-            if (a.length < size) a = new Object[size];
-
-            int i = 0;
-            while (i < size) {
-                a[i] = this.get(i);
+            Object[] rv;
+            if (a.length < size()) {
+                rv = new Object[size()];
+            } else {
+                rv = a;
             }
-            while (i < a.length) {
-                a[i] = null;
+            int i=0;
+            while(i < size()){
+                rv[i] = get(i);
+                i++;
             }
-
-            return a;
+            while(i<rv.length) rv[i++]=null;
+            return rv;
         }
 
         @Override
@@ -716,7 +715,7 @@ public class ListAdapter implements HList {
 
         @Override
         public boolean addAll(HCollection c) {
-            return this.addAll(this.size(), c);
+            return addAll(size(), c);
         }
 
         @Override
@@ -733,7 +732,6 @@ public class ListAdapter implements HList {
         @Override
         public boolean removeAll(HCollection c) {
             if(!ListAdapter.isCollectionValid(c)) throw new NullPointerException();
-
             boolean isChanged = false;
             int i = 0;
             while (i < this.size()) {
@@ -751,7 +749,6 @@ public class ListAdapter implements HList {
         @Override
         public boolean retainAll(HCollection c) {
             if(!ListAdapter.isCollectionValid(c)) throw new NullPointerException();
-
             ListAdapter toRemove = new ListAdapter();
             for (int i = 0; i < this.size(); i++) {
                 Object tmp = this.get(i);
@@ -772,8 +769,8 @@ public class ListAdapter implements HList {
 
         @Override
         public Object get(int index) {
-            if (index < 0 || index >= this.size()) throw new IndexOutOfBoundsException();
-            return ListAdapter.this.get(this.fromIndex + index);
+            if (index < 0 || index >= size()) throw new IndexOutOfBoundsException();
+            return ListAdapter.this.get(fromIndex + index);
         }
 
         @Override
@@ -822,10 +819,10 @@ public class ListAdapter implements HList {
             return rv;
         }
 
+        @Override
         public boolean equals(Object o) {
             if (o == this) return true;
-            if (o == null) return false;
-            if (!(o instanceof HList)) return false;
+            if (o == null || !(o instanceof HList)) return false;
             HList other = (HList) o;
             if (other.size() != this.size()) return false;
 
@@ -836,6 +833,7 @@ public class ListAdapter implements HList {
             return true;
         }
 
+        @Override
         public int hashCode() {
             int hashCode = 1;
             for (int i = 0; i < size(); i++) {
@@ -859,13 +857,11 @@ public class ListAdapter implements HList {
         @Override
         public HList subList(int fromIndex, int toIndex) {
             if (fromIndex < 0 || fromIndex > toIndex || toIndex > size()) throw new IndexOutOfBoundsException();
-            return new SubList(this.fromIndex + fromIndex, this.toIndex + toIndex, this);
+            return new SubList(this.fromIndex + fromIndex, this.fromIndex + toIndex, this);
         }
 
-        /**
-         * Iterator for SubList Class
-         */
         class SubListIterator extends ListIterator {
+
             public SubListIterator(int lowerBound, int index, int upperBond) {
                 super(lowerBound, index, upperBond);
             }
@@ -881,6 +877,7 @@ public class ListAdapter implements HList {
                 super.remove();
                 toIndex--;
             }
+
         }
     }
 

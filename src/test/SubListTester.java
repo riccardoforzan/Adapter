@@ -3,19 +3,17 @@ package test;
 import adapters.ListAdapter;
 import interfaces.HCollection;
 import interfaces.HList;
-import interfaces.HListIterator;
 import org.junit.Before;
-import org.junit.Test;
 
-import java.util.NoSuchElementException;
-
-import static org.junit.Assert.*;
-
-public class ListAdapterTester extends ListTester {
+public class SubListTester extends ListTester {
 
     @Before
     public void setup(){
-        super.itt = new ListAdapter();
+        ListAdapter la = new ListAdapter();
+        la.add(new Object());
+        la.add(new Object());
+        HList toTest = la.subList(1,1);
+        super.itt = toTest;
     }
 
     /**
