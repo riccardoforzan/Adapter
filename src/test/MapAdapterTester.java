@@ -12,10 +12,25 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+/**
+ * Tests HMap implementation.
+ * This class contains tests that must be passed by each implementation of HMap that does not support null as
+ * a valid argument not as key, nor as value.
+ * Those test are obtained by the HMap interface contract.
+ *
+ * <br>
+ * <b>All documentation of tested method is in another file </b>
+ *
+ * <p>ClassCastException, IllegalArgumentException are not tested because
+ * the implementation MapAdapter does not throw these exception.
+ */
 public class MapAdapterTester {
 
     private MapAdapter itt;
 
+    /**
+     * Method used to set a value to itt attribute on this class.
+     */
     @Before
     public void setup(){
         itt = new MapAdapter();

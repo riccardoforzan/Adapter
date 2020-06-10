@@ -9,12 +9,21 @@ import java.util.NoSuchElementException;
 import java.util.Vector;
 
 /**
- * This implementation of HList interface DOES NOT ALLOW null values as input
+ * This is a concrete implementation of HList interface.
+ * This implementation DOES NOT ALLOW null values as input values. <br>
+ * This implementation of HList is based on a Vector. <br>
+ * <b>Note that this implementation is not synchronized</b>. If multiple threads access ListAdapter concurrently,
+ * and at least one of the threads modifies the list structurally, it must be synchronized externally.
+ * (A structural modification is any operation that adds or deletes one or more elements;
+ * merely setting the value of an element is not a structural modification.)
  */
 public class ListAdapter implements HList {
 
     private final Vector ve;
 
+    /**
+     * Constructs an empty ListAdapter
+     */
     public ListAdapter(){
         ve = new Vector();
     }
@@ -124,8 +133,7 @@ public class ListAdapter implements HList {
     }
 
     /**
-     * Appends the specified element to the end of this list (optional
-     * operation).
+     * Appends the specified element to the end of this list.
      *
      * <p>Lists that support this operation may place limitations on what
      * elements may be added to this list.  In particular, some
@@ -147,7 +155,7 @@ public class ListAdapter implements HList {
 
     /**
      * Removes the first occurrence of the specified element from this list,
-     * if it is present (optional operation).  If this list does not contain
+     * if it is present.  If this list does not contain
      * the element, it is unchanged.  More formally, removes the element with
      * the lowest index <tt>i</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>
@@ -190,7 +198,7 @@ public class ListAdapter implements HList {
     /**
      * Appends all of the elements in the specified collection to the end of
      * this list, in the order that they are returned by the specified
-     * collection's iterator (optional operation).  The behavior of this
+     * collection's iterator.  The behavior of this
      * operation is undefined if the specified collection is modified while
      * the operation is in progress.  (Note that this will occur if the
      * specified collection is this list, and it's nonempty.)
@@ -208,7 +216,7 @@ public class ListAdapter implements HList {
 
     /**
      * Inserts all of the elements in the specified collection into this
-     * list at the specified position (optional operation).  Shifts the
+     * list at the specified position.  Shifts the
      * element currently at that position (if any) and any subsequent
      * elements to the right (increases their indices).  The new elements
      * will appear in this list in the order that they are returned by the
@@ -245,7 +253,7 @@ public class ListAdapter implements HList {
 
     /**
      * Removes from this list all of its elements that are contained in the
-     * specified collection (optional operation).
+     * specified collection.
      *
      * @param c collection containing elements to be removed from this list
      * @return <tt>true</tt> if this list changed as a result of the call
@@ -271,7 +279,7 @@ public class ListAdapter implements HList {
 
     /**
      * Retains only the elements in this list that are contained in the
-     * specified collection (optional operation).  In other words, removes
+     * specified collection.  In other words, removes
      * from this list all of its elements that are not contained in the
      * specified collection.
      *
@@ -293,7 +301,7 @@ public class ListAdapter implements HList {
     }
 
     /**
-     * Removes all of the elements from this list (optional operation).
+     * Removes all of the elements from this list.
      * The list will be empty after this call returns.
      */
     @Override
@@ -317,7 +325,7 @@ public class ListAdapter implements HList {
 
     /**
      * Replaces the element at the specified position in this list with the
-     * specified element (optional operation).
+     * specified element.
      *
      * @param index   index of the element to replace
      * @param element element to be stored at the specified position
@@ -336,8 +344,8 @@ public class ListAdapter implements HList {
     }
 
     /**
-     * Inserts the specified element at the specified position in this list
-     * (optional operation).  Shifts the element currently at that position
+     * Inserts the specified element at the specified position in this list.
+     * Shifts the element currently at that position
      * (if any) and any subsequent elements to the right (adds one to their
      * indices).
      *
@@ -355,10 +363,9 @@ public class ListAdapter implements HList {
     }
 
     /**
-     * Removes the element at the specified position in this list (optional
-     * operation).  Shifts any subsequent elements to the left (subtracts one
-     * from their indices).  Returns the element that was removed from the
-     * list.
+     * Removes the element at the specified position in this list.
+     * Shifts any subsequent elements to the left (subtracts one from their indices).
+     * Returns the element that was removed from the list.
      *
      * @param index the index of the element to be removed
      * @return the element previously at the specified position

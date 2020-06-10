@@ -5,6 +5,17 @@ import interfaces.HCollection;
 import interfaces.HList;
 import org.junit.Before;
 
+/**
+ * This is the test class for ListAdapter.subList() method.
+ * This test class is a concrete implementation of ListTester, tests that the returned HList given by the invocation
+ * of ListAdapter.subList() matches the behavior of a HList.
+ *
+ * <br>
+ * <b>All documentation of tested method is in another file </b>
+ *
+ * <p>ClassCastException, IllegalArgumentException are not tested because
+ * the implementation ListAdapter does not throw these exception.
+ */
 public class SubListTester extends ListTester {
 
     @Override

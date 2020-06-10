@@ -2,6 +2,10 @@ package test;
 
 import org.junit.Test;
 
+/**
+ * This interface defines test that must be implemented for each concrete implementation of HIterator.
+ * Those test are obtained by the interface contract of HIterator.
+ */
 public interface IteratorTester {
     /**
      * @title Test invocation of HIterator.hasNext() on an iteration with 0 elements.

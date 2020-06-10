@@ -1,5 +1,17 @@
 package interfaces;
 
+/**
+ * The root interface in the collection hierarchy.
+ * A collection represents a group of objects, known as its elements.
+ * Some collections allow duplicate elements and others do not. Some are ordered and others unordered.
+ * Some collection implementations have restrictions on the elements that they may contain.
+ * For example, some implementations prohibit null elements, and some have restrictions on the types of their elements.
+ * This interface is typically used to pass collections around and manipulate them where maximum generality is desired.
+ * Attempting to add an ineligible element throws an unchecked exception, typically NullPointerException.
+ * Attempting to query the presence of an ineligible element may throw an exception, or it may simply return false;
+ * More generally, attempting an operation on an ineligible element whose completion would not result in the insertion
+ * of an ineligible element into the collection may throw an exception or it may succeed, at the option of the implementation.
+ */
 public interface HCollection{
 
     /**
@@ -136,7 +148,7 @@ public interface HCollection{
      *         collection does not permit null elements
      * @throws IllegalArgumentException if some property of the element
      *         prevents it from being added to this collection
-     * @throws IllegalStateException if the element cannot be added at this
+     * @throws exceptions.IllegalStateException if the element cannot be added at this
      *         time due to insertion restrictions
      */
     boolean add(Object o);
@@ -197,7 +209,7 @@ public interface HCollection{
      * @throws IllegalArgumentException if some property of an element of the
      *         specified collection prevents it from being added to this
      *         collection
-     * @throws IllegalStateException if not all the elements can be added at
+     * @throws exceptions.IllegalStateException if not all the elements can be added at
      *         this time due to insertion restrictions
      */
     boolean addAll(HCollection c);

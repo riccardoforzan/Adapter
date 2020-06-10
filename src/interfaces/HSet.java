@@ -1,5 +1,18 @@
 package interfaces;
 
+/**
+ * A collection that contains no duplicate elements.
+ * More formally, sets contain no pair of elements e1 and e2 such that e1.equals(e2), and at most one null element.
+ * As implied by its name, this interface models the mathematical set abstraction.
+ *
+ * <p>Some set implementations have restrictions on the elements that they may contain.
+ * For example, some implementations prohibit null elements, and some have restrictions on the types of their elements.
+ * Attempting to add an ineligible element throws an unchecked exception, typically NullPointerException or ClassCastException.
+ * Attempting to query the presence of an ineligible element may throw an exception, or it may simply return false;
+ * some implementations will exhibit the former behavior and some will exhibit the latter.
+ * More generally, attempting an operation on an ineligible element whose completion would not result in the insertion
+ * of an ineligible element into the set may throw an exception or it may succeed, at the option of the implementation.
+ */
 public interface HSet extends HCollection {
 
     /**

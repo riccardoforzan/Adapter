@@ -3,6 +3,9 @@ package interfaces;
 import java.util.NoSuchElementException;
 import exceptions.IllegalStateException;
 
+/**
+ * An iterator over a collection.
+ */
 public interface HIterator {
 
     /**
@@ -33,10 +36,10 @@ public interface HIterator {
      * @throws UnsupportedOperationException if the {@code remove}
      *         operation is not supported by this iterator
      *
-     * @throws IllegalStateException if the {@code next} method has not
-     *         yet been called, or the {@code remove} method has already
-     *         been called after the last call to the {@code next}
-     *         method
+     * @throws exceptions.IllegalStateException if the {@code next} method has not
+     *                                          yet been called, or the {@code remove} method has already
+     *                                          been called after the last call to the {@code next}
+     *                                          method
      */
     void remove();
     

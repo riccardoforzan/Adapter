@@ -11,9 +11,22 @@ import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
+/**
+ * This is the test class for ListAdapter.
+ * This test class is a concrete implementation of ListTester.
+ *
+ * <br>
+ * <b>All documentation of tested method is in another file </b>
+ *
+ * <p>ClassCastException, IllegalArgumentException are not tested because
+ * the implementation ListAdapter does not throw these exception.
+ */
 public class ListAdapterTester extends ListTester {
 
     @Override
+    /**
+     * Method to setup the object to be tested.
+     */
     public void setup(){
         super.itt = new ListAdapter();
     }

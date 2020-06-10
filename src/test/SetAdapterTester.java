@@ -9,8 +9,16 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * UnsupportedOperationException, ClassCastException, IllegalArgumentException are not tested because
- * the implementation of SetAdapter does not throw this exception
+ * Tests HSet implementation.
+ * This class contains tests that must be passed by each implementation of HSet that does not support null as
+ * a valid argument.
+ * Those test are obtained by the HSet interface contract.
+ *
+ * <br>
+ * <b>All documentation of tested method is in another file </b>
+ *
+ * <p>ClassCastException, IllegalArgumentException are not tested because
+ * the implementation SetAdapter does not throw these exception.
  */
 
 public class SetAdapterTester extends CollectionTester {

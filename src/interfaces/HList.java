@@ -1,5 +1,15 @@
 package interfaces;
 
+/**
+ * An ordered collection (also known as a sequence).
+ * The user of this interface has precise control over where in the list each element is inserted.
+ * The user can access elements by their integer index (position in the list), and search for elements in the list.
+ * Lists typically allow duplicate elements.
+ * More formally, lists typically allow pairs of elements e1 and e2 such that e1.equals(e2).
+ * The List interface places additional stipulations, beyond those specified in the Collection interface,
+ * on the contracts of the iterator, add, remove, equals, and hashCode methods.
+ * Declarations for other inherited methods are also included here for convenience.
+ */
 public interface HList extends HCollection{
 
     /**

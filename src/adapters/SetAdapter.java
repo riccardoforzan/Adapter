@@ -9,13 +9,23 @@ import java.util.Hashtable;
 import java.util.NoSuchElementException;
 
 /**
- * This implementation of HSet interface DOES NOT ALLOW null values as input.
+ * This is a concrete implementation of HSet interface.
+ * This implementation DOES NOT ALLOW null values as input values. <br>
  * This implementation of HSet doesn't make any guarantees about the order of its elements.
+ * This implementation of HSet is based on a Hashtable. <br>
+ * <b>In this implementation can't be inserted different elements that have the same hashCode.</b><br>
+ * <b>Note that this implementation is not synchronized</b>. If multiple threads access MapAdapter concurrently,
+ * and at least one of the threads modifies the list structurally, it must be synchronized externally.
+ * (A structural modification is any operation that adds or deletes one or more elements;
+ * merely setting the value of an element is not a structural modification.)
  */
 public class SetAdapter implements HSet {
 
     private final Hashtable ht;
 
+    /**
+     * Constructs an empty SetAdapter
+     */
     public SetAdapter(){
         ht = new Hashtable();
     }
@@ -120,8 +130,8 @@ public class SetAdapter implements HSet {
     }
 
     /**
-     * Adds the specified element to this set if it is not already present
-     * (optional operation).  More formally, adds the specified element
+     * Adds the specified element to this set if it is not already present.
+     * More formally, adds the specified element
      * <tt>e</tt> to this set if the set contains no element <tt>e2</tt>
      * such that
      * <tt>(e==null&nbsp;?&nbsp;e2==null&nbsp;:&nbsp;e.equals(e2))</tt>.
@@ -146,8 +156,8 @@ public class SetAdapter implements HSet {
     }
 
     /**
-     * Removes the specified element from this set if it is present
-     * (optional operation).  More formally, removes an element <tt>e</tt>
+     * Removes the specified element from this set if it is present.
+     * More formally, removes an element <tt>e</tt>
      * such that
      * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>, if
      * this set contains such an element.  Returns <tt>true</tt> if this set
@@ -193,7 +203,7 @@ public class SetAdapter implements HSet {
 
     /**
      * Adds all of the elements in the specified collection to this set if
-     * they're not already present (optional operation).  If the specified
+     * they're not already present.  If the specified
      * collection is also a set, the <tt>addAll</tt> operation effectively
      * modifies this set so that its value is the <i>union</i> of the two
      * sets.  The behavior of this operation is undefined if the specified
@@ -220,7 +230,7 @@ public class SetAdapter implements HSet {
 
     /**
      * Retains only the elements in this set that are contained in the
-     * specified collection (optional operation).  In other words, removes
+     * specified collection.  In other words, removes
      * from this set all of its elements that are not contained in the
      * specified collection.  If the specified collection is also a set, this
      * operation effectively modifies this set so that its value is the
@@ -246,7 +256,7 @@ public class SetAdapter implements HSet {
 
     /**
      * Removes from this set all of its elements that are contained in the
-     * specified collection (optional operation).  If the specified
+     * specified collection.  If the specified
      * collection is also a set, this operation effectively modifies this
      * set so that its value is the <i>asymmetric set difference</i> of
      * the two sets.
@@ -273,7 +283,7 @@ public class SetAdapter implements HSet {
     }
 
     /**
-     * Removes all of the elements from this set (optional operation).
+     * Removes all of the elements from this set.
      * The set will be empty after this call returns.
      */
     @Override
@@ -379,16 +389,16 @@ public class SetAdapter implements HSet {
 
         /**
          * Removes from the underlying collection the last element returned
-         * by this iterator (optional operation).  This method can be called
+         * by this iterator.  This method can be called
          * only once per call to next().  The behavior of an iterator
          * is unspecified if the underlying collection is modified while the
          * iteration is in progress in any way other than by calling this
          * method.
          *
-         * @throws IllegalStateException         if the {@code next} method has not
-         *                                       yet been called, or the {@code remove} method has already
-         *                                       been called after the last call to the {@code next}
-         *                                       method
+         * @throws exceptions.IllegalStateException         if the {@code next} method has not
+         *                                                  yet been called, or the {@code remove} method has already
+         *                                                  been called after the last call to the {@code next}
+         *                                                  method
          */
         @Override
         public void remove() {

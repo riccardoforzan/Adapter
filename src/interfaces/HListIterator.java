@@ -2,6 +2,16 @@ package interfaces;
 
 import java.util.NoSuchElementException;
 
+/**
+ * An iterator for lists that allows the programmer to traverse the list in either direction, modify the list during iteration,
+ * and obtain the iterator's current position in the list.
+ * A ListIterator has no current element;
+ * its cursor position always lies between the element that would be returned by a call to previous() and the element that would be returned by a call to next().
+ * In a list of length n, there are n+1 valid index values, from 0 to n, inclusive.
+ *
+ * <p>Note that the remove() and set(Object) methods are not defined in terms of the cursor position;
+ * they are defined to operate on the last element returned by a call to next() or previous().
+ */
 public interface HListIterator extends HIterator {
 
     /**
@@ -83,7 +93,7 @@ public interface HListIterator extends HIterator {
      *
      * @throws UnsupportedOperationException if the {@code remove}
      *         operation is not supported by this list iterator
-     * @throws IllegalStateException if neither {@code next} nor
+     * @throws exceptions.IllegalStateException if neither {@code next} nor
      *         {@code previous} have been called, or {@code remove} or
      *         {@code add} have been called after the last call to
      *         {@code next} or {@code previous}
@@ -105,7 +115,7 @@ public interface HListIterator extends HIterator {
      *         prevents it from being added to this list
      * @throws IllegalArgumentException if some aspect of the specified
      *         element prevents it from being added to this list
-     * @throws IllegalStateException if neither {@code next} nor
+     * @throws exceptions.IllegalStateException if neither {@code next} nor
      *         {@code previous} have been called, or {@code remove} or
      *         {@code add} have been called after the last call to
      *         {@code next} or {@code previous}

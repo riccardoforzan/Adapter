@@ -10,16 +10,28 @@ import java.util.Hashtable;
 import java.util.NoSuchElementException;
 
 /**
- * This implementation of HMap interface DOES NOT ALLOW null values as input not as key, nor as value
+ * This is a concrete implementation of HMap interface.
+ * This implementation DOES NOT ALLOW null values as input values, not as key, nor as value <br>
+ * This implementation of HList is based on a Hashtable. <br>
+ * <b>Note that this implementation is not synchronized</b>. If multiple threads access MapAdapter concurrently,
+ * and at least one of the threads modifies the list structurally, it must be synchronized externally.
+ * (A structural modification is any operation that adds or deletes one or more elements;
+ * merely setting the value of an element is not a structural modification.)
  */
 public class MapAdapter implements HMap {
 
     private final Hashtable ht;
 
+    /**
+     * Constructs an empty MapAdapter
+     */
     public MapAdapter(){
         ht = new Hashtable();
     }
 
+    /**
+     *  A map entry (key-value pair).
+     */
     public static class Entry implements HMap.Entry{
 
         private final Object key;
@@ -34,7 +46,7 @@ public class MapAdapter implements HMap {
          * Returns the key corresponding to this entry.
          *
          * @return the key corresponding to this entry
-         * @throws IllegalStateException implementations may, but are not
+         * @throws exceptions.IllegalStateException implementations may, but are not
          *                               required to, throw this exception if the entry has been
          *                               removed from the backing map.
          */
@@ -49,7 +61,7 @@ public class MapAdapter implements HMap {
          * <tt>remove</tt> operation), the results of this call are undefined.
          *
          * @return the value corresponding to this entry
-         * @throws IllegalStateException implementations may, but are not
+         * @throws exceptions.IllegalStateException implementations may, but are not
          *                               required to, throw this exception if the entry has been
          *                               removed from the backing map.
          */
@@ -60,7 +72,7 @@ public class MapAdapter implements HMap {
 
         /**
          * Replaces the value corresponding to this entry with the specified
-         * value (optional operation).  (Writes through to the map.)  The
+         * value. (Writes through to the map.)  The
          * behavior of this call is undefined if the mapping has already been
          * removed from the map (by the iterator's <tt>remove</tt> operation).
          *
@@ -74,9 +86,9 @@ public class MapAdapter implements HMap {
          *                                       null values, and the specified value is null
          * @throws IllegalArgumentException      if some property of this value
          *                                       prevents it from being stored in the backing map
-         * @throws IllegalStateException         implementations may, but are not
-         *                                       required to, throw this exception if the entry has been
-         *                                       removed from the backing map.
+         * @throws exceptions.IllegalStateException         implementations may, but are not
+         *                                                  required to, throw this exception if the entry has been
+         *                                                  removed from the backing map.
          */
         @Override
         public Object setValue(Object value) {
@@ -224,8 +236,8 @@ public class MapAdapter implements HMap {
     }
 
     /**
-     * Associates the specified value with the specified key in this map
-     * (optional operation).  If the map previously contained a mapping for
+     * Associates the specified value with the specified key in this map.
+     * If the map previously contained a mapping for
      * the key, the old value is replaced by the specified value.  (A map
      * <tt>m</tt> is said to contain a mapping for a key <tt>k</tt> if and only
      * if m.containsKey(k) would return
@@ -267,7 +279,7 @@ public class MapAdapter implements HMap {
     }
 
     /**
-     * Removes all of the mappings from this map (optional operation).
+     * Removes all of the mappings from this map.
      * The map will be empty after this call returns.
      */
     @Override

@@ -4,8 +4,15 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import java.util.Vector;
 
+/**
+ * Class that starts tests
+ */
 public class Tester {
 
+    /**
+     * Main method that starts all tests and prints messages regarding results of tests.
+     * @param args no argument required.
+     */
     public static void main(String[] args) {
 
         boolean allPassed = true;

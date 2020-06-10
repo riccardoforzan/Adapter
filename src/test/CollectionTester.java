@@ -10,7 +10,13 @@ import java.util.NoSuchElementException;
 import static org.junit.Assert.*;
 
 /**
- * Shared test between all HCollection implementation
+ * Tests HCollection implementation.
+ * This class contains tests that must be passed by each implementation of HCollection that does not support null as
+ * a valid argument.
+ * Those test are obtained by the HCollection interface contract.
+ *
+ * <br>
+ * <b>All documentation of tested method is in another file </b>
  */
 public abstract class CollectionTester implements IteratorTester {
 

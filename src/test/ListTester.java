@@ -10,8 +10,20 @@ import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
+/**
+ * Tests HList implementation.
+ * This class contains tests that must be passed by each implementation of HList that does not support null as
+ * a valid argument.
+ * Those test are obtained by the HList interface contract.
+ *
+ * <br>
+ * <b>All documentation of tested method is in another file </b>
+ */
 public abstract class ListTester extends CollectionTester {
 
+    /**
+     * Method used to set a value to itt attribute on this class.
+     */
     @Before
     public abstract void setup();
 

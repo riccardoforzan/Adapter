@@ -1,5 +1,16 @@
 package interfaces;
 
+/**
+ * An object that maps keys to values. A map cannot contain duplicate keys; each key can map to at most one value.
+ * The Map interface provides three collection views, which allow a map's contents to be viewed as a set of keys, collection of values, or set of key-value mappings
+ * Some map implementations have restrictions on the keys and values they may contain.
+ * For example, some implementations prohibit null keys and values, and some have restrictions on the types of their keys.
+ * Attempting to insert an ineligible key or value throws an unchecked exception, typically NullPointerException or ClassCastException.
+ * ttempting to query the presence of an ineligible key or value may throw an exception, or it may simply return false;
+ * some implementations will exhibit the former behavior and some will exhibit the latter.
+ * More generally, attempting an operation on an ineligible key or value whose completion would not result in the insertion
+ * of an ineligible element into the map may throw an exception or it may succeed, at the option of the implementation.
+ */
 public interface HMap{
 
     /**
@@ -231,7 +242,7 @@ public interface HMap{
          * Returns the key corresponding to this entry.
          *
          * @return the key corresponding to this entry
-         * @throws IllegalStateException implementations may, but are not
+         * @throws exceptions.IllegalStateException implementations may, but are not
          *         required to, throw this exception if the entry has been
          *         removed from the backing map.
          */
@@ -243,7 +254,7 @@ public interface HMap{
          * <tt>remove</tt> operation), the results of this call are undefined.
          *
          * @return the value corresponding to this entry
-         * @throws IllegalStateException implementations may, but are not
+         * @throws exceptions.IllegalStateException implementations may, but are not
          *         required to, throw this exception if the entry has been
          *         removed from the backing map.
          */
