@@ -18,7 +18,7 @@ creazione di alcune classi astratte che implementassero comportamenti comuni, au
 
 Nella consegna sono inclusi:
 * La cartella JavaDoc contenente tutta la documentazione generata dall'omonimo tool
-* Un file testDoc in formato HTML contenente tutta la specifica della documentazione dei test secondo la specifica SAFe, questo file è stato generato in maniera automatica da un tool da me creato (https://github.com/riccardo4zan/DocumentationGenerator) che permette la creazione automatica di una pagina di sunto riguardante i test se questi rispettano una certa specifica
+* Un file testDoc in formato HTML contenente tutta la specifica della documentazione dei test secondo la specifica SAFe, questo file è stato generato in maniera automatica da un tool da me creato [DocGen](https://github.com/riccardoforzan/DocGen) che permette la creazione automatica di una pagina di sunto riguardante i test se questi rispettano una certa specifica
 stabilita.
 
 * Il file Adapter.jar che contiene al suo interno il codice sorgente.
