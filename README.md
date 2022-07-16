@@ -1,5 +1,5 @@
 # Adapter
-Final project of Software Engineegring coruse @UniPD
+Final project of Software Engineering course @UniPD
 
 Implementing Adapter design pattern from JME CLDC 1.1 to more complex data structure interfaces defined in the Collection Framework of Java J2SE 1.4.2.
 
